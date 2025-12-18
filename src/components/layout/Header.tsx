@@ -1,30 +1,54 @@
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Menu01Icon, Notification01Icon, Search01Icon, Logout01Icon, UserIcon } from '@hugeicons/core-free-icons';
+import { 
+  Menu01Icon, 
+  Notification01Icon, 
+  Search01Icon, 
+  Logout01Icon, 
+  SidebarLeft01Icon,
+  SidebarRight01Icon
+} from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ModeToggle } from '@/components/mode-toggle';
 import { useAuth } from '@/components/auth-provider';
+import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
   onMenuClick?: () => void;
+  isCollapsed?: boolean;
+  onToggleSidebar?: () => void;
 }
 
-export function Header({ onMenuClick }: HeaderProps) {
+export function Header({ onMenuClick, isCollapsed, onToggleSidebar }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
-    <header className="fixed left-64 right-0 top-0 z-30 h-16 border-b border-neutral-200 bg-white/80 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-950/80">
+    <header className={cn(
+      "fixed right-0 top-0 z-30 h-16 border-b border-neutral-200 bg-white/80 backdrop-blur-sm transition-all duration-300 dark:border-neutral-800 dark:bg-neutral-950/80",
+      isCollapsed ? "left-20" : "left-64"
+    )}>
       <div className="flex h-full items-center justify-between px-6">
         {/* Left section */}
         <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={onToggleSidebar}
+            className="hidden lg:flex bg-white dark:bg-neutral-950"
+            title={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
+          >
+            <HugeiconsIcon 
+              icon={isCollapsed ? SidebarRight01Icon : SidebarLeft01Icon} 
+              className="h-5 w-5 text-neutral-500" 
+            />
+          </Button>
+
           <Button
             variant="ghost"
             size="icon"
@@ -40,7 +64,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             <Input
               type="search"
               placeholder="搜索..."
-              className="w-64 pl-9"
+              className="w-64 pl-9 bg-white dark:bg-neutral-950"
             />
           </div>
         </div>

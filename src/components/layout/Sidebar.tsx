@@ -11,6 +11,14 @@ import {
   ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 interface MenuItem {
   title: string;
@@ -56,7 +64,7 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-function NavItem({ item, location }: { item: MenuItem; location: ReturnType<typeof useLocation> }) {
+function NavItem({ item, location, isCollapsed }: { item: MenuItem; location: ReturnType<typeof useLocation>; isCollapsed?: boolean }) {
   const hasChildren = !!item.children;
   const isChildActive = item.children?.some(child => location.pathname === child.path);
   const [isOpen, setIsOpen] = useState(isChildActive);
@@ -67,24 +75,71 @@ function NavItem({ item, location }: { item: MenuItem; location: ReturnType<type
     return (
       <Link
         to={item.path!}
+        title={isCollapsed ? item.title : undefined}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
           isActive
             ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
-            : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
+            : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900',
+          isCollapsed && "justify-center px-0"
         )}
       >
         <HugeiconsIcon
           icon={item.icon}
           className={cn(
-            'h-5 w-5',
+            'h-5 w-5 shrink-0',
             isActive
               ? 'text-blue-600 dark:text-blue-400'
               : 'text-neutral-500 dark:text-neutral-400'
           )}
         />
-        <span>{item.title}</span>
+        {!isCollapsed && <span>{item.title}</span>}
       </Link>
+    );
+  }
+
+  // 折叠状态下的弹出菜单
+  if (isCollapsed) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className={cn(
+              'flex w-full items-center justify-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 outline-none cursor-pointer',
+              isChildActive
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
+            )}
+          >
+            <HugeiconsIcon
+              icon={item.icon}
+              className={cn(
+                'h-5 w-5 shrink-0',
+                isChildActive
+                  ? 'text-blue-600 dark:text-blue-400'
+                  : 'text-neutral-500 dark:text-neutral-400'
+              )}
+            />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right" align="start" sideOffset={16} className="min-w-40">
+          <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {item.children?.map((child) => (
+            <DropdownMenuItem key={child.path} asChild>
+              <Link
+                to={child.path}
+                className={cn(
+                  "cursor-pointer w-full",
+                  location.pathname === child.path && "text-blue-600 font-medium"
+                )}
+              >
+                {child.title}
+              </Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
@@ -93,7 +148,7 @@ function NavItem({ item, location }: { item: MenuItem; location: ReturnType<type
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+          'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 outline-none cursor-pointer',
           isChildActive
             ? 'text-blue-600 dark:text-blue-400'
             : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
@@ -103,7 +158,7 @@ function NavItem({ item, location }: { item: MenuItem; location: ReturnType<type
           <HugeiconsIcon
             icon={item.icon}
             className={cn(
-              'h-5 w-5',
+              'h-5 w-5 shrink-0',
               isChildActive
                 ? 'text-blue-600 dark:text-blue-400'
                 : 'text-neutral-500 dark:text-neutral-400'
@@ -135,7 +190,7 @@ function NavItem({ item, location }: { item: MenuItem; location: ReturnType<type
                     : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
                 )}
               >
-                {/* 占位符空间，确保文字与带图标的一级菜单对齐 (w-5 图标 + gap-3 = 32px) */}
+                {/* 占位符空间 */}
                 <div className="w-5" />
                 <span>{child.title}</span>
               </Link>
@@ -147,20 +202,30 @@ function NavItem({ item, location }: { item: MenuItem; location: ReturnType<type
   );
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isCollapsed?: boolean;
+}
+
+export function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+    <aside className={cn(
+      "fixed left-0 top-0 z-40 h-screen border-r border-neutral-200 bg-white transition-all duration-300 dark:border-neutral-800 dark:bg-neutral-950",
+      isCollapsed ? "w-20" : "w-64"
+    )}>
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-neutral-200 px-6 dark:border-neutral-800">
-        <Logo />
+      <div className={cn(
+        "flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800",
+        isCollapsed ? "justify-center px-0" : "px-6"
+      )}>
+        <Logo showText={!isCollapsed} />
       </div>
 
       {/* Navigation */}
       <nav className="space-y-1 overflow-y-auto p-4" style={{ height: 'calc(100vh - 4rem)' }}>
         {menuItems.map((item, index) => (
-          <NavItem key={index} item={item} location={location} />
+          <NavItem key={index} item={item} location={location} isCollapsed={isCollapsed} />
         ))}
       </nav>
     </aside>
