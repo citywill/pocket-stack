@@ -1,17 +1,18 @@
-# Admin 后台脚手架
+# 全栈后台管理系统脚手架
 
-这是一个基于 React + TypeScript + Vite + shadcn/ui 构建的现代化后台管理系统脚手架。
+这是一个基于 React + TypeScript + Vite + shadcn/ui + PocketBase 构建的现代化后台管理系统脚手架。
+
+该系统借助 Shadcn MCP、PocketBase MCP 实现了高可用 AI 辅助开发。
 
 ## 功能特性
 
-- ✨ 现代化的 UI 设计
 - 🎨 基于 shadcn/ui 组件库
 - 🚀 使用 Vite 构建，开发体验极佳
-- 📱 响应式布局
-- 🎯 TypeScript 类型支持
-- 🎭 支持暗色模式
+- 📂 支持 **两级折叠菜单** 导航
+- 🎭 支持暗色模式 (Dark/Light/System)
 - 🧭 React Router 路由管理
 - 🎪 HugeIcons 图标库
+- 🔐 集成 **PocketBase** 后端服务（身份验证、数据服务）
 
 ## 项目结构
 
@@ -19,65 +20,55 @@
 src/
 ├── components/
 │   ├── layout/          # 布局组件
-│   │   ├── Sidebar.tsx  # 侧边栏（带图标导航）
+│   │   ├── Sidebar.tsx  # 侧边栏（支持两级折叠菜单）
 │   │   ├── Header.tsx   # 顶部导航栏
 │   │   └── MainLayout.tsx # 主布局
-│   └── ui/              # shadcn/ui 组件
+│   ├── ui/              # shadcn/ui 组件
+│   ├── auth-provider.tsx # PocketBase 身份验证上下文
+│   ├── protected-route.tsx # 路由守卫
+│   ├── theme-provider.tsx # 主题管理
+│   └── mode-toggle.tsx  # 主题切换组件
 ├── pages/               # 页面组件
-│   ├── Dashboard.tsx    # 仪表盘
-│   ├── Users.tsx        # 用户管理
-│   ├── Analytics.tsx    # 数据分析
-│   ├── Orders.tsx       # 订单管理
-│   ├── Documents.tsx    # 文档中心
-│   └── Settings.tsx     # 系统设置
-├── lib/                 # 工具函数
-├── App.tsx              # 应用入口
+│   ├── login.tsx        # 登录页面 (超级用户登录)
+│   ├── dashboard.tsx    # 仪表盘
+│   ├── users.tsx        # 用户管理
+│   └── ...              # 其他业务页面
+├── lib/
+│   ├── pocketbase.ts    # PocketBase 客户端初始化
+│   └── utils.ts         # 工具函数
+├── App.tsx              # 应用入口（包含 Provider 和路由配置）
 └── main.tsx             # 主入口
-
 ```
 
-## 已实现的页面
+## 后端集成 (PocketBase)
 
-### 1. 仪表盘 (/)
+项目集成了 PocketBase 作为后端服务，主要功能包括：
 
-- 数据统计卡片
-- 最近活动列表
-- 快速操作面板
+- **身份验证**：提供专用的登录页面，支持超级用户认证。
+- **持久化会话**：利用 `pb.authStore` 自动管理 Token 和用户会话。
+- **全局状态**：通过 `AuthProvider` 提供 `user` 和 `logout` 方法。
+- **安全路由**：内置 `ProtectedRoute` 确保未授权用户无法访问管理界面。
 
-### 2. 用户管理 (/users)
+### 启动后端
 
-- 用户列表展示
-- 用户信息卡片
-- 状态标签
-
-### 3. 数据分析 (/analytics)
-
-- 图表展示区域（待实现）
-
-### 4. 订单管理 (/orders)
-
-- 订单列表表格
-- 订单状态管理
-
-### 5. 文档中心 (/documents)
-
-- 文档列表（待实现）
-
-### 6. 系统设置 (/settings)
-
-- 基本设置表单
-- 通知设置开关
+1. 下载并运行 PocketBase 可执行文件。
+2. 运行 `.\pocketbase.exe serve`。
+3. 在管理后台创建超级用户账号。
+4. 应用默认连接到 `http://127.0.0.1:8090`。
 
 ## 侧边栏导航
 
-侧边栏包含以下菜单项，每个都有对应的图标：
+侧边栏支持两级折叠菜单，默认配置：
 
-- 🏠 仪表盘 - Home01Icon
-- 👤 用户管理 - UserIcon
-- 📊 数据分析 - ChartLineData01Icon
-- 🛒 订单管理 - ShoppingCart01Icon
-- 📄 文档中心 - FileTextIcon
-- ⚙️ 系统设置 - Settings01Icon
+- 🏠 **仪表盘**
+- 👤 **用户管理**
+- 📊 **数据中心** (折叠)
+  - 数据分析
+  - 文档中心
+- 🛒 **订单管理**
+- ⚙️ **系统设置** (折叠)
+  - 基本设置
+  - 个人信息
 
 ## 开发
 
@@ -98,13 +89,13 @@ npm run preview
 ## 技术栈
 
 - **React 19** - UI 框架
+- **PocketBase** - 后端接口 & 身份验证
 - **TypeScript** - 类型支持
 - **Vite** - 构建工具
-- **React Router** - 路由管理
+- **React Router 7** - 路由管理
 - **shadcn/ui** - UI 组件库
 - **Tailwind CSS** - 样式框架
 - **HugeIcons** - 图标库
-- **Radix UI** - 无障碍组件基础
 
 ## 自定义配置
 
@@ -122,15 +113,10 @@ npm run preview
 
 ## 下一步
 
-你可以根据需要：
-
-1. 添加更多页面和功能
-2. 实现数据图表（推荐使用 recharts 或 chart.js）
-3. 添加表单验证（推荐使用 react-hook-form + zod）
-4. 集成后端 API
-5. 添加用户认证和权限管理
-6. 实现数据表格（推荐使用 @tanstack/react-table）
-7. 添加更多 shadcn/ui 组件
+1. **业务数据集成**：利用 PocketBase 的集合 (Collections) 替换 Mock 数据。
+2. **实时同步**：使用 `pb.collection('...').subscribe` 实现数据的实时更新。
+3. **文件上传**：集成 PocketBase 的文件管理功能。
+4. **图表展示**：推荐使用 recharts 展示统计数据。
 
 ## 许可证
 

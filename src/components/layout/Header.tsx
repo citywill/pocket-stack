@@ -52,7 +52,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                 超级管理员
               </p>
             </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-sm font-semibold text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
               A
             </div>
           </div>
