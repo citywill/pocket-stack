@@ -27,10 +27,12 @@ interface MenuItem {
   path?: string;
   icon: any; // 使用 any 以兼容 Hugeicons 图标类型
   adminOnly?: boolean;
+  userOnly?: boolean;
   children?: {
     title: string;
     path: string;
     adminOnly?: boolean;
+    userOnly?: boolean;
   }[];
 }
 
@@ -39,6 +41,13 @@ const menuItems: MenuItem[] = [
     title: '仪表盘',
     path: '/',
     icon: Home01Icon,
+    userOnly: true,
+  },
+  {
+    title: '仪表盘',
+    path: '/admin-dashboard',
+    icon: ChartLineData01Icon,
+    adminOnly: true,
   },
   {
     title: '用户管理',
@@ -50,28 +59,29 @@ const menuItems: MenuItem[] = [
     title: '任务管理',
     path: '/tasks',
     icon: Task01Icon,
+    userOnly: true,
   },
-  {
-    title: '数据中心',
-    icon: ChartLineData01Icon,
-    children: [
-      { title: '数据分析', path: '/analytics' },
-      { title: '文档中心', path: '/documents' },
-    ],
-  },
-  {
-    title: '订单管理',
-    path: '/orders',
-    icon: ShoppingCart01Icon,
-  },
-  {
-    title: '系统设置',
-    icon: Settings01Icon,
-    children: [
-      { title: '基本设置', path: '/settings' },
-      { title: '个人信息', path: '/profile' },
-    ],
-  },
+  // {
+  //   title: '数据中心',
+  //   icon: ChartLineData01Icon,
+  //   children: [
+  //     { title: '数据分析', path: '/analytics' },
+  //     { title: '文档中心', path: '/documents' },
+  //   ],
+  // },
+  // {
+  //   title: '订单管理',
+  //   path: '/orders',
+  //   icon: ShoppingCart01Icon,
+  // },
+  // {
+  //   title: '系统设置',
+  //   icon: Settings01Icon,
+  //   children: [
+  //     { title: '基本设置', path: '/settings' },
+  //     { title: '个人信息', path: '/profile' },
+  //   ],
+  // },
 ];
 
 interface SidebarProps {
@@ -86,13 +96,26 @@ export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
 
   // 过滤菜单项
   const filteredMenuItems = menuItems.filter(item => {
+    if (isSuperAdmin) {
+      // 管理员可以看到adminOnly和不加限定的菜单
+      return !item.userOnly;
+    }
     if (item.adminOnly && !isSuperAdmin) return false;
+    if (item.userOnly && isSuperAdmin) return false;
     return true;
   }).map(item => {
     if (item.children) {
       return {
         ...item,
-        children: item.children.filter(child => !child.adminOnly || isSuperAdmin)
+        children: item.children.filter(child => {
+          if (isSuperAdmin) {
+            // 管理员可以看到adminOnly和不加限定的子菜单
+            return !child.userOnly;
+          }
+          if (child.adminOnly && !isSuperAdmin) return false;
+          if (child.userOnly && isSuperAdmin) return false;
+          return true;
+        })
       };
     }
     return item;
@@ -282,4 +305,8 @@ function NavItem({
     </div>
   );
 }
+
+
+
+
 

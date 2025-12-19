@@ -49,7 +49,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // 根据 model 所在的 collection 进行刷新
         const model = pb.authStore.model;
         const collectionName = model?.collectionName || (model?.username && !model?.email ? '_superusers' : 'users');
-        await pb.collection(collectionName).authRefresh();
+        // 使用 { signal: undefined } 禁用自动取消
+        await pb.collection(collectionName).authRefresh({ signal: undefined });
       } catch (err: any) {
         console.error('Auth refresh failed:', err);
         // 只有在明确的 401/403 认证错误时才清空，防止网络抖动导致登出
@@ -98,3 +99,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

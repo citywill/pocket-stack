@@ -5,10 +5,10 @@ import {
   Bookmark01Icon,
   HourglassIcon,
   CheckmarkCircle01Icon,
+  UserIcon,
 } from '@hugeicons/core-free-icons';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
 
@@ -20,6 +20,15 @@ interface Task {
   priority: 'low' | 'medium' | 'high';
   updated?: string;
   created?: string;
+  user: string;
+}
+
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  created: string;
+  updated: string;
 }
 
 const statusMap = {
@@ -28,11 +37,11 @@ const statusMap = {
   completed: { label: '已完成', color: 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400', icon: CheckmarkCircle01Icon, chartColor: '#10b981', gradient: ['#10b981', '#34d399'] },
 };
 
-const priorityMap = {
-  low: { label: '低', color: 'text-neutral-500' },
-  medium: { label: '中', color: 'text-blue-500' },
-  high: { label: '高', color: 'text-red-500' },
-};
+// const priorityMap = {
+//   low: { label: '低', color: 'text-neutral-500' },
+//   medium: { label: '中', color: 'text-blue-500' },
+//   high: { label: '高', color: 'text-red-500' },
+// };
 
 // Custom tooltip style
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -62,43 +71,60 @@ const PieTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-export function Dashboard() {
+export function AdminDashboard() {
   const { user } = useAuth();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  // const [tasks, setTasks] = useState<Task[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState([
     { title: '待办任务', value: '0', icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
     { title: '进行中', value: '0', icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
     { title: '已完成', value: '0', icon: CheckmarkCircle01Icon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-950/50' },
     { title: '总任务', value: '0', icon: Bookmark01Icon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/50' },
+    { title: '活跃用户', value: '0', icon: UserIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-950/50' },
+    { title: '总用户数', value: '0', icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
   ]);
 
   // Chart data
   const [trendData, setTrendData] = useState<any[]>([]);
   const [statusData, setStatusData] = useState<any[]>([]);
+  const [userTrendData, setUserTrendData] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
     
-    const fetchTasks = async () => {
+    const fetchData = async () => {
       try {
-        const result = await pb.collection('tasks').getFullList<Task>({
-          filter: `user = "${user.id}" && archived = false`,
+        // Fetch all tasks (global data)
+        const tasksResult = await pb.collection('tasks').getFullList<Task>({
+          filter: `archived = false`,
           sort: '-created',
+          signal: undefined,
         });
-        setTasks(result);
+        // setTasks(tasksResult);
+        
+        // Fetch all users
+        const usersResult = await pb.collection('users').getFullList<User>({
+          sort: '-created',
+          signal: undefined,
+        });
+        setUsers(usersResult);
         
         // Update stats
-        const todoCount = result.filter(t => t.status === 'todo').length;
-        const inProgressCount = result.filter(t => t.status === 'in_progress').length;
-        const completedCount = result.filter(t => t.status === 'completed').length;
-        const totalCount = result.length;
+        const todoCount = tasksResult.filter(t => t.status === 'todo').length;
+        const inProgressCount = tasksResult.filter(t => t.status === 'in_progress').length;
+        const completedCount = tasksResult.filter(t => t.status === 'completed').length;
+        const totalCount = tasksResult.length;
+        const activeUsers = usersResult.length;
+        const totalUsers = usersResult.length;
         
         setStats([
           { title: '待办任务', value: todoCount.toString(), icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
           { title: '进行中', value: inProgressCount.toString(), icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
           { title: '已完成', value: completedCount.toString(), icon: CheckmarkCircle01Icon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-950/50' },
           { title: '总任务', value: totalCount.toString(), icon: Bookmark01Icon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/50' },
+          { title: '活跃用户', value: activeUsers.toString(), icon: UserIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-950/50' },
+          { title: '总用户数', value: totalUsers.toString(), icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
         ]);
 
         // Prepare status distribution data
@@ -108,9 +134,9 @@ export function Dashboard() {
           { name: '已完成', value: completedCount, color: statusMap.completed.chartColor, gradient: statusMap.completed.gradient },
         ]);
 
-        // Prepare trend data (group by day)
+        // Prepare task trend data (group by day)
         const trendMap: { [key: string]: number } = {};
-        result.forEach(task => {
+        tasksResult.forEach(task => {
           if (task.created) {
             const date = new Date(task.created);
             const dayKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
@@ -125,14 +151,32 @@ export function Dashboard() {
         })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         setTrendData(trendArray);
+
+        // Prepare user trend data (group by day)
+        const userTrendMap: { [key: string]: number } = {};
+        usersResult.forEach(user => {
+          if (user.created) {
+            const date = new Date(user.created);
+            const dayKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+            userTrendMap[dayKey] = (userTrendMap[dayKey] || 0) + 1;
+          }
+        });
+
+        // Convert to array and sort by date
+        const userTrendArray = Object.entries(userTrendMap).map(([date, count]) => ({
+          date,
+          count
+        })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        setUserTrendData(userTrendArray);
       } catch (error) {
-        console.error('Failed to fetch tasks:', error);
+        console.error('Failed to fetch data:', error);
       } finally {
         setLoading(false);
       }
     };
     
-    fetchTasks();
+    fetchData();
   }, [user]);
 
   return (
@@ -140,15 +184,15 @@ export function Dashboard() {
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
-          仪表盘
+          管理员仪表盘
         </h1>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          欢迎回来，这是您的任务概览
+          全局数据概览
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {stats.map((stat) => {
           return (
             <Card key={stat.title} className="overflow-hidden hover:shadow-md transition-shadow">
@@ -176,7 +220,7 @@ export function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">任务创建趋势</CardTitle>
+            <CardTitle className="text-xl font-bold">全局任务创建趋势</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -211,7 +255,7 @@ export function Dashboard() {
 
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">任务状态分布</CardTitle>
+            <CardTitle className="text-xl font-bold">全局任务状态分布</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -249,11 +293,11 @@ export function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Tasks Section */}
+      {/* User Chart Section */}
       <div className="grid gap-6">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">最近任务</CardTitle>
+            <CardTitle className="text-xl font-bold">用户注册趋势</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -262,30 +306,64 @@ export function Dashboard() {
                   <p className="text-neutral-500">加载中...</p>
                 </div>
               </div>
-            ) : tasks.length === 0 ? (
+            ) : userTrendData.length === 0 ? (
               <div className="h-64 flex items-center justify-center">
-                <p className="text-neutral-500">暂无任务数据</p>
+                <p className="text-neutral-500">暂无数据</p>
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={userTrendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+                  <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Area type="monotone" dataKey="count" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorUsers)" animationDuration={1000} />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Users Section */}
+      <div className="grid gap-6">
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">最新注册用户</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="h-64 flex items-center justify-center">
+                <div className="animate-pulse">
+                  <p className="text-neutral-500">加载中...</p>
+                </div>
+              </div>
+            ) : users.length === 0 ? (
+              <div className="h-64 flex items-center justify-center">
+                <p className="text-neutral-500">暂无用户数据</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {tasks.slice(0, 5).map((task) => (
-                  <div key={task.id} className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
+                {users.slice(0, 10).map((user) => (
+                  <div key={user.id} className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
                     <div className="flex items-center space-x-3">
-                      <div className={`rounded-full p-2 ${statusMap[task.status].color} transition-transform hover:scale-110`}>
-                        <HugeiconsIcon icon={statusMap[task.status].icon} className="h-4 w-4" />
+                      <div className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 p-3">
+                        <HugeiconsIcon icon={UserIcon} className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-neutral-900 dark:text-neutral-100">{task.title}</p>
-                        <p className="text-sm text-neutral-500 dark:text-neutral-500">优先级: {priorityMap[task.priority].label}</p>
-                        <p className="text-xs text-neutral-400 dark:text-neutral-600">创建于: {task.created ? new Date(task.created).toLocaleDateString() : '未知'}</p>
+                        <p className="font-medium text-neutral-900 dark:text-neutral-100">{user.name || user.email}</p>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-500">{user.email}</p>
+                        <p className="text-xs text-neutral-400 dark:text-neutral-600">注册于: {new Date(user.created).toLocaleDateString()}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className={cn(
-                      task.status === 'completed' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' :
-                      task.status === 'in_progress' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                      'bg-neutral-50 dark:bg-neutral-900/20 text-neutral-600 dark:text-neutral-400'
-                    )}>
-                      {statusMap[task.status].label}
+                    <Badge variant="outline" className="bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+                      活跃用户
                     </Badge>
                   </div>
                 ))}
