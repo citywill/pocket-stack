@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   Menu01Icon, 
@@ -6,7 +7,8 @@ import {
   Search01Icon, 
   Logout01Icon, 
   SidebarLeft01Icon,
-  SidebarRight01Icon
+  SidebarRight01Icon,
+  UserIcon
 } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 
 interface HeaderProps {
@@ -110,10 +113,17 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
                 </div>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem asChild>
+                <Link to="/profile" className="flex items-center cursor-pointer">
+                  <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
+                  <span>个人信息</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem 
                 onClick={logout}
-                className="cursor-pointer"
+                className="cursor-pointer text-red-600 focus:text-red-700"
               >
                 <HugeiconsIcon icon={Logout01Icon} className="mr-2 h-4 w-4" />
                 <span>退出登录</span>

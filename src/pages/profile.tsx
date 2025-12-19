@@ -16,7 +16,7 @@ import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
 
 export function Profile() {
-  const { user, isSuperAdmin } = useAuth();
+  const { user, isSuperAdmin, login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -85,14 +85,20 @@ export function Profile() {
 
     try {
       const collection = user?.collectionName || (isSuperAdmin ? '_superusers' : 'users');
+      // 1. 更新密码
       await pb.collection(collection).update(user!.id, {
         oldPassword: formData.oldPassword,
         password: formData.newPassword,
         passwordConfirm: formData.confirmPassword,
       });
 
+      // 2. 重新认证以保持登录状态 (PocketBase 修改密码后会使旧 Token 失效)
+      if (user?.email) {
+        await login(user.email, formData.newPassword, isSuperAdmin);
+      }
+
       setFormData({ ...formData, oldPassword: '', newPassword: '', confirmPassword: '' });
-      setMessage({ type: 'success', text: '密码修改成功！' });
+      setMessage({ type: 'success', text: '密码修改成功，会话已同步！' });
     } catch (error: any) {
       console.error('Change password error:', error);
       setMessage({ type: 'error', text: '密码修改失败：' + (error.message || '请检查原密码是否正确') });
