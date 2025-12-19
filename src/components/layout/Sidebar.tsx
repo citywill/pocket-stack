@@ -23,7 +23,7 @@ import {
 interface MenuItem {
   title: string;
   path?: string;
-  icon: React.ElementType;
+  icon: any; // 使用 any 以兼容 Hugeicons 图标类型
   children?: {
     title: string;
     path: string;
@@ -64,18 +64,72 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-function NavItem({ item, location, isCollapsed }: { item: MenuItem; location: ReturnType<typeof useLocation>; isCollapsed?: boolean }) {
+interface SidebarProps {
+  isCollapsed?: boolean;
+  className?: string;
+  onItemClick?: () => void;
+}
+
+export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
+  const location = useLocation();
+
+  return (
+    <aside className={cn(
+      "h-full border-r border-neutral-200 bg-white transition-all duration-300 dark:border-neutral-800 dark:bg-neutral-950",
+      isCollapsed ? "w-20" : "w-64",
+      className
+    )}>
+      {/* Logo */}
+      <div className={cn(
+        "flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800",
+        isCollapsed ? "justify-center px-0" : "px-6"
+      )}>
+        <Logo showText={!isCollapsed} />
+      </div>
+
+      {/* Navigation */}
+      <nav className="space-y-1 overflow-y-auto p-4" style={{ height: 'calc(100vh - 4rem)' }}>
+        {menuItems.map((item, index) => (
+          <NavItem 
+            key={index} 
+            item={item} 
+            location={location} 
+            isCollapsed={isCollapsed} 
+            onClick={onItemClick}
+          />
+        ))}
+      </nav>
+    </aside>
+  );
+}
+
+function NavItem({ 
+  item, 
+  location, 
+  isCollapsed,
+  onClick 
+}: { 
+  item: MenuItem; 
+  location: ReturnType<typeof useLocation>; 
+  isCollapsed?: boolean;
+  onClick?: () => void;
+}) {
   const hasChildren = !!item.children;
   const isChildActive = item.children?.some(child => location.pathname === child.path);
   const [isOpen, setIsOpen] = useState(isChildActive);
   
   const isActive = item.path ? location.pathname === item.path : false;
 
+  const handleLinkClick = () => {
+    if (onClick) onClick();
+  };
+
   if (!hasChildren) {
     return (
       <Link
         to={item.path!}
         title={isCollapsed ? item.title : undefined}
+        onClick={handleLinkClick}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
           isActive
@@ -129,6 +183,7 @@ function NavItem({ item, location, isCollapsed }: { item: MenuItem; location: Re
             <DropdownMenuItem key={child.path} asChild>
               <Link
                 to={child.path}
+                onClick={handleLinkClick}
                 className={cn(
                   "w-full",
                   location.pathname === child.path && "text-blue-600 font-medium"
@@ -183,6 +238,7 @@ function NavItem({ item, location, isCollapsed }: { item: MenuItem; location: Re
               <Link
                 key={child.path}
                 to={child.path}
+                onClick={handleLinkClick}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                   isChildActive
@@ -199,36 +255,6 @@ function NavItem({ item, location, isCollapsed }: { item: MenuItem; location: Re
         </div>
       )}
     </div>
-  );
-}
-
-interface SidebarProps {
-  isCollapsed?: boolean;
-}
-
-export function Sidebar({ isCollapsed }: SidebarProps) {
-  const location = useLocation();
-
-  return (
-    <aside className={cn(
-      "fixed left-0 top-0 z-40 h-screen border-r border-neutral-200 bg-white transition-all duration-300 dark:border-neutral-800 dark:bg-neutral-950",
-      isCollapsed ? "w-20" : "w-64"
-    )}>
-      {/* Logo */}
-      <div className={cn(
-        "flex h-16 items-center border-b border-neutral-200 dark:border-neutral-800",
-        isCollapsed ? "justify-center px-0" : "px-6"
-      )}>
-        <Logo showText={!isCollapsed} />
-      </div>
-
-      {/* Navigation */}
-      <nav className="space-y-1 overflow-y-auto p-4" style={{ height: 'calc(100vh - 4rem)' }}>
-        {menuItems.map((item, index) => (
-          <NavItem key={index} item={item} location={location} isCollapsed={isCollapsed} />
-        ))}
-      </nav>
-    </aside>
   );
 }
 

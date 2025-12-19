@@ -1,6 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   Menu01Icon, 
+  Cancel01Icon,
   Notification01Icon, 
   Search01Icon, 
   Logout01Icon, 
@@ -12,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { ModeToggle } from '@/components/mode-toggle';
 import { useAuth } from '@/components/auth-provider';
 import { cn } from '@/lib/utils';
+import { Logo } from '@/components/logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,18 +24,21 @@ import {
 interface HeaderProps {
   onMenuClick?: () => void;
   isCollapsed?: boolean;
+  isMobileOpen?: boolean;
   onToggleSidebar?: () => void;
 }
 
-export function Header({ onMenuClick, isCollapsed, onToggleSidebar }: HeaderProps) {
+export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar }: HeaderProps) {
   const { user, logout } = useAuth();
 
   return (
     <header className={cn(
       "fixed right-0 top-0 z-30 h-16 border-b border-neutral-200 bg-white/80 backdrop-blur-sm transition-all duration-300 dark:border-neutral-800 dark:bg-neutral-950/80",
-      isCollapsed ? "left-20" : "left-64"
+      "lg:left-64",
+      isCollapsed && "lg:left-20",
+      "left-0"
     )}>
-      <div className="flex h-full items-center justify-between px-6">
+      <div className="flex h-full items-center justify-between px-4 md:px-6">
         {/* Left section */}
         <div className="flex items-center gap-4">
           <Button
@@ -52,11 +57,13 @@ export function Header({ onMenuClick, isCollapsed, onToggleSidebar }: HeaderProp
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className={cn("lg:hidden", isMobileOpen && "bg-neutral-100 dark:bg-neutral-800")}
             onClick={onMenuClick}
           >
-            <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+            <HugeiconsIcon icon={isMobileOpen ? Cancel01Icon : Menu01Icon} className="h-5 w-5" />
           </Button>
+
+          <Logo className="lg:hidden scale-90" />
 
           {/* Search */}
           <div className="relative hidden md:block">
