@@ -5,7 +5,7 @@ import type { AuthModel } from 'pocketbase';
 interface AuthContextType {
   user: AuthModel | null;
   isValid: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, isSuperAdmin?: boolean) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -28,14 +28,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // 验证当前的 auth token
     const initAuth = async () => {
-      if (!pb.authStore.isValid) {
+      if (!pb.authStore.isValid || !pb.authStore.model) {
         setIsLoading(false);
         return;
       }
 
       try {
         // 刷新 auth 以确保仍然有效
-        await pb.collection('_superusers').authRefresh();
+        // 根据 model 所在的 collection 进行刷新
+        const model = pb.authStore.model;
+        const collectionName = model?.collectionName || (model?.username && !model?.email ? '_superusers' : 'users');
+        await pb.collection(collectionName).authRefresh();
       } catch (err: any) {
         console.error('Auth refresh failed:', err);
         // 只有在明确的 401/403 认证错误时才清空，防止网络抖动导致登出
@@ -52,9 +55,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
-    // 尝试作为超级用户登录
-    const authData = await pb.collection('_superusers').authWithPassword(email, password);
+  const login = async (email: string, password: string, isSuperAdmin: boolean = false) => {
+    // 根据选择尝试不同类型的登录
+    const collectionName = isSuperAdmin ? '_superusers' : 'users';
+    const authData = await pb.collection(collectionName).authWithPassword(email, password);
     setUser(authData.record);
     setIsValid(true);
   };
