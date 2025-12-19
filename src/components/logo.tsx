@@ -47,7 +47,7 @@ export function Logo({ className, showText = true }: LogoProps) {
       </div>
       {showText && (
         <span className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
-          Shadcn <span className="text-blue-600">Admin</span>
+          Pocket <span className="text-blue-600">Stack</span>
         </span>
       )}
     </div>

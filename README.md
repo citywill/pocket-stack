@@ -1,4 +1,4 @@
-# Shadcn Admin 后台管理系统
+# Pocket Stack ：AI友好的全栈开发解决方案
 
 这是一个基于 **React 19 + TypeScript + Vite + shadcn/ui + PocketBase** 构建的现代化、全栈后台管理系统脚手架。
 
@@ -50,8 +50,6 @@ src/
 
 ### 2. 运行前端
 ```bash
-# 进入前端目录
-cd shadcn-admin
 
 # 安装依赖
 npm install

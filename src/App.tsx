@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { MainLayout } from '@/components/layout/MainLayout';
+import { MainLayout } from '@/components/layout';
 import { Dashboard } from '@/pages/dashboard';
 import { Users } from '@/pages/Users';
 import { Analytics } from '@/pages/analytics';

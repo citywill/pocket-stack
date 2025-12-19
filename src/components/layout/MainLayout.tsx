@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Sidebar } from './sidebar';
-import { Header } from './header';
+import { Sidebar } from './Sidebar';
+import { Header } from './Header';
+import { Footer } from './Footer';
 import { cn } from '@/lib/utils';
 
 export function MainLayout() {
@@ -9,7 +10,7 @@ export function MainLayout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block fixed left-0 top-0 z-40 h-screen">
         <Sidebar isCollapsed={isCollapsed} />
@@ -41,15 +42,16 @@ export function MainLayout() {
       />
       
       <main className={cn(
-        "transition-all duration-300 pt-16 min-h-screen",
+        "transition-all duration-300 pt-16 flex-1 flex flex-col",
         // Desktop margins
         isCollapsed ? "lg:ml-20" : "lg:ml-64",
         // Mobile resets (hidden by lg prefixes above)
         "ml-0"
       )}>
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 md:p-6 lg:p-8 flex-1">
           <Outlet />
         </div>
+        <Footer />
       </main>
     </div>
   );
