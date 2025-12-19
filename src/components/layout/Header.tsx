@@ -14,6 +14,7 @@ import { ModeToggle } from '@/components/mode-toggle';
 import { useAuth } from '@/components/auth-provider';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
+import { pb } from '@/lib/pocketbase';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,10 @@ interface HeaderProps {
 
 export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar }: HeaderProps) {
   const { user, logout, isSuperAdmin } = useAuth();
+
+  const avatarUrl = user?.avatar 
+    ? `${pb.baseUrl}/api/files/${user.collectionName || (isSuperAdmin ? '_superusers' : 'users')}/${user.id}/${user.avatar}`
+    : null;
 
   return (
     <header className={cn(
@@ -96,8 +101,12 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
                     {user?.email} {isSuperAdmin && <span className="text-[10px] bg-blue-100 text-blue-600 px-1 rounded dark:bg-blue-900/40 dark:text-blue-400 ml-1">Admin</span>}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white group-hover:bg-blue-700 transition-colors">
-                  {user?.email?.charAt(0).toUpperCase() || 'A'}
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white group-hover:bg-blue-700 transition-colors overflow-hidden">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt={user?.name || 'User'} className="h-full w-full object-cover" />
+                  ) : (
+                    user?.email?.charAt(0).toUpperCase() || 'A'
+                  )}
                 </div>
               </button>
             </DropdownMenuTrigger>
