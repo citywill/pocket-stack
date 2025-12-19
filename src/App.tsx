@@ -6,6 +6,7 @@ import { Analytics } from '@/pages/analytics';
 import { Orders } from '@/pages/orders';
 import { Documents } from '@/pages/documents';
 import { Settings } from '@/pages/settings';
+import { Profile } from '@/pages/profile';
 import { LoginPage } from '@/pages/login';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
@@ -30,6 +31,7 @@ export function App() {
                 <Route path="orders" element={<Orders />} />
                 <Route path="documents" element={<Documents />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
             </Route>
           </Routes>
