@@ -8,11 +8,10 @@
 
 - 🎨 基于 shadcn/ui 组件库
 - 🚀 使用 Vite 构建，开发体验极佳
-- 📂 支持 **两级折叠菜单** 导航
-- 🎭 支持暗色模式 (Dark/Light/System)
-- 🧭 React Router 路由管理
+- 📱 实现多端响应式设计
+- 🎭 支持暗色模式 (Dark/Light)
 - 🎪 HugeIcons 图标库
-- 🔐 集成 **PocketBase** 后端服务（身份验证、数据服务）
+- 🔐 集成 PocketBase 后端服务（身份验证、数据服务）
 
 ## 项目结构
 
@@ -44,10 +43,10 @@ src/
 
 项目集成了 PocketBase 作为后端服务，主要功能包括：
 
-- **身份验证**：提供专用的登录页面，支持超级用户认证。
-- **持久化会话**：利用 `pb.authStore` 自动管理 Token 和用户会话。
-- **全局状态**：通过 `AuthProvider` 提供 `user` 和 `logout` 方法。
-- **安全路由**：内置 `ProtectedRoute` 确保未授权用户无法访问管理界面。
+- 身份验证：提供专用的登录页面，支持超级用户认证。
+- 持久化会话：利用 `pb.authStore` 自动管理 Token 和用户会话。
+- 全局状态：通过 `AuthProvider` 提供 `user` 和 `logout` 方法。
+- 安全路由：内置 `ProtectedRoute` 确保未授权用户无法访问管理界面。
 
 ### 启动后端
 
@@ -55,20 +54,6 @@ src/
 2. 运行 `.\pocketbase.exe serve`。
 3. 在管理后台创建超级用户账号。
 4. 应用默认连接到 `http://127.0.0.1:8090`。
-
-## 侧边栏导航
-
-侧边栏支持两级折叠菜单，默认配置：
-
-- 🏠 **仪表盘**
-- 👤 **用户管理**
-- 📊 **数据中心** (折叠)
-  - 数据分析
-  - 文档中心
-- 🛒 **订单管理**
-- ⚙️ **系统设置** (折叠)
-  - 基本设置
-  - 个人信息
 
 ## 开发
 
@@ -81,43 +66,18 @@ npm run dev
 
 # 构建生产版本
 npm run build
-
-# 预览生产构建
-npm run preview
 ```
 
 ## 技术栈
 
-- **React 19** - UI 框架
-- **PocketBase** - 后端接口 & 身份验证
-- **TypeScript** - 类型支持
-- **Vite** - 构建工具
-- **React Router 7** - 路由管理
-- **shadcn/ui** - UI 组件库
-- **Tailwind CSS** - 样式框架
-- **HugeIcons** - 图标库
-
-## 自定义配置
-
-项目使用以下 shadcn 配置：
-
-- **Base**: Radix UI
-- **Style**: Maia
-- **Base Color**: Neutral
-- **Theme**: Blue
-- **Icon Library**: HugeIcons
-- **Font**: Figtree
-- **Menu Accent**: Subtle
-- **Menu Color**: Default
-- **Radius**: Default
+- PocketBase - 后端接口 & 身份验证
+- Vite - 构建工具
+- shadcn/ui - UI 组件库
+- Tailwind CSS - 样式框架
+- HugeIcons - 图标库
 
 ## 下一步
 
-1. **业务数据集成**：利用 PocketBase 的集合 (Collections) 替换 Mock 数据。
-2. **实时同步**：使用 `pb.collection('...').subscribe` 实现数据的实时更新。
-3. **文件上传**：集成 PocketBase 的文件管理功能。
-4. **图表展示**：推荐使用 recharts 展示统计数据。
-
-## 许可证
-
-MIT
+1. 业务数据集成：利用 PocketBase 的集合 (Collections) 替换 Mock 数据。
+2. 实时同步：使用 `pb.collection('...').subscribe` 实现数据的实时更新。
+3. 文件上传：集成 PocketBase 的文件管理功能。
