@@ -1,5 +1,6 @@
 export default {
   // 站点级选项
+  base: '/pocket-stack/',
   title: 'Pocket Stack',
   description: 'AI友好的全栈开发解决方案',
   head: [['link', { rel: 'icon', href: '/assets/pocket-stack.svg', }]],
