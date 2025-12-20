@@ -6,7 +6,7 @@
 
 ![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
 
-# Vibe Coding 效果
+## 🎶 Vibe Coding 效果
 
 Pocket Stack 的 98% 的特性是 Vibe Coding 开发的结果。经过在多个开发Agent测试，虽然效果不同，但都能完成开发。
 
