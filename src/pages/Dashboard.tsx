@@ -35,12 +35,17 @@ const priorityMap = {
 };
 
 // Custom tooltip style
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, unit = "个任务" }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700">
-        <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">{label}</p>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{payload[0].value} 个任务</p>
+      <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 mb-1">{label}</p>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+            {payload[0].value} <span className="text-xs text-neutral-400">{unit}</span>
+          </p>
+        </div>
       </div>
     );
   }
@@ -79,7 +84,7 @@ export function Dashboard() {
 
   useEffect(() => {
     if (!user) return;
-    
+
     const fetchTasks = async () => {
       try {
         const result = await pb.collection('tasks').getFullList<Task>({
@@ -87,13 +92,13 @@ export function Dashboard() {
           sort: '-created',
         });
         setTasks(result);
-        
+
         // Update stats
         const todoCount = result.filter(t => t.status === 'todo').length;
         const inProgressCount = result.filter(t => t.status === 'in_progress').length;
         const completedCount = result.filter(t => t.status === 'completed').length;
         const totalCount = result.length;
-        
+
         setStats([
           { title: '待办任务', value: todoCount.toString(), icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
           { title: '进行中', value: inProgressCount.toString(), icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
@@ -131,7 +136,7 @@ export function Dashboard() {
         setLoading(false);
       }
     };
-    
+
     fetchTasks();
   }, [user]);
 
@@ -191,27 +196,41 @@ export function Dashboard() {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.5} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" opacity={0.5} />
-                  <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} />
-                  <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="count" 
-                    stroke="#3b82f6" 
-                    strokeWidth={2} 
-                    fillOpacity={1} 
-                    fill="url(#colorCount)" 
-                    animationDuration={1500} 
-                    animationBegin={200} 
-                    activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2, fill: '#ffffff' }}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    stroke="#9ca3af"
+                    tick={{ fill: '#6b7280', fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => value.slice(5)}
+                    tickMargin={10}
+                  />
+                  <YAxis
+                    stroke="#9ca3af"
+                    tick={{ fill: '#6b7280', fontSize: 12 }}
+                    tickLine={false}
+                    axisLine={false}
+                    allowDecimals={false}
+                  />
+                  <Tooltip content={<CustomTooltip unit="个任务" />} cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '5 5' }} />
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                    fillOpacity={1}
+                    fill="url(#colorCount)"
+                    animationDuration={1500}
+                    animationBegin={200}
+                    activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 4, fill: '#ffffff' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -303,8 +322,8 @@ export function Dashboard() {
                     </div>
                     <Badge variant="outline" className={cn(
                       task.status === 'completed' ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400' :
-                      task.status === 'in_progress' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
-                      'bg-neutral-50 dark:bg-neutral-900/20 text-neutral-600 dark:text-neutral-400'
+                        task.status === 'in_progress' ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400' :
+                          'bg-neutral-50 dark:bg-neutral-900/20 text-neutral-600 dark:text-neutral-400'
                     )}>
                       {statusMap[task.status].label}
                     </Badge>

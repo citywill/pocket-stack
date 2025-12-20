@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { 
-  Bookmark01Icon, 
-  HourglassIcon, 
-  CheckmarkCircle01Icon, 
-  UserIcon 
+import {
+  Bookmark01Icon,
+  HourglassIcon,
+  CheckmarkCircle01Icon,
+  UserIcon
 } from '@hugeicons/core-free-icons';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
@@ -44,12 +44,17 @@ const statusMap = {
 // };
 
 // Custom tooltip style
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700">
-        <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">{label}</p>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{payload[0].value} 个用户</p>
+      <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 mb-1">{label}</p>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+            {payload[0].value} <span className="text-xs text-neutral-400">{unit}</span>
+          </p>
+        </div>
       </div>
     );
   }
@@ -92,7 +97,7 @@ export function AdminDashboard() {
 
   useEffect(() => {
     if (!user) return;
-    
+
     const fetchData = async () => {
       try {
         // Fetch all tasks (global data)
@@ -102,14 +107,14 @@ export function AdminDashboard() {
           signal: undefined,
         });
         // setTasks(tasksResult);
-        
+
         // Fetch all users
         const usersResult = await pb.collection('users').getFullList<User>({
           sort: '-created',
           signal: undefined,
         });
         setUsers(usersResult);
-        
+
         // Update stats
         const todoCount = tasksResult.filter(t => t.status === 'todo').length;
         const inProgressCount = tasksResult.filter(t => t.status === 'in_progress').length;
@@ -117,7 +122,7 @@ export function AdminDashboard() {
         const totalCount = tasksResult.length;
         const activeUsers = usersResult.length;
         const totalUsers = usersResult.length;
-        
+
         setStats([
           { title: '待办任务', value: todoCount.toString(), icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
           { title: '进行中', value: inProgressCount.toString(), icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
@@ -175,7 +180,7 @@ export function AdminDashboard() {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [user]);
 
@@ -236,27 +241,41 @@ export function AdminDashboard() {
             ) : (
               <div className="relative">
                 <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={trendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" opacity={0.5} />
-                    <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} />
-                    <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area 
-                      type="monotone" 
-                      dataKey="count" 
-                      stroke="#3b82f6" 
-                      strokeWidth={2} 
-                      fillOpacity={1} 
-                      fill="url(#colorCount)" 
-                      animationDuration={1500} 
-                      animationBegin={200} 
-                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2, fill: '#ffffff' }}
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => value.slice(5)}
+                      tickMargin={10}
+                    />
+                    <YAxis
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip content={<CustomTooltip unit="个任务" />} cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '5 5' }} />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorCount)"
+                      animationDuration={1500}
+                      animationBegin={200}
+                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 4, fill: '#ffffff' }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -338,27 +357,41 @@ export function AdminDashboard() {
             ) : (
               <div className="relative">
                 <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={userTrendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <AreaChart data={userTrendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.1} />
+                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5} />
+                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.05} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" opacity={0.5} />
-                    <XAxis dataKey="date" stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} />
-                    <YAxis stroke="#9ca3af" tick={{ fill: '#6b7280' }} tickLine={false} axisLine={false} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Area 
-                      type="monotone" 
-                      dataKey="count" 
-                      stroke="#8b5cf6" 
-                      strokeWidth={2} 
-                      fillOpacity={1} 
-                      fill="url(#colorUsers)" 
-                      animationDuration={1500} 
-                      animationBegin={200} 
-                      activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 2, fill: '#ffffff' }}
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => value.slice(5)}
+                      tickMargin={10}
+                    />
+                    <YAxis
+                      stroke="#9ca3af"
+                      tick={{ fill: '#6b7280', fontSize: 12 }}
+                      tickLine={false}
+                      axisLine={false}
+                      allowDecimals={false}
+                    />
+                    <Tooltip content={<CustomTooltip unit="个用户" />} cursor={{ stroke: '#8b5cf6', strokeWidth: 1, strokeDasharray: '5 5' }} />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#8b5cf6"
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorUsers)"
+                      animationDuration={1500}
+                      animationBegin={200}
+                      activeDot={{ r: 6, stroke: '#8b5cf6', strokeWidth: 4, fill: '#ffffff' }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -390,23 +423,23 @@ export function AdminDashboard() {
                 {users.slice(0, 10).map((user) => (
                   <div key={user.id} className="flex items-center justify-between p-4 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">
                     <div className="flex items-center space-x-3">
-                        {user.avatar ? (
-                          <img 
-                            src={`${pb.baseUrl}/api/files/users/${user.id}/${user.avatar}`} 
-                            alt={user.name || user.email} 
-                            className="rounded-full h-12 w-12 object-cover"
-                          />
-                        ) : (
-                          <div className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 p-3">
-                            <HugeiconsIcon icon={UserIcon} className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-medium text-neutral-900 dark:text-neutral-100">{user.name || user.email}</p>
-                          <p className="text-sm text-neutral-500 dark:text-neutral-500">{user.email}</p>
-                          <p className="text-xs text-neutral-400 dark:text-neutral-600">注册于: {new Date(user.created).toLocaleDateString()}</p>
+                      {user.avatar ? (
+                        <img
+                          src={`${pb.baseUrl}/api/files/users/${user.id}/${user.avatar}`}
+                          alt={user.name || user.email}
+                          className="rounded-full h-12 w-12 object-cover"
+                        />
+                      ) : (
+                        <div className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 p-3">
+                          <HugeiconsIcon icon={UserIcon} className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
+                      )}
+                      <div>
+                        <p className="font-medium text-neutral-900 dark:text-neutral-100">{user.name || user.email}</p>
+                        <p className="text-sm text-neutral-500 dark:text-neutral-500">{user.email}</p>
+                        <p className="text-xs text-neutral-400 dark:text-neutral-600">注册于: {new Date(user.created).toLocaleDateString()}</p>
                       </div>
+                    </div>
                     <Badge variant="outline" className="bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
                       活跃用户
                     </Badge>
