@@ -18,13 +18,14 @@ export default {
       {
         text: '概要',
         items: [
-            { text: '项目说明', link: '/index' },
-            { text: '快速开始', link: '/快速开始' },
-            { text: '安装部署', link: '/安装部署' },
+          { text: '项目说明', link: '/index' },
+          { text: '快速开始', link: '/快速开始' },
+          { text: '安装部署', link: '/安装部署' },
+          { text: '开发示例演示', link: '/示例演示' },
         ]
       },
       {
-        text: '教程',
+        text: '开发教程',
         items: [
           { text: '开发流程', link: '/教程1：开发流程' },
           { text: '前端开发', link: '/教程2：前端开发' },

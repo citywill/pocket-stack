@@ -4,6 +4,8 @@
 
 本项采用 AI 友好的技术栈，并结合 Shadcn & PocketBase MCP，提供完整、流畅、全栈、98分的 Vibe Coding 开发体验。
 
+![Pocket Stack 示例页面](/assets/screenshot-dashboard.png)
+
 ## 🌟 核心特性
 
 - 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 [HugeIcons](https://hugeicons.com/) 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
@@ -21,7 +23,7 @@
 | 领域          | 技术方案                     |
 | :------------ | :--------------------------- |
 | **后端/认证** | PocketBase                   |
-| **前端框架**      | React 19 + TypeScript        |
+| **前端框架**  | React 19 + TypeScript        |
 | **构建工具**  | Vite                         |
 | **UI 组件**   | shadcn/ui (@base-ui/react)   |
 | **样式**      | Tailwind CSS v4 (Maia Style) |

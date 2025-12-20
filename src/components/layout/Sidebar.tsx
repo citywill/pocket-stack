@@ -138,11 +138,11 @@ export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
       {/* Navigation */}
       <nav className="space-y-1 overflow-y-auto p-4" style={{ height: 'calc(100vh - 4rem)' }}>
         {filteredMenuItems.map((item, index) => (
-          <NavItem 
-            key={index} 
-            item={item} 
-            location={location} 
-            isCollapsed={isCollapsed} 
+          <NavItem
+            key={index}
+            item={item}
+            location={location}
+            isCollapsed={isCollapsed}
             onClick={onItemClick}
           />
         ))}
@@ -151,21 +151,21 @@ export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
   );
 }
 
-function NavItem({ 
-  item, 
-  location, 
+function NavItem({
+  item,
+  location,
   isCollapsed,
-  onClick 
-}: { 
-  item: MenuItem; 
-  location: ReturnType<typeof useLocation>; 
+  onClick
+}: {
+  item: MenuItem;
+  location: ReturnType<typeof useLocation>;
   isCollapsed?: boolean;
   onClick?: () => void;
 }) {
   const hasChildren = !!item.children;
   const isChildActive = item.children?.some(child => location.pathname === child.path);
   const [isOpen, setIsOpen] = useState(isChildActive);
-  
+
   const isActive = item.path ? location.pathname === item.path : false;
 
   const handleLinkClick = () => {
