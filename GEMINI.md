@@ -4,6 +4,8 @@
 
 - 采用 pocketbase 实现后端认证和接口服务。
 - 请使用mcp操作 pocketbase
+- 普通用户账号密码：demo@example.com / demo1234
+- 管理员账号密码：admin@example.com / admin123
 
 ## 前端
 
@@ -25,9 +27,9 @@ npx shadcn@latest create --preset "https://ui.shadcn.com/init?base=radix&style=m
 
 ### 整体风格
 
-- 使用 shadcn/ui
+- 使用 shadcn/ui，可以使用mcp操作添加组件
 - 使用 blue 主题色
 - 使用 maia 风格
-- 使用 default 圆角
-- 图标组件使用： hugeicons
+- 使用圆角 `rounded-2xl`
+- 图标组件使用： `hugeicons`，请使用mcp选择和使用icon图标
 - 请参考前端页面示例 `src/pages/examples/` 中的示例文件，保持页面一致性
