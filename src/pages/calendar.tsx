@@ -18,6 +18,11 @@ import { zhCN } from 'date-fns/locale';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
     ArrowLeft01Icon,
@@ -54,11 +59,32 @@ const priorityColorMap = {
     high: 'bg-red-500',
 };
 
+const TaskItem = ({ task, onClick }: { task: Task; onClick: () => void }) => (
+    <button
+        onClick={(e) => {
+            e.stopPropagation();
+            onClick();
+        }}
+        className={cn(
+            "text-left text-[10px] md:text-[11px] px-2 py-1 rounded-md border shadow-[0_1px_2px_rgba(0,0,0,0.02)] truncate flex items-center gap-1.5 transition-all hover:translate-x-0.5 hover:shadow-md w-full",
+            statusMap[task.status].color
+        )}
+        title={`${task.title} (${statusMap[task.status].label})`}
+    >
+        <HugeiconsIcon
+            icon={statusMap[task.status].icon}
+            size={10}
+            className="shrink-0"
+        />
+        <span className="truncate font-medium">{task.title}</span>
+    </button>
+);
+
 export function CalendarPage() {
     const { user } = useAuth();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
 
@@ -227,25 +253,37 @@ export function CalendarPage() {
                                     )}
                                 </div>
 
-                                <div className="flex flex-col gap-1 overflow-y-auto no-scrollbar flex-1">
-                                    {dayTasks.map((task) => (
-                                        <button
-                                            key={task.id}
-                                            onClick={() => handleEditTask(task)}
-                                            className={cn(
-                                                "text-left text-[10px] md:text-[11px] px-2 py-1 rounded-md border shadow-[0_1px_2px_rgba(0,0,0,0.02)] truncate flex items-center gap-1.5 transition-all hover:translate-x-0.5 hover:shadow-md w-full",
-                                                statusMap[task.status].color
-                                            )}
-                                            title={`${task.title} (${statusMap[task.status].label})`}
-                                        >
-                                            <HugeiconsIcon
-                                                icon={statusMap[task.status].icon}
-                                                size={10}
-                                                className="shrink-0"
-                                            />
-                                            <span className="truncate font-medium">{task.title}</span>
-                                        </button>
+                                <div className="flex flex-col gap-1 overflow-hidden flex-1">
+                                    {dayTasks.slice(0, 3).map((task) => (
+                                        <TaskItem key={task.id} task={task} onClick={() => handleEditTask(task)} />
                                     ))}
+
+                                    {dayTasks.length > 3 && (
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <button
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-[10px] md:text-[11px] px-2 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-500 font-bold hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors w-full text-center mt-auto"
+                                                >
+                                                    还有 {dayTasks.length - 3} 项...
+                                                </button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-64 p-2 rounded-xl shadow-xl border-neutral-200 dark:border-neutral-800" align="start">
+                                                <div className="flex flex-col gap-1.5">
+                                                    <div className="px-2 py-1 border-b border-neutral-100 dark:border-neutral-800 mb-1">
+                                                        <span className="text-xs font-bold text-neutral-500">
+                                                            {format(day, 'MM月dd日')} 的所有任务
+                                                        </span>
+                                                    </div>
+                                                    <div className="max-h-[300px] overflow-y-auto no-scrollbar flex flex-col gap-1">
+                                                        {dayTasks.map((task) => (
+                                                            <TaskItem key={task.id} task={task} onClick={() => handleEditTask(task)} />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    )}
                                 </div>
                             </div>
                         );
