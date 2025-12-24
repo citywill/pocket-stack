@@ -8,6 +8,11 @@
 
 ![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
 
+## 📄 更多信息
+
+- [演示](https://pocket-stack.zeabur.app/)
+- [文档](https://citywill.github.io/pocket-stack/)
+
 ## 🎶 Vibe Coding 效果
 
 Pocket Stack 的 98% 的特性是 Vibe Coding 开发的结果。经过在多个开发Agent测试，虽然效果不同，但都能完成开发。
