@@ -282,7 +282,7 @@ export function Dashboard() {
                     dataKey="value"
                     animationDuration={1500}
                     animationBegin={200}
-                    label={({ name, percent }) => (percent > 0 ? `${name}: ${(percent * 100).toFixed(1)}%` : null)}
+                    label={({ name, percent }) => (percent && percent > 0 ? `${name}: ${(percent * 100).toFixed(1)}%` : null)}
                     labelLine={false}
                   >
                     {statusData.map((_, index) => (
