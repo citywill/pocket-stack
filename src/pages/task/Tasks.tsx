@@ -27,7 +27,7 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
 } from '@hugeicons/core-free-icons';
-import { TaskForm, type Task } from '@/components/tasks/TaskForm';
+import { TaskForm, type Task } from '@/pages/task/components/TaskForm';
 import { DragDropContext, Droppable, Draggable, type DropResult } from '@hello-pangea/dnd';
 import { pb } from '@/lib/pocketbase';
 import { cn } from '@/lib/utils';

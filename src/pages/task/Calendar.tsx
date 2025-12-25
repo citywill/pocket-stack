@@ -33,7 +33,7 @@ import {
     Add01Icon
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
-import { TaskForm, type Task } from '@/components/tasks/TaskForm';
+import { TaskForm, type Task } from '@/pages/task/components/TaskForm';
 
 const statusMap = {
     todo: {
