@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/lib/use-settings";
 
 interface LogoProps {
   className?: string;
@@ -6,6 +7,8 @@ interface LogoProps {
 }
 
 export function Logo({ className, showText = true }: LogoProps) {
+  const { siteName } = useSettings();
+
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-lg shadow-blue-500/20">
@@ -46,9 +49,10 @@ export function Logo({ className, showText = true }: LogoProps) {
         </svg>
       </div>
       {showText && (
-        <span className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
-          Pocket <span className="text-blue-600">Stack</span>
-        </span>
+        <span
+          className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50"
+          dangerouslySetInnerHTML={{ __html: siteName || 'Pocket <span class="text-blue-600">Stack</span>' }}
+        />
       )}
     </div>
   );

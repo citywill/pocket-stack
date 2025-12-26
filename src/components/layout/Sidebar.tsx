@@ -11,6 +11,7 @@ import {
   Calendar01Icon,
   Building01Icon,
   ArrowDown01Icon,
+  Settings01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
 import { useAuth } from '@/components/auth-provider';
@@ -51,12 +52,6 @@ const menuItems: MenuItem[] = [
     adminOnly: true,
   },
   {
-    title: '用户管理',
-    path: '/admin/users',
-    icon: UserIcon,
-    adminOnly: true,
-  },
-  {
     title: '任务管理',
     path: '/tasks',
     icon: Task01Icon,
@@ -88,19 +83,15 @@ const menuItems: MenuItem[] = [
       { title: '博客详情', path: '/examples/blog-detail' },
     ],
   },
-  // {
-  //   title: '订单管理',
-  //   path: '/orders',
-  //   icon: ShoppingCart01Icon,
-  // },
-  // {
-  //   title: '系统设置',
-  //   icon: Settings01Icon,
-  //   children: [
-  //     { title: '基本设置', path: '/settings' },
-  //     { title: '个人信息', path: '/profile' },
-  //   ],
-  // },
+  {
+    title: '系统管理',
+    icon: Settings01Icon,
+    adminOnly: true,
+    children: [
+      { title: '全局配置', path: '/admin/settings' },
+      { title: '用户管理', path: '/admin/users' },
+    ],
+  },
 ];
 
 interface SidebarProps {

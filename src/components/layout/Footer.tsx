@@ -1,13 +1,14 @@
 import { cn } from '@/lib/utils';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { GithubIcon } from '@hugeicons/core-free-icons';
+import { useSettings } from '@/lib/use-settings';
 
 interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
-  const currentYear = new Date().getFullYear();
+  const { footerText } = useSettings();
 
   return (
     <footer className={cn(
@@ -16,17 +17,7 @@ export function Footer({ className }: FooterProps) {
     )}>
       <div className="flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4">
         <div className="flex items-center gap-2">
-          <p>
-            &copy; {currentYear}{" "}
-            <a
-              href="https://github.com/citywill/pocket-stack"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-neutral-900 dark:text-neutral-50 hover:text-blue-600 transition-colors"
-            >
-              Pocket Stack
-            </a>. All rights reserved.
-          </p>
+          <p dangerouslySetInnerHTML={{ __html: footerText || `&copy; ${new Date().getFullYear()} <strong>Pocket Stack</strong>. All rights reserved.` }} />
           <a
             href="https://github.com/citywill/pocket-stack"
             target="_blank"
