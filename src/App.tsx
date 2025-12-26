@@ -19,10 +19,12 @@ import { ExampleCard } from '@/pages/examples/Card';
 import { Form } from '@/pages/examples/Form';
 import { Blank } from '@/pages/examples/Blank';
 import { BlogDetail } from '@/pages/examples/BlogDetail';
+import { AIPlayground } from '@/pages/examples/AIPlayground';
+import { AIAgents } from '@/pages/examples/AIAgents';
 import Companies from '@/pages/crm/Companies';
 import { Toaster } from 'sonner';
 
-import { ProtectedRoute, AdminOnlyRoute } from '@/components/protected-route';
+import { ProtectedRoute, AdminOnlyRoute, UserOnlyRoute } from '@/components/protected-route';
 
 export function App() {
   return (
@@ -60,6 +62,16 @@ export function App() {
                   <Route path="examples/card" element={<ExampleCard />} />
                   <Route path="examples/form" element={<Form />} />
                   <Route path="examples/blog-detail" element={<BlogDetail />} />
+                  <Route path="examples/ai-playground" element={
+                    <UserOnlyRoute>
+                      <AIPlayground />
+                    </UserOnlyRoute>
+                  } />
+                  <Route path="examples/ai-agents" element={
+                    <AdminOnlyRoute>
+                      <AIAgents />
+                    </AdminOnlyRoute>
+                  } />
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />

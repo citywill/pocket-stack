@@ -6,6 +6,7 @@ import {
   Home01Icon,
   UserIcon,
   PrismIcon,
+  AiChat02Icon,
   ChartLineData01Icon,
   Task01Icon,
   Calendar01Icon,
@@ -72,6 +73,12 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
+    title: 'AI 助手',
+    path: '/examples/ai-playground',
+    userOnly: true,
+    icon: AiChat02Icon
+  },
+  {
     title: '前端示例',
     icon: PrismIcon,
     children: [
@@ -90,6 +97,7 @@ const menuItems: MenuItem[] = [
     children: [
       { title: '全局配置', path: '/admin/settings' },
       { title: '用户管理', path: '/admin/users' },
+      { title: '智能体管理', path: '/examples/ai-agents', adminOnly: true },
     ],
   },
 ];
