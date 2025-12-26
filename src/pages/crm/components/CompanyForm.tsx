@@ -21,7 +21,7 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { toast } from 'sonner';
-import { MapPicker } from './MapPicker';
+import { MapPicker } from '../../../components/ui/map-picker';
 
 interface CompanyFormProps {
     open: boolean;

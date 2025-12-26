@@ -24,6 +24,13 @@ import {
   ArrowLeft01Icon,
   ArrowRight01Icon,
 } from '@hugeicons/core-free-icons';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from 'sonner';
 import { CompanyForm } from './components/CompanyForm';
 import { cn } from '@/lib/utils';
@@ -32,6 +39,9 @@ export default function Companies() {
   const [companies, setCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterLevel, setFilterLevel] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | undefined>();
 
@@ -43,9 +53,26 @@ export default function Companies() {
   const fetchCompanies = async () => {
     try {
       setLoading(true);
+
+      let filters = [];
+      if (search) {
+        filters.push(`(name ~ "${search}" || contact_person ~ "${search}" || contact_phone ~ "${search}")`);
+      }
+      if (filterType !== 'all') {
+        filters.push(`type = "${filterType}"`);
+      }
+      if (filterLevel !== 'all') {
+        filters.push(`level = "${filterLevel}"`);
+      }
+      if (filterStatus !== 'all') {
+        filters.push(`status = "${filterStatus}"`);
+      }
+
+      const filterString = filters.join(' && ');
+
       const result = await pb.collection('crm_companies').getList(page, perPage, {
         sort: '-created',
-        filter: search ? `name ~ "${search}" || contact_person ~ "${search}" || contact_phone ~ "${search}"` : '',
+        filter: filterString,
       });
       setCompanies(result.items);
       setTotalItems(result.totalItems);
@@ -65,7 +92,7 @@ export default function Companies() {
     }, 300); // 300ms 防抖
 
     return () => clearTimeout(handler);
-  }, [page, search]);
+  }, [page, search, filterType, filterLevel, filterStatus]);
 
   const totalPages = Math.ceil(totalItems / perPage);
 
@@ -93,25 +120,31 @@ export default function Companies() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case '活跃':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">活跃</Badge>;
-      case '流失':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">流失</Badge>;
+        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none rounded-lg">活跃</Badge>;
       case '潜客':
-        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none">潜客</Badge>;
+        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none rounded-lg">潜客</Badge>;
+      case '流失':
+        return <Badge className="bg-neutral-100 text-neutral-700 hover:bg-neutral-100 border-none rounded-lg">流失</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline" className="rounded-lg">{status}</Badge>;
     }
   };
 
   const getLevelBadge = (level: string) => {
     switch (level) {
       case '核心':
-        return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 border-none">核心</Badge>;
+        return <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 border-none rounded-lg">核心</Badge>;
       case '重要':
-        return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none">重要</Badge>;
+        return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-none rounded-lg">重要</Badge>;
+      case '普通':
+        return <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 border-none rounded-lg">普通</Badge>;
       default:
-        return <Badge variant="outline">普通</Badge>;
+        return <Badge variant="outline" className="rounded-lg">{level}</Badge>;
     }
+  };
+
+  const getTypeLabel = (type: string) => {
+    return type || '-';
   };
 
   return (
@@ -119,7 +152,6 @@ export default function Companies() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
-            <HugeiconsIcon icon={Building01Icon} className="h-8 w-8 text-blue-600" />
             客户单位管理
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
@@ -133,10 +165,11 @@ export default function Companies() {
       </div>
 
       {/* 筛选栏 - 独立出来 */}
-      <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50 p-3">
-        <CardContent className="p-0 px-0">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center">
-            <div className="relative flex-1">
+      <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50 p-0">
+        <CardContent className="p-3">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* 搜索框 */}
+            <div className="relative min-w-[240px] flex-1">
               <HugeiconsIcon
                 icon={Search01Icon}
                 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
@@ -147,14 +180,72 @@ export default function Companies() {
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
-                  setPage(1); // 搜索时重置到第一页
+                  setPage(1);
                 }}
               />
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" className="rounded-xl border-neutral-200">
-                <HugeiconsIcon icon={FilterIcon} className="mr-2 h-4 w-4 text-neutral-500" />
-                高级筛选
+
+            {/* 筛选条件组 */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-neutral-500 min-w-max">单位类型:</span>
+                <Select value={filterType} onValueChange={(val) => { setFilterType(val); setPage(1); }}>
+                  <SelectTrigger className="w-[130px] rounded-xl border-neutral-200 bg-white/50">
+                    <SelectValue placeholder="全部" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">全部</SelectItem>
+                    <SelectItem value="企业">企业</SelectItem>
+                    <SelectItem value="政府机构">政府机构</SelectItem>
+                    <SelectItem value="个人">个人</SelectItem>
+                    <SelectItem value="其他">其他</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-neutral-500 min-w-max">客户等级:</span>
+                <Select value={filterLevel} onValueChange={(val) => { setFilterLevel(val); setPage(1); }}>
+                  <SelectTrigger className="w-[110px] rounded-xl border-neutral-200 bg-white/50">
+                    <SelectValue placeholder="全部" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">全部</SelectItem>
+                    <SelectItem value="核心">核心</SelectItem>
+                    <SelectItem value="重要">重要</SelectItem>
+                    <SelectItem value="普通">普通</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-neutral-500 min-w-max">业务状态:</span>
+                <Select value={filterStatus} onValueChange={(val) => { setFilterStatus(val); setPage(1); }}>
+                  <SelectTrigger className="w-[110px] rounded-xl border-neutral-200 bg-white/50">
+                    <SelectValue placeholder="全部" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="all">全部</SelectItem>
+                    <SelectItem value="活跃">活跃</SelectItem>
+                    <SelectItem value="流失">流失</SelectItem>
+                    <SelectItem value="潜客">潜客</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                className="rounded-xl text-neutral-500 hover:text-blue-600 px-2"
+                onClick={() => {
+                  setSearch('');
+                  setFilterType('all');
+                  setFilterLevel('all');
+                  setFilterStatus('all');
+                  setPage(1);
+                }}
+              >
+                重置
               </Button>
             </div>
           </div>
@@ -195,7 +286,7 @@ export default function Companies() {
                       <TableCell className="font-medium">
                         <div className="flex flex-col">
                           <span>{company.name}</span>
-                          <span className="text-xs text-neutral-400">{company.code || '无信用代码'}</span>
+                          <span className="text-xs text-neutral-400">{getTypeLabel(company.type)}</span>
                         </div>
                       </TableCell>
                       <TableCell>
