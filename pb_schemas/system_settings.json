@@ -63,7 +63,7 @@
       }
     ],
     "indexes": [
-      "CREATE INDEX `idx_WzN5xyDmiz` ON `system_settings` (`key`)"
+      "CREATE UNIQUE INDEX `idx_WzN5xyDmiz` ON `system_settings` (`key`)"
     ],
     "system": false
   }

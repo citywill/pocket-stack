@@ -349,7 +349,7 @@ export function AIPlayground() {
             )}>
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={currentSession.expand?.agent_id.avatar ? pb.files.getUrl(currentSession.expand.agent_id, currentSession.expand.agent_id.avatar) : ''} />
+                  <AvatarImage src={currentSession.expand?.agent_id.avatar ? pb.files.getURL(currentSession.expand.agent_id, currentSession.expand.agent_id.avatar) : ''} />
                   <AvatarFallback className="bg-blue-100 text-blue-600">
                     {currentSession.expand?.agent_id.name[0]}
                   </AvatarFallback>
@@ -387,14 +387,14 @@ export function AIPlayground() {
                     <Avatar className="h-9 w-9 flex-shrink-0">
                       {msg.role === 'user' ? (
                         <>
-                          <AvatarImage src={user?.avatar ? pb.files.getUrl(user, user.avatar) : ''} />
+                          <AvatarImage src={user?.avatar ? pb.files.getURL(user, user.avatar) : ''} />
                           <AvatarFallback className="bg-neutral-200 dark:bg-neutral-800">
                             <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
                           </AvatarFallback>
                         </>
                       ) : (
                         <>
-                          <AvatarImage src={currentSession.expand?.agent_id.avatar ? pb.files.getUrl(currentSession.expand.agent_id, currentSession.expand.agent_id.avatar) : ''} />
+                          <AvatarImage src={currentSession.expand?.agent_id.avatar ? pb.files.getURL(currentSession.expand.agent_id, currentSession.expand.agent_id.avatar) : ''} />
                           <AvatarFallback className="bg-blue-100 text-blue-600">
                             <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
                           </AvatarFallback>
