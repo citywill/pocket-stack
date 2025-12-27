@@ -4,13 +4,13 @@ import { cn } from '@/lib/utils';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home01Icon,
-  UserIcon,
   PrismIcon,
   AiChat02Icon,
   ChartLineData01Icon,
   Task01Icon,
   Calendar01Icon,
   Building01Icon,
+  DatabaseIcon,
   ArrowDown01Icon,
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
@@ -77,6 +77,12 @@ const menuItems: MenuItem[] = [
     path: '/examples/ai-playground',
     userOnly: true,
     icon: AiChat02Icon
+  },
+  {
+    title: 'AI 数据助手',
+    path: '/ai-assistant',
+    // userOnly: true,
+    icon: DatabaseIcon
   },
   {
     title: '前端示例',
