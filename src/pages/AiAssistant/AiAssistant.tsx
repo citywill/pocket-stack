@@ -9,7 +9,10 @@ import {
     AiChat02Icon,
     DatabaseIcon,
     RobotIcon,
+    ArrowDown01Icon,
+    ArrowRight01Icon,
 } from '@hugeicons/core-free-icons';
+import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -25,9 +28,71 @@ interface ChatMessage {
     content: string;
     created: string;
     isQuery?: boolean;
+    queryInfo?: {
+        query: string;
+        result: any;
+    };
+}
+
+function CollapsibleQuery({ query, result }: { query: string, result: any }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="w-full mt-2 border border-neutral-200 dark:border-neutral-700 rounded-xl overflow-hidden bg-neutral-50 dark:bg-neutral-800/50">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between p-3 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            >
+                <div className="flex items-center gap-2">
+                    <HugeiconsIcon icon={DatabaseIcon} className="h-3.5 w-3.5" />
+                    <span>数据查询详情</span>
+                </div>
+                <HugeiconsIcon icon={isOpen ? ArrowDown01Icon : ArrowRight01Icon} className="h-3.5 w-3.5" />
+            </button>
+            {isOpen && (
+                <div className="p-3 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
+                    <div className="space-y-1">
+                        <div className="text-[10px] uppercase tracking-wider text-neutral-400 font-bold">查询语句</div>
+                        <pre className="p-2 bg-neutral-900 text-neutral-100 rounded-lg text-[11px] overflow-x-auto">
+                            {query}
+                        </pre>
+                    </div>
+                    <div className="space-y-1">
+                        <div className="text-[10px] uppercase tracking-wider text-neutral-400 font-bold">查询结果</div>
+                        <pre className="p-2 bg-neutral-900 text-neutral-100 rounded-lg text-[11px] max-h-40 overflow-y-auto">
+                            {JSON.stringify(result, null, 2)}
+                        </pre>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function AssistantAvatar() {
+    return (
+        <Avatar className="h-10 w-10 border bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700">
+            <AvatarImage src="/favicon.svg" />
+            <AvatarFallback className="bg-blue-100 text-blue-600">
+                <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
+            </AvatarFallback>
+        </Avatar>
+    );
+}
+
+function UserAvatar({ user }: { user: any }) {
+    return (
+        <Avatar className="h-10 w-10 border bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700">
+            <AvatarImage src={user?.avatar ? pb.files.getURL(user, user.avatar) : ''} />
+            <AvatarFallback className="bg-blue-600 text-white font-medium">
+                {user?.name?.[0] || '我'}
+            </AvatarFallback>
+        </Avatar>
+    );
 }
 
 export default function AiAssistant() {
+    const { user } = useAuth();
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -161,6 +226,11 @@ export default function AiAssistant() {
                         const queryConfig = JSON.parse(queryMatch[1]);
                         const results = await dataAssistant.queryData(queryConfig.collection, queryConfig);
 
+                        // Update the current assistant message with query info
+                        setMessages(prev => prev.map(m =>
+                            m.id === tempAiId ? { ...m, queryInfo: { query: queryMatch[1], result: results } } : m
+                        ));
+
                         const observationMsg: ChatMessage = {
                             id: 'obs-' + Date.now(),
                             role: 'system',
@@ -236,16 +306,18 @@ export default function AiAssistant() {
                             if (message.role === 'assistant' && !displayContent && message.content.includes('[QUERY:')) {
                                 return (
                                     <div key={message.id} className="flex gap-4 flex-row">
-                                        <Avatar className="h-10 w-10 border bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700">
-                                            <AvatarFallback className="bg-blue-100 text-blue-600">
-                                                <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
-                                            </AvatarFallback>
-                                        </Avatar>
+                                        <AssistantAvatar />
                                         <div className="flex flex-col items-start gap-2">
-                                            <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl rounded-tl-none text-xs flex items-center gap-2">
-                                                <HugeiconsIcon icon={DatabaseIcon} className="h-4 w-4 animate-spin" />
-                                                正在查询数据库...
-                                            </div>
+                                            {!message.queryInfo ? (
+                                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-2xl rounded-tl-none text-xs flex items-center gap-2">
+                                                    <HugeiconsIcon icon={DatabaseIcon} className="h-4 w-4 animate-spin" />
+                                                    正在查询数据库...
+                                                </div>
+                                            ) : (
+                                                <div className="w-[400px]">
+                                                    <CollapsibleQuery query={message.queryInfo.query} result={message.queryInfo.result} />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -261,21 +333,7 @@ export default function AiAssistant() {
                                         message.role === 'user' ? "flex-row-reverse" : "flex-row"
                                     )}
                                 >
-                                    <Avatar className={cn(
-                                        "h-10 w-10 border",
-                                        message.role === 'user' ? "bg-blue-600 border-blue-500" : "bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
-                                    )}>
-                                        {message.role === 'user' ? (
-                                            <AvatarFallback className="text-white">我</AvatarFallback>
-                                        ) : (
-                                            <>
-                                                <AvatarImage src="/favicon.svg" />
-                                                <AvatarFallback className="bg-blue-100 text-blue-600">
-                                                    <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
-                                                </AvatarFallback>
-                                            </>
-                                        )}
-                                    </Avatar>
+                                    {message.role === 'user' ? <UserAvatar user={user} /> : <AssistantAvatar />}
                                     <div className={cn(
                                         "flex flex-col max-w-[80%] gap-2",
                                         message.role === 'user' ? "items-end" : "items-start"
@@ -292,6 +350,11 @@ export default function AiAssistant() {
                                                 </ReactMarkdown>
                                             </div>
                                         </div>
+                                        {message.queryInfo && (
+                                            <div className="w-[400px]">
+                                                <CollapsibleQuery query={message.queryInfo.query} result={message.queryInfo.result} />
+                                            </div>
+                                        )}
                                         <span className="text-[10px] text-neutral-400 px-1">
                                             {format(new Date(message.created), 'HH:mm')}
                                         </span>
@@ -301,11 +364,7 @@ export default function AiAssistant() {
                         })}
                     {isLoading && (
                         <div className="flex gap-4">
-                            <Avatar className="h-10 w-10 border bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700">
-                                <AvatarFallback className="bg-blue-100 text-blue-600">
-                                    <HugeiconsIcon icon={RobotIcon} className="h-5 w-5 animate-pulse" />
-                                </AvatarFallback>
-                            </Avatar>
+                            <AssistantAvatar />
                             <div className="p-4 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-2xl rounded-tl-none shadow-sm">
                                 <div className="flex gap-1">
                                     <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
