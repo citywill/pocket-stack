@@ -11,6 +11,7 @@ import {
   Calendar01Icon,
   Building01Icon,
   DatabaseIcon,
+  Note01Icon,
   ArrowDown01Icon,
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
@@ -56,6 +57,12 @@ const menuItems: MenuItem[] = [
     title: '任务管理',
     path: '/tasks',
     icon: Task01Icon,
+    userOnly: true,
+  },
+  {
+    title: '笔记管理',
+    path: '/notes',
+    icon: Note01Icon,
     userOnly: true,
   },
   {

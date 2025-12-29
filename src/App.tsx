@@ -21,6 +21,7 @@ import { Blank } from '@/pages/examples/Blank';
 import { BlogDetail } from '@/pages/examples/BlogDetail';
 import { AIPlayground } from '@/pages/examples/AIPlayground';
 import { AIAgents } from '@/pages/examples/AIAgents';
+import NotesList from '@/pages/notes/NotesList';
 import AiAssistant from '@/pages/AiAssistant/AiAssistant';
 import Companies from '@/pages/crm/Companies';
 import { Toaster } from 'sonner';
@@ -54,6 +55,7 @@ export function App() {
                     </AdminOnlyRoute>
                   } />
                   <Route path="tasks" element={<Tasks />} />
+                  <Route path="notes" element={<NotesList />} />
                   <Route path="calendar" element={<CalendarPage />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="crm/companies" element={<Companies />} />
