@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,7 +10,9 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
     ImageAdd01Icon,
     SmileIcon,
-    Calendar01Icon
+    Calendar01Icon,
+    Cancel01Icon,
+    FileAttachmentIcon
 } from '@hugeicons/core-free-icons';
 import { toast } from 'sonner';
 
@@ -22,18 +24,27 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
     const { user } = useAuth();
     const [content, setContent] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [files, setFiles] = useState<File[]>([]);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = async (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!content.trim() || !user) return;
+        if ((!content.trim() && files.length === 0) || !user) return;
 
         setSubmitting(true);
         try {
-            await pb.collection('notes').create({
-                content: content,
-                user: user.id,
-            });
+            const formData = new FormData();
+            formData.append('content', content);
+            formData.append('user', user.id);
+
+            for (const file of files) {
+                formData.append('attachments', file);
+            }
+
+            await pb.collection('notes').create(formData);
+
             setContent('');
+            setFiles([]);
             toast.success('发布成功');
             onSuccess();
         } catch (error: any) {
@@ -44,6 +55,17 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const newFiles = Array.from(e.target.files);
+            setFiles(prev => [...prev, ...newFiles]);
+        }
+    };
+
+    const removeFile = (index: number) => {
+        setFiles(prev => prev.filter((_, i) => i !== index));
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -73,21 +95,47 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
                         onChange={(e) => setContent(e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
+
+                    {files.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                            {files.map((file, index) => (
+                                <div key={index} className="relative group bg-muted/50 rounded-lg p-2 flex items-center gap-2 border border-blue-500/10">
+                                    <HugeiconsIcon icon={FileAttachmentIcon} size={16} className="text-blue-500" />
+                                    <span className="text-xs max-w-[100px] truncate">{file.name}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(index)}
+                                        className="text-muted-foreground hover:text-destructive transition-colors"
+                                    >
+                                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <Separator className="my-3 opacity-50" />
                     <div className="flex items-center justify-between">
                         <div className="flex gap-2 text-primary">
-                            <Button type="button" variant="ghost" size="icon" className="rounded-full">
+                            <input
+                                type="file"
+                                multiple
+                                ref={fileInputRef}
+                                className="hidden"
+                                onChange={handleFileChange}
+                            />
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full"
+                                onClick={() => fileInputRef.current?.click()}
+                            >
                                 <HugeiconsIcon icon={ImageAdd01Icon} size={20} />
-                            </Button>
-                            <Button type="button" variant="ghost" size="icon" className="rounded-full">
-                                <HugeiconsIcon icon={SmileIcon} size={20} />
-                            </Button>
-                            <Button type="button" variant="ghost" size="icon" className="rounded-full">
-                                <HugeiconsIcon icon={Calendar01Icon} size={20} />
                             </Button>
                         </div>
                         <Button
-                            disabled={!content.trim() || submitting}
+                            disabled={(!content.trim() && files.length === 0) || submitting}
                             className="rounded-full px-6 bg-blue-500 hover:bg-blue-600 text-white font-bold"
                         >
                             {submitting ? '发布中...' : '发布'}

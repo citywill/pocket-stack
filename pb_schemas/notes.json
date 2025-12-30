@@ -49,7 +49,21 @@
       },
       {
         "hidden": false,
-        "id": "autodate_created",
+        "id": "file1204091606",
+        "maxSelect": 99,
+        "maxSize": 0,
+        "mimeTypes": null,
+        "name": "attachments",
+        "presentable": false,
+        "protected": false,
+        "required": false,
+        "system": false,
+        "thumbs": null,
+        "type": "file"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
         "name": "created",
         "onCreate": true,
         "onUpdate": false,
@@ -59,7 +73,7 @@
       },
       {
         "hidden": false,
-        "id": "autodate_updated",
+        "id": "autodate3332085495",
         "name": "updated",
         "onCreate": true,
         "onUpdate": true,

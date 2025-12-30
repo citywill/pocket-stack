@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -6,11 +6,22 @@ import { Textarea } from '@/components/ui/textarea';
 import { HugeiconsIcon } from '@hugeicons/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Delete02Icon,
   PencilEdit01Icon,
   CheckmarkCircle02Icon,
-  Cancel01Icon
+  Cancel01Icon,
+  Download01Icon,
+  FileAttachmentIcon,
+  ViewIcon,
+  Image01Icon
 } from '@hugeicons/core-free-icons';
 import { formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
@@ -20,6 +31,7 @@ interface Note {
   id: string;
   content: string;
   user: string;
+  attachments?: string[];
   created: string;
   updated: string;
   expand?: {
@@ -43,28 +55,61 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(note.content);
   const [submitting, setSubmitting] = useState(false);
+  const [existingAttachments, setExistingAttachments] = useState<string[]>(note.attachments || []);
+  const [deletedAttachments, setDeletedAttachments] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleEditKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       handleUpdate();
     } else if (e.key === 'Escape') {
-      setIsEditing(false);
-      setEditContent(note.content);
+      cancelEdit();
     }
   };
 
+  const cancelEdit = () => {
+    setIsEditing(false);
+    setEditContent(note.content);
+    setExistingAttachments(note.attachments || []);
+    setDeletedAttachments([]);
+    setNewFiles([]);
+  };
+
   const handleUpdate = async () => {
-    if (!editContent.trim() || editContent === note.content) {
+    const isContentChanged = editContent.trim() !== note.content;
+    const isAttachmentsChanged = deletedAttachments.length > 0 || newFiles.length > 0;
+
+    if (!editContent.trim()) {
+      toast.error('内容不能为空');
+      return;
+    }
+
+    if (!isContentChanged && !isAttachmentsChanged) {
       setIsEditing(false);
       return;
     }
 
     setSubmitting(true);
     try {
-      await pb.collection('notes').update(note.id, {
-        content: editContent,
-      });
+      const formData = new FormData();
+      formData.append('content', editContent);
+
+      // 处理待删除的旧附件
+      if (deletedAttachments.length > 0) {
+        // PocketBase 使用 '-' 前缀来删除文件字段中的特定文件
+        for (const filename of deletedAttachments) {
+          formData.append('attachments-', filename);
+        }
+      }
+
+      // 处理新增的附件
+      for (const file of newFiles) {
+        formData.append('attachments', file);
+      }
+
+      await pb.collection('notes').update(note.id, formData);
       toast.success('更新成功');
       setIsEditing(false);
       onUpdate();
@@ -78,13 +123,37 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setNewFiles(prev => [...prev, ...files]);
+    }
+  };
+
+  const removeExistingAttachment = (filename: string) => {
+    setExistingAttachments(prev => prev.filter(f => f !== filename));
+    setDeletedAttachments(prev => [...prev, filename]);
+  };
+
+  const removeNewFile = (index: number) => {
+    setNewFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const getFileUrl = (filename: string) => {
+    return pb.files.getURL(note, filename);
+  };
+
+  const isImage = (filename: string) => {
+    return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(filename);
+  };
+
   return (
     <div className="p-4 transition-colors bg-white border-1 rounded-2xl mb-4">
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-1 min-w-0">
             <span className="text-muted-foreground text-sm whitespace-nowrap">
-              {formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN })}
+              {note.created ? formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN }) : '刚刚'}
             </span>
           </div>
           {user?.id === note.user && (
@@ -123,15 +192,73 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
               onChange={(e) => setEditContent(e.target.value)}
               onKeyDown={handleEditKeyDown}
             />
+
+            {/* 编辑模式下的附件管理 */}
+            <div className="space-y-3 py-2">
+              {/* 现有附件 */}
+              {existingAttachments.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {existingAttachments.map((filename) => (
+                    <div key={filename} className="flex items-center gap-2 p-1.5 pl-2 rounded-lg border border-muted bg-muted/30 group">
+                      <HugeiconsIcon icon={isImage(filename) ? Image01Icon : FileAttachmentIcon} size={14} className="text-blue-500" />
+                      <span className="text-xs max-w-[100px] truncate">{filename}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeExistingAttachment(filename)}
+                        className="text-muted-foreground hover:text-destructive p-0.5 rounded-full hover:bg-destructive/10 transition-colors"
+                      >
+                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* 新选附件 */}
+              {newFiles.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {newFiles.map((file, index) => (
+                    <div key={index} className="flex items-center gap-2 p-1.5 pl-2 rounded-lg border border-blue-500/20 bg-blue-500/5 group">
+                      <HugeiconsIcon icon={FileAttachmentIcon} size={14} className="text-blue-500" />
+                      <span className="text-xs max-w-[100px] truncate">{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeNewFile(index)}
+                        className="text-muted-foreground hover:text-destructive p-0.5 rounded-full hover:bg-destructive/10 transition-colors"
+                      >
+                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="file"
+                  multiple
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full text-xs h-8"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <HugeiconsIcon icon={Image01Icon} size={14} className="mr-1.5" />
+                  上传附件
+                </Button>
+              </div>
+            </div>
+
             <div className="flex justify-end gap-2">
               <Button
                 variant="ghost"
                 size="sm"
                 className="rounded-full"
-                onClick={() => {
-                  setIsEditing(false);
-                  setEditContent(note.content);
-                }}
+                onClick={cancelEdit}
               >
                 <HugeiconsIcon icon={Cancel01Icon} size={16} className="mr-1" />
                 取消
@@ -175,6 +302,72 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
             >
               {note.content}
             </ReactMarkdown>
+          </div>
+        )}
+
+        {note.attachments && note.attachments.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-2">
+            {note.attachments.map((filename) => (
+              <div key={filename} className="group relative">
+                {isImage(filename) ? (
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-muted bg-muted cursor-pointer">
+                        <img
+                          src={getFileUrl(filename)}
+                          alt={filename}
+                          className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <HugeiconsIcon icon={ViewIcon} size={20} className="text-white" />
+                        </div>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent
+                      className="sm:max-w-[100vw] max-w-[100vw] w-screen h-screen p-0 overflow-hidden bg-black/70 backdrop-blur-xl border-none shadow-none flex flex-col items-center justify-center rounded-none ring-0"
+                      showCloseButton={false}
+                    >
+                      <DialogTitle className="sr-only">图片预览</DialogTitle>
+                      {/* 右上角关闭按钮 */}
+                      <DialogPrimitive.Close className="absolute top-6 right-6 z-50 rounded-full p-3 bg-black text-white group/close">
+                        <HugeiconsIcon icon={Cancel01Icon} size={28} className="drop-shadow-md" />
+                      </DialogPrimitive.Close>
+                      <div className="relative w-full h-full flex items-center justify-center p-4">
+                        <img
+                          src={getFileUrl(filename)}
+                          alt={filename}
+                          className="max-w-full max-h-full object-contain shadow-2xl"
+                        />
+                        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4">
+                          <Button
+                            variant="secondary"
+                            size="lg"
+                            className="rounded-full bg-black text-white px-10 h-12"
+                            asChild
+                          >
+                            <a href={getFileUrl(filename)} target="_blank" rel="noopener noreferrer">
+                              <HugeiconsIcon icon={Download01Icon} size={20} className="mr-2" />
+                              下载原图
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <a
+                    href={getFileUrl(filename)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-2 rounded-lg border border-muted bg-muted/30 hover:bg-muted/50 transition-colors"
+                  >
+                    <HugeiconsIcon icon={FileAttachmentIcon} size={16} className="text-blue-500" />
+                    <span className="text-xs max-w-[120px] truncate">{filename}</span>
+                    <HugeiconsIcon icon={Download01Icon} size={14} className="text-muted-foreground" />
+                  </a>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

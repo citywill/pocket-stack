@@ -14,6 +14,7 @@ interface Note {
   id: string;
   content: string;
   user: string;
+  attachments?: string[];
   created: string;
   updated: string;
   expand?: {
