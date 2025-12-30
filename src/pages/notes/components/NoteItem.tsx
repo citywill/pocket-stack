@@ -324,12 +324,12 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
                       </div>
                     </DialogTrigger>
                     <DialogContent
-                      className="sm:max-w-[100vw] max-w-[100vw] w-screen h-screen p-0 overflow-hidden bg-black/70 backdrop-blur-xl border-none shadow-none flex flex-col items-center justify-center rounded-none ring-0"
+                      className="sm:max-w-[90vw] max-w-[90vw] w-screen h-screen p-0 overflow-hidden bg-black/70 backdrop-blur-xl border-none shadow-none flex flex-col items-center justify-center rounded-none ring-0"
                       showCloseButton={false}
                     >
                       <DialogTitle className="sr-only">图片预览</DialogTitle>
                       {/* 右上角关闭按钮 */}
-                      <DialogPrimitive.Close className="absolute top-6 right-6 z-50 rounded-full p-3 bg-black text-white group/close">
+                      <DialogPrimitive.Close className="absolute top-6 right-6 z-50 rounded-full p-3 bg-black text-white border border-white/30 group/close outline-none">
                         <HugeiconsIcon icon={Cancel01Icon} size={28} className="drop-shadow-md" />
                       </DialogPrimitive.Close>
                       <div className="relative w-full h-full flex items-center justify-center p-4">
