@@ -27,7 +27,7 @@ interface Note {
   }
 }
 
-export default function NotesList() {
+export default function Notes() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
