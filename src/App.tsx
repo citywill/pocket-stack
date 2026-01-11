@@ -4,12 +4,11 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { Dashboard } from '@/pages/task/Dashboard';
+import { TaskRoutes } from '@/pages/task/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
 import { Settings } from '@/pages/admin/Settings';
 import { Profile } from '@/pages/Profile';
-import { Tasks } from '@/pages/task/Tasks';
-import { CalendarPage } from '@/pages/task/Calendar';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
 import { NotFound } from '@/pages/NotFound';
@@ -55,8 +54,7 @@ export function App() {
                       <Settings />
                     </AdminOnlyRoute>
                   } />
-                  <Route path="tasks" element={<Tasks />} />
-                  <Route path="calendar" element={<CalendarPage />} />
+                  {TaskRoutes}
                   <Route path="profile" element={<Profile />} />
                   <Route path="crm/companies" element={<Companies />} />
                   <Route path="crm/opportunities" element={<Opportunities />} />

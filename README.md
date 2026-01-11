@@ -23,6 +23,7 @@ English | [简体中文](README_zh-CN.md)
 
 - 🎨 **Frontend Features**: Built with shadcn/ui (Maia style) and Tailwind CSS v4, with built-in dark mode. Uses [HugeIcons](https://hugeicons.com/) icon library. Adaptive layout for Desktop, Tablet, and Mobile.
 - 🚀 **Backend Features**: Native integration with [PocketBase](https://pocketbase.io/) for authentication and data storage.
+- 🧩 **Modular Architecture**: Supports decoupled business module development. Each module independently configures routes (`routes.tsx`) and menus (`menu.ts`) for plug-and-play integration.
 - 📋 **Business Example**: Built-in personal task management system with multi-state transitions, priority settings, and user data isolation.
 - 🎪 **Authentication**: Supports "Super Admin" and "Regular Admin" login modes.
 - 🛡️ **Permission Control**:
@@ -52,9 +53,14 @@ English | [简体中文](README_zh-CN.md)
     │   ├── layout/          # Layout components (Sidebar, Header, MainLayout)
     │   ├── ui/              # shadcn/ui component library
     │   ├── auth-provider.tsx # Authentication context logic
-    │   └── protected-route.tsx # Route guard component
-    ├── pages/               # Business pages (login, dashboard, users, etc.)
-    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
+55→    │   └── protected-route.tsx # Route guard component
+56→    ├── pages/               # Business pages
+57→    │   ├── {module}/        # Business modules (e.g., task, crm)
+58→    │   │   ├── components/  # Module-specific components
+59→    │   │   ├── routes.tsx   # Module route configuration
+60→    │   │   └── menu.ts      # Module menu configuration
+61→    │   └── login/           # Basic pages
+62→    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
     ├── App.tsx              # Router and Provider root configuration
     └── main.tsx             # Application entry point
 ```

@@ -7,14 +7,13 @@ import {
   PrismIcon,
   AiChat02Icon,
   ChartLineData01Icon,
-  Task01Icon,
-  Calendar01Icon,
   Building01Icon,
   DatabaseIcon,
   ArrowDown01Icon,
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
+import { taskMenu } from '@/pages/task/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -52,18 +51,7 @@ const menuItems: MenuItem[] = [
     icon: ChartLineData01Icon,
     adminOnly: true,
   },
-  {
-    title: '任务管理',
-    path: '/tasks',
-    icon: Task01Icon,
-    userOnly: true,
-  },
-  {
-    title: '任务日历',
-    path: '/calendar',
-    icon: Calendar01Icon,
-    userOnly: true,
-  },
+  taskMenu,
   {
     title: 'CRM管理',
     icon: Building01Icon,
