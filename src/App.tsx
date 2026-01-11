@@ -8,7 +8,7 @@ import { TaskRoutes } from '@/pages/task/routes';
 import { CrmRoutes } from '@/pages/crm/routes';
 import { AiAssistantRoutes } from '@/pages/AiAssistant/routes';
 import { ExampleRoutes } from '@/pages/examples/routes';
-import { PortalRoutes } from '@/pages/portal/routes';
+import { PortalPublicRoutes, PortalProtectedRoutes } from '@/pages/portal/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
 import { Settings } from '@/pages/admin/Settings';
@@ -30,8 +30,9 @@ export function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              {PortalPublicRoutes}
               <Route element={<ProtectedRoute />}>
-                {PortalRoutes}
+                {PortalProtectedRoutes}
                 <Route path="/" element={<MainLayout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="admin/dashboard" element={
