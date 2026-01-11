@@ -103,7 +103,7 @@ export function AIAgents() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate('/examples/ai-playground')} variant="outline">
+          <Button onClick={() => navigate('/ai-playground')} variant="outline">
             <HugeiconsIcon icon={AiChat02Icon} className="mr-2 h-4 w-4" />
             前往对话
           </Button>

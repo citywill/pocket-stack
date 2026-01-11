@@ -4,16 +4,15 @@ import { cn } from '@/lib/utils';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home01Icon,
-  PrismIcon,
-  AiChat02Icon,
   ChartLineData01Icon,
-  Building01Icon,
-  DatabaseIcon,
   ArrowDown01Icon,
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
 import { taskMenu } from '@/pages/task/menu';
+import { crmMenu } from '@/pages/crm/menu';
+import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
+import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -52,40 +51,9 @@ const menuItems: MenuItem[] = [
     adminOnly: true,
   },
   taskMenu,
-  {
-    title: 'CRM管理',
-    icon: Building01Icon,
-    userOnly: true,
-    children: [
-      { title: '客户单位', path: '/crm/companies' },
-      { title: '商机管理', path: '/crm/opportunities' },
-      { title: '合同管理', path: '/crm/contracts' },
-    ],
-  },
-  {
-    title: 'AI 助手',
-    path: '/examples/ai-playground',
-    userOnly: true,
-    icon: AiChat02Icon
-  },
-  {
-    title: 'AI 数据助手',
-    path: '/ai-assistant',
-    // userOnly: true,
-    icon: DatabaseIcon
-  },
-  {
-    title: '前端示例',
-    icon: PrismIcon,
-    children: [
-      { title: '仪表盘', path: '/examples/dashboard' },
-      { title: '空页面', path: '/examples/blank' },
-      { title: '表格', path: '/examples/table' },
-      { title: '卡片', path: '/examples/card' },
-      { title: '表单', path: '/examples/form' },
-      { title: '博客详情', path: '/examples/blog-detail' },
-    ],
-  },
+  crmMenu,
+  aiAssistantMenu,
+  exampleMenu,
   {
     title: '系统管理',
     icon: Settings01Icon,
@@ -93,7 +61,6 @@ const menuItems: MenuItem[] = [
     children: [
       { title: '全局配置', path: '/admin/settings' },
       { title: '用户管理', path: '/admin/users' },
-      { title: '智能体管理', path: '/examples/ai-agents', adminOnly: true },
     ],
   },
 ];
