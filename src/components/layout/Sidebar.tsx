@@ -12,7 +12,6 @@ import { Logo } from '@/components/logo';
 import { taskMenu } from '@/pages/task/menu';
 import { crmMenu } from '@/pages/crm/menu';
 import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
-import { portalMenu } from '@/pages/examples/portal/menu';
 import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
@@ -56,7 +55,6 @@ const menuItems: MenuItem[] = [
   taskMenu,
   crmMenu,
   aiAssistantMenu,
-  portalMenu,
   exampleMenu,
   {
     title: '系统管理',

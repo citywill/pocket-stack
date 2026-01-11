@@ -9,5 +9,7 @@ export const exampleMenu = {
     { title: '表格', path: '/examples/table' },
     { title: '卡片', path: '/examples/card' },
     { title: '表单', path: '/examples/form' },
+    { title: '落地页（游客访问）', path: '/examples/portal/landing', external: true },
+    { title: '博客详情（需登录）', path: '/examples/portal/blog-detail', external: true },
   ],
 };
