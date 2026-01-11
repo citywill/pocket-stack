@@ -121,9 +121,9 @@ export function BlogDetail() {
           {/* 顶部导航 */}
           <div className="flex items-center justify-between">
             <Button variant="ghost" asChild className="rounded-xl -ml-2 text-neutral-600 hover:text-blue-600 transition-colors">
-              <Link to="/examples/card">
+              <Link to="/portal/landing">
                 <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-2 h-4 w-4" />
-                返回列表
+                返回首页
               </Link>
             </Button>
             <div className="flex items-center gap-2">
