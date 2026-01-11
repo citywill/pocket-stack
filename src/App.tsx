@@ -8,7 +8,7 @@ import { TaskRoutes } from '@/pages/task/routes';
 import { CrmRoutes } from '@/pages/crm/routes';
 import { AiAssistantRoutes } from '@/pages/AiAssistant/routes';
 import { ExampleRoutes } from '@/pages/examples/routes';
-import { PortalRoutes } from '@/pages/portal/routes';
+import { PortalRoutes } from '@/pages/examples/portal/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
 import { Settings } from '@/pages/admin/Settings';

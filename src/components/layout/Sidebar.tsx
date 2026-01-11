@@ -12,7 +12,7 @@ import { Logo } from '@/components/logo';
 import { taskMenu } from '@/pages/task/menu';
 import { crmMenu } from '@/pages/crm/menu';
 import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
-import { portalMenu } from '@/pages/portal/menu';
+import { portalMenu } from '@/pages/examples/portal/menu';
 import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
@@ -298,8 +298,3 @@ function NavItem({
     </div>
   );
 }
-
-
-
-
-

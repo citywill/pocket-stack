@@ -1,7 +1,7 @@
 import { PrismIcon } from '@hugeicons/core-free-icons';
 
 export const exampleMenu = {
-  title: '前端示例',
+  title: '后台示例',
   icon: PrismIcon,
   children: [
     { title: '仪表盘', path: '/examples/dashboard' },
