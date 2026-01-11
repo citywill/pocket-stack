@@ -53,14 +53,14 @@ English | [简体中文](README_zh-CN.md)
     │   ├── layout/          # Layout components (Sidebar, Header, MainLayout)
     │   ├── ui/              # shadcn/ui component library
     │   ├── auth-provider.tsx # Authentication context logic
-55→    │   └── protected-route.tsx # Route guard component
-56→    ├── pages/               # Business pages
-57→    │   ├── {module}/        # Business modules (e.g., task, crm)
-58→    │   │   ├── components/  # Module-specific components
-59→    │   │   ├── routes.tsx   # Module route configuration
-60→    │   │   └── menu.ts      # Module menu configuration
-61→    │   └── login/           # Basic pages
-62→    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
+    │   └── protected-route.tsx # Route guard component
+    ├── pages/               # Business pages
+    │   ├── {module}/        # Business modules (e.g., task, crm)
+    │   │   ├── components/  # Module-specific components
+    │   │   ├── routes.tsx   # Module route configuration
+    │   │   └── menu.ts      # Module menu configuration
+    │   └── login/           # Basic pages
+    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
     ├── App.tsx              # Router and Provider root configuration
     └── main.tsx             # Application entry point
 ```
