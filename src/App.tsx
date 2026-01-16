@@ -11,6 +11,7 @@ import { ExampleRoutes } from '@/pages/examples/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
 import { Settings } from '@/pages/admin/Settings';
+import { Install } from '@/pages/admin/Install';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
@@ -44,6 +45,11 @@ export function App() {
                   <Route path="admin/settings" element={
                     <AdminOnlyRoute>
                       <Settings />
+                    </AdminOnlyRoute>
+                  } />
+                  <Route path="admin/install" element={
+                    <AdminOnlyRoute>
+                      <Install />
                     </AdminOnlyRoute>
                   } />
                   <Route path="profile" element={<Profile />} />

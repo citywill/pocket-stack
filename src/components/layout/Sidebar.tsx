@@ -7,6 +7,7 @@ import {
   ChartLineData01Icon,
   ArrowDown01Icon,
   Settings01Icon,
+  DatabaseImportIcon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
 import { taskMenu } from '@/pages/task/menu';
@@ -63,6 +64,7 @@ const menuItems: MenuItem[] = [
     children: [
       { title: '全局配置', path: '/admin/settings' },
       { title: '用户管理', path: '/admin/users' },
+      { title: '系统初始化', path: '/admin/install' },
     ],
   },
 ];
