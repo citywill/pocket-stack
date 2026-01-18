@@ -1,24 +1,12 @@
 import { useState, useEffect } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useSettings } from '@/lib/use-settings';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Settings01Icon,
-  FloppyDiskIcon,
-  GlobalIcon,
-  InformationCircleIcon,
-  AiChat02Icon,
-  ViewIcon,
-  ViewOffIcon
 } from '@hugeicons/core-free-icons';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { InputGroup, InputGroupAddon, InputGroupButton } from '@/components/ui/input-group';
 
 interface SystemSetting {
   id: string;
@@ -27,21 +15,46 @@ interface SystemSetting {
   description: string;
 }
 
-const PRESET_SETTINGS = [
-  { key: 'site_name', label: '系统名称', description: '显示在页面顶部的系统名称' },
-  { key: 'contact_email', label: '管理员邮箱', description: '系统管理员的联系邮箱' },
-  { key: 'footer_text', label: '页脚文字', description: '显示在页面底部的版权信息' },
-  { key: 'ai_api_key', label: 'AI API Key', description: '大模型 API 密钥 (如 DeepSeek)' },
-  { key: 'ai_api_url', label: 'AI API URL', description: '大模型接口地址 (默认: https://api.deepseek.com/v1/chat/completions)' },
-  { key: 'ai_model', label: 'AI 模型名称', description: '使用的模型 ID (默认: deepseek-chat)' },
-];
+// 动态加载所有设置表单组件
+const formModules = import.meta.glob('./components/SettingForms/*.tsx', { eager: true });
+
+interface SettingFormModule {
+  metadata: {
+    id: string;
+    title: string;
+    icon: any;
+    presetSettings: { key: string; label: string; description: string }[];
+  };
+  [key: string]: any;
+}
+
+const FORMS = Object.entries(formModules).map(([path, module]) => {
+  const m = module as SettingFormModule;
+  // 获取组件名（通常是文件名，或者是 metadata.id 对应的组件）
+  // 假设组件是以文件名命名的命名导出，例如 GeneralSettingsForm.tsx 导出 GeneralSettingsForm
+  const fileName = path.split('/').pop()?.replace('.tsx', '');
+  const Component = m[fileName || ''] || Object.values(m).find(v => typeof v === 'function');
+
+  return {
+    ...m.metadata,
+    Component
+  };
+})
+  .filter(f => f.Component && f.id)
+  .sort((a, b) => {
+    // 确保 id 为 'general' 的表单排在第一位
+    if (a.id === 'general') return -1;
+    if (b.id === 'general') return 1;
+    return 0;
+  });
+
+const ALL_PRESET_SETTINGS = FORMS.flatMap(f => f.presetSettings);
 
 export function Settings() {
   const { refresh } = useSettings();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [settings, setSettings] = useState<Record<string, SystemSetting>>({});
-  const [showApiKey, setShowApiKey] = useState(false);
 
   const fetchSettings = async () => {
     try {
@@ -53,7 +66,7 @@ export function Settings() {
       const settingsMap: Record<string, SystemSetting> = {};
 
       // Initialize with presets (empty values)
-      PRESET_SETTINGS.forEach(preset => {
+      ALL_PRESET_SETTINGS.forEach(preset => {
         settingsMap[preset.key] = {
           id: '',
           key: preset.key,
@@ -102,12 +115,9 @@ export function Settings() {
 
       const promises = settingsToSave.map(async (setting) => {
         // PocketBase JSON field requires a valid JSON value.
-        // For strings, we need to wrap them in quotes if we want to store them as JSON strings,
-        // or just pass them directly if they are already valid JSON.
-        // In our case, these are simple text values being stored in a JSON field.
         const data = {
           key: setting.key,
-          value: setting.value || "", // PocketBase JSON field accepts "" as a valid JSON string
+          value: setting.value || "",
           description: setting.description || ''
         };
 
@@ -152,169 +162,26 @@ export function Settings() {
         </div>
       </div>
 
-      <Tabs defaultValue="general" className="w-full">
+      <Tabs defaultValue={FORMS[0]?.id || 'general'} className="w-full">
         <TabsList className="mb-6">
-          <TabsTrigger value="general">
-            <HugeiconsIcon icon={GlobalIcon} className="w-4 h-4 mr-2" />
-            全局配置
-          </TabsTrigger>
-          <TabsTrigger value="ai">
-            <HugeiconsIcon icon={AiChat02Icon} className="w-4 h-4 mr-2" />
-            AI 配置
-          </TabsTrigger>
+          {FORMS.map(form => (
+            <TabsTrigger key={form.id} value={form.id}>
+              <HugeiconsIcon icon={form.icon} className="w-4 h-4 mr-2" />
+              {form.title}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="general" className="mt-0 outline-none">
-          <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <HugeiconsIcon icon={GlobalIcon} className="h-5 w-5 text-blue-500" />
-                全局基本配置
-              </CardTitle>
-              <CardDescription>管理系统的基本信息，如名称、联系方式和版权信息。</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-6">
-                {PRESET_SETTINGS.filter(s => !s.key.startsWith('ai_')).map((preset) => {
-                  const setting = settings[preset.key];
-                  if (!setting) return null;
-                  return (
-                    <div key={setting.key} className="space-y-2 pb-4 border-b border-neutral-100 dark:border-neutral-800 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor={setting.key} className="text-base font-semibold">
-                          {preset.label}
-                        </Label>
-                        <code className="px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-xs font-mono text-neutral-500">
-                          {setting.key}
-                        </code>
-                      </div>
-
-                      {setting.key === 'footer_text' ? (
-                        <Textarea
-                          id={setting.key}
-                          value={setting.value || ''}
-                          onChange={(e) => handleUpdateSetting(setting.key, e.target.value)}
-                          placeholder={`请输入 ${preset.label}`}
-                          className="rounded-xl border-neutral-200 min-h-[80px]"
-                        />
-                      ) : (
-                        <Input
-                          id={setting.key}
-                          value={setting.value || ''}
-                          onChange={(e) => handleUpdateSetting(setting.key, e.target.value)}
-                          placeholder={`请输入 ${preset.label}`}
-                          className="rounded-xl border-neutral-200"
-                        />
-                      )}
-
-                      {setting.description && (
-                        <p className="text-xs text-neutral-500 flex items-center gap-1">
-                          <HugeiconsIcon icon={InformationCircleIcon} className="h-3 w-3" />
-                          {setting.description}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-
-                <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                  <Button
-                    onClick={saveSettings}
-                    disabled={loading}
-                    className="bg-blue-600 hover:bg-blue-700 rounded-2xl"
-                  >
-                    <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 h-4 w-4" />
-                    {loading ? '保存中...' : '保存全局配置'}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="ai" className="mt-0 outline-none">
-          <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <HugeiconsIcon icon={AiChat02Icon} className="h-5 w-5 text-blue-500" />
-                AI 接口配置
-              </CardTitle>
-              <CardDescription>管理大模型 API 接口参数，配置后可启用真实对话功能。</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-6">
-                {PRESET_SETTINGS.filter(s => s.key.startsWith('ai_')).map((preset) => {
-                  const setting = settings[preset.key];
-                  if (!setting) return null;
-                  return (
-                    <div key={setting.key} className="space-y-2 pb-4 border-b border-neutral-100 dark:border-neutral-800 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor={setting.key} className="text-base font-semibold">
-                          {preset.label}
-                        </Label>
-                        <code className="px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-xs font-mono text-neutral-500">
-                          {setting.key}
-                        </code>
-                      </div>
-
-                      {setting.key === 'ai_api_key' ? (
-                        <InputGroup>
-                          <Input
-                            id={setting.key}
-                            type={showApiKey ? 'text' : 'password'}
-                            value={setting.value || ''}
-                            onChange={(e) => handleUpdateSetting(setting.key, e.target.value)}
-                            placeholder={`请输入 ${preset.label}`}
-                            className="rounded-xl border-neutral-200"
-                          />
-                          <InputGroupAddon align="inline-end">
-                            <InputGroupButton
-                              size="icon-xs"
-                              onClick={() => setShowApiKey(!showApiKey)}
-                              title={showApiKey ? "隐藏密钥" : "显示密钥"}
-                            >
-                              <HugeiconsIcon
-                                icon={showApiKey ? ViewOffIcon : ViewIcon}
-                                className="h-4 w-4"
-                              />
-                            </InputGroupButton>
-                          </InputGroupAddon>
-                        </InputGroup>
-                      ) : (
-                        <Input
-                          id={setting.key}
-                          type="text"
-                          value={setting.value || ''}
-                          onChange={(e) => handleUpdateSetting(setting.key, e.target.value)}
-                          placeholder={`请输入 ${preset.label}`}
-                          className="rounded-xl border-neutral-200"
-                        />
-                      )}
-
-                      {setting.description && (
-                        <p className="text-xs text-neutral-500 flex items-center gap-1">
-                          <HugeiconsIcon icon={InformationCircleIcon} className="h-3 w-3" />
-                          {setting.description}
-                        </p>
-                      )}
-                    </div>
-                  );
-                })}
-
-                <div className="pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                  <Button
-                    onClick={saveSettings}
-                    disabled={loading}
-                    className="bg-blue-600 hover:bg-blue-700 rounded-2xl"
-                  >
-                    <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 h-4 w-4" />
-                    {loading ? '保存中...' : '保存 AI 配置'}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+        {FORMS.map(form => (
+          <TabsContent key={form.id} value={form.id} className="mt-0 outline-none">
+            <form.Component
+              settings={settings}
+              loading={loading}
+              onUpdate={handleUpdateSetting}
+              onSave={saveSettings}
+            />
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );

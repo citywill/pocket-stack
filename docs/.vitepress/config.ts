@@ -20,8 +20,9 @@ export default {
         items: [
           { text: '项目说明', link: '/index' },
           { text: '快速开始', link: '/快速开始' },
+          { text: '开发环境配置', link: '/开发环境配置' },
+          { text: '示例演示', link: '/示例演示' },
           { text: '安装部署', link: '/安装部署' },
-          { text: '开发示例演示', link: '/示例演示' },
         ]
       },
       {

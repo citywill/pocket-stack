@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { pb } from '@/lib/pocketbase';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -103,7 +103,7 @@ export function AIAgents() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate('/examples/ai-playground')} variant="outline">
+          <Button onClick={() => navigate('/ai-playground')} variant="outline">
             <HugeiconsIcon icon={AiChat02Icon} className="mr-2 h-4 w-4" />
             前往对话
           </Button>

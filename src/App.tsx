@@ -4,12 +4,15 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { Dashboard } from '@/pages/task/Dashboard';
+import { TaskRoutes } from '@/pages/task/routes';
+import { CrmRoutes } from '@/pages/crm/routes';
+import { AiAssistantRoutes } from '@/pages/AiAssistant/routes';
+import { ExampleRoutes } from '@/pages/examples/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
 import { Settings } from '@/pages/admin/Settings';
+import { Install } from '@/pages/admin/Install';
 import { Profile } from '@/pages/Profile';
-import { Tasks } from '@/pages/task/Tasks';
-import { CalendarPage } from '@/pages/task/Calendar';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
 import { NotFound } from '@/pages/NotFound';
@@ -19,14 +22,12 @@ import { ExampleCard } from '@/pages/examples/Card';
 import { Form } from '@/pages/examples/Form';
 import { Blank } from '@/pages/examples/Blank';
 import { BlogDetail } from '@/pages/examples/BlogDetail';
-import { AIPlayground } from '@/pages/examples/AIPlayground';
-import { AIAgents } from '@/pages/examples/AIAgents';
 import Notes from '@/pages/notes/Notes';
 import AiAssistant from '@/pages/AiAssistant/AiAssistant';
 import Companies from '@/pages/crm/Companies';
 import { Toaster } from 'sonner';
 
-import { ProtectedRoute, AdminOnlyRoute, UserOnlyRoute } from '@/components/protected-route';
+import { ProtectedRoute, AdminOnlyRoute } from '@/components/protected-route';
 
 export function App() {
   return (
@@ -38,6 +39,7 @@ export function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              {ExampleRoutes}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
                   <Route index element={<Dashboard />} />
@@ -54,9 +56,7 @@ export function App() {
                       <Settings />
                     </AdminOnlyRoute>
                   } />
-                  <Route path="tasks" element={<Tasks />} />
                   <Route path="notes" element={<Notes />} />
-                  <Route path="calendar" element={<CalendarPage />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="crm/companies" element={<Companies />} />
                   <Route path="ai-assistant" element={<AiAssistant />} />
@@ -66,16 +66,15 @@ export function App() {
                   <Route path="examples/card" element={<ExampleCard />} />
                   <Route path="examples/form" element={<Form />} />
                   <Route path="examples/blog-detail" element={<BlogDetail />} />
-                  <Route path="examples/ai-playground" element={
-                    <UserOnlyRoute>
-                      <AIPlayground />
-                    </UserOnlyRoute>
-                  } />
                   <Route path="examples/ai-agents" element={
                     <AdminOnlyRoute>
-                      <AIAgents />
+                      <Install />
                     </AdminOnlyRoute>
                   } />
+                  <Route path="profile" element={<Profile />} />
+                  {TaskRoutes}
+                  {CrmRoutes}
+                  {AiAssistantRoutes}
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />

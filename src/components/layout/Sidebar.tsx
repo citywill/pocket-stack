@@ -4,8 +4,6 @@ import { cn } from '@/lib/utils';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home01Icon,
-  PrismIcon,
-  AiChat02Icon,
   ChartLineData01Icon,
   Task01Icon,
   Calendar01Icon,
@@ -16,6 +14,10 @@ import {
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
+import { taskMenu } from '@/pages/task/menu';
+import { crmMenu } from '@/pages/crm/menu';
+import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
+import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -32,11 +34,13 @@ interface MenuItem {
   icon: any; // 使用 any 以兼容 Hugeicons 图标类型
   adminOnly?: boolean;
   userOnly?: boolean;
+  external?: boolean;
   children?: {
     title: string;
     path: string;
     adminOnly?: boolean;
     userOnly?: boolean;
+    external?: boolean;
   }[];
 }
 
@@ -80,29 +84,15 @@ const menuItems: MenuItem[] = [
     ],
   },
   {
-    title: 'AI 助手',
-    path: '/examples/ai-playground',
-    userOnly: true,
-    icon: AiChat02Icon
-  },
-  {
     title: 'AI 数据助手',
     path: '/ai-assistant',
     // userOnly: true,
     icon: DatabaseIcon
   },
-  {
-    title: '前端示例',
-    icon: PrismIcon,
-    children: [
-      { title: '仪表盘', path: '/examples/dashboard' },
-      { title: '空页面', path: '/examples/blank' },
-      { title: '表格', path: '/examples/table' },
-      { title: '卡片', path: '/examples/card' },
-      { title: '表单', path: '/examples/form' },
-      { title: '博客详情', path: '/examples/blog-detail' },
-    ],
-  },
+  taskMenu,
+  crmMenu,
+  aiAssistantMenu,
+  exampleMenu,
   {
     title: '系统管理',
     icon: Settings01Icon,
@@ -110,7 +100,7 @@ const menuItems: MenuItem[] = [
     children: [
       { title: '全局配置', path: '/admin/settings' },
       { title: '用户管理', path: '/admin/users' },
-      { title: '智能体管理', path: '/examples/ai-agents', adminOnly: true },
+      { title: '系统初始化', path: '/admin/install' },
     ],
   },
 ];
@@ -204,11 +194,13 @@ function NavItem({
   };
 
   if (!hasChildren) {
+    const linkProps = item.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
     return (
       <Link
         to={item.path!}
         title={isCollapsed ? item.title : undefined}
         onClick={handleLinkClick}
+        {...linkProps}
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
           isActive
@@ -258,20 +250,24 @@ function NavItem({
         <DropdownMenuContent side="right" align="start" sideOffset={16} className="min-w-40">
           <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {item.children?.map((child) => (
-            <DropdownMenuItem key={child.path} asChild>
-              <Link
-                to={child.path}
-                onClick={handleLinkClick}
-                className={cn(
-                  "w-full",
-                  location.pathname === child.path && "text-blue-600 font-medium"
-                )}
-              >
-                {child.title}
-              </Link>
-            </DropdownMenuItem>
-          ))}
+          {item.children?.map((child) => {
+            const childLinkProps = child.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+            return (
+              <DropdownMenuItem key={child.path} asChild>
+                <Link
+                  to={child.path}
+                  onClick={handleLinkClick}
+                  {...childLinkProps}
+                  className={cn(
+                    "w-full",
+                    location.pathname === child.path && "text-blue-600 font-medium"
+                  )}
+                >
+                  {child.title}
+                </Link>
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
     );
@@ -313,11 +309,13 @@ function NavItem({
         <div className="space-y-1">
           {item.children?.map((child) => {
             const isChildActive = location.pathname === child.path;
+            const childLinkProps = child.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
             return (
               <Link
                 key={child.path}
                 to={child.path}
                 onClick={handleLinkClick}
+                {...childLinkProps}
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                   isChildActive
@@ -336,8 +334,3 @@ function NavItem({
     </div>
   );
 }
-
-
-
-
-

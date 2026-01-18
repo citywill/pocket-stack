@@ -37,7 +37,7 @@ export function AgentForm({ open, onOpenChange, agentId, onSuccess }: AgentFormP
     const [loading, setLoading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { register, handleSubmit, reset, watch, setValue } = useForm<Partial<Agent>>();
+    const { register, handleSubmit, reset, watch } = useForm<Partial<Agent>>();
 
     const avatarFile = watch('avatar');
 

@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_ALI_LLM_URL ? new URL(env.VITE_ALI_LLM_URL).origin + new URL(env.VITE_ALI_LLM_URL).pathname.replace(/\/chat\/completions$/, '') : 'https://dashscope.aliyuncs.com/compatible-mode/v1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/llm/, ''),
-          configure: (proxy, options) => {
-            proxy.on('proxyReq', (proxyReq, req, res) => {
+          configure: (proxy, _options) => {
+            proxy.on('proxyReq', (proxyReq, _req, _res) => {
               if (env.VITE_ALI_LLM_API_KEY) {
                 proxyReq.setHeader('Authorization', `Bearer ${env.VITE_ALI_LLM_API_KEY}`);
               }

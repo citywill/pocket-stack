@@ -42,6 +42,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     fetchSettings();
   }, []);
 
+  // 当 siteName 改变时，更新 document.title
+  useEffect(() => {
+    const siteName = settings['site_name'] || 'Pocket Stack';
+    document.title = siteName;
+  }, [settings]);
+
   const get = (key: string, defaultValue?: any) => {
     return settings[key] ?? defaultValue;
   };

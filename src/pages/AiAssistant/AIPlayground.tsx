@@ -23,7 +23,6 @@ import { useAuth } from '@/components/auth-provider';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { useSettings } from '@/lib/use-settings';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -55,23 +54,19 @@ interface ChatMessage {
 
 export function AIPlayground() {
   const { user } = useAuth();
-  const { get: getSetting } = useSettings();
   const [agents, setAgents] = useState<Agent[]>([]);
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [currentSession, setCurrentSession] = useState<ChatSession | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [copyingId, setCopyingId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const handleCopy = async (text: string, id: string) => {
+  const handleCopy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      setCopyingId(id);
       toast.success('已复制到剪贴板');
-      setTimeout(() => setCopyingId(null), 2000);
     } catch (err) {
       toast.error('复制失败');
     }
@@ -527,7 +522,7 @@ export function AIPlayground() {
                           </span>
                           {msg.role === 'assistant' && msg.content && (
                             <button
-                              onClick={() => handleCopy(msg.content, msg.id)}
+                              onClick={() => handleCopy(msg.content)}
                               className="flex items-center gap-1 text-[10px] font-medium text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
                               <HugeiconsIcon
