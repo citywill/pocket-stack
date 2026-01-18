@@ -7,7 +7,6 @@ import {
   ChartLineData01Icon,
   ArrowDown01Icon,
   Settings01Icon,
-  DatabaseImportIcon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
 import { taskMenu } from '@/pages/task/menu';
