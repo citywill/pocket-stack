@@ -5,10 +5,6 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home01Icon,
   ChartLineData01Icon,
-  Task01Icon,
-  Calendar01Icon,
-  Building01Icon,
-  DatabaseIcon,
   Note01Icon,
   ArrowDown01Icon,
   Settings01Icon,
@@ -58,41 +54,11 @@ const menuItems: MenuItem[] = [
     adminOnly: true,
   },
   {
-    title: '任务管理',
-    path: '/tasks',
-    icon: Task01Icon,
-    userOnly: true,
-  },
-  {
     title: '笔记管理',
     path: '/notes',
     icon: Note01Icon,
     userOnly: true,
   },
-  {
-    title: '任务日历',
-    path: '/calendar',
-    icon: Calendar01Icon,
-    userOnly: true,
-  },
-  {
-    title: 'CRM管理',
-    icon: Building01Icon,
-    userOnly: true,
-    children: [
-      { title: '客户单位', path: '/crm/companies' },
-    ],
-  },
-  {
-    title: 'AI 数据助手',
-    path: '/ai-assistant',
-    // userOnly: true,
-    icon: DatabaseIcon
-  },
-  taskMenu,
-  crmMenu,
-  aiAssistantMenu,
-  exampleMenu,
   {
     title: '系统管理',
     icon: Settings01Icon,
