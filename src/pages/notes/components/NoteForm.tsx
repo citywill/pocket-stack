@@ -89,6 +89,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
                 </Avatar>
                 <form onSubmit={handleSubmit} className="flex-1">
                     <Textarea
+                        autoFocus
                         placeholder="分享你的想法..."
                         className="min-h-[100px] resize-none border-none focus-visible:ring-0 text-lg p-0 bg-transparent rounded-none"
                         value={content}
