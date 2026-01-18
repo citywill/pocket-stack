@@ -69,6 +69,14 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
     }
   };
 
+  const startEditing = () => {
+    setEditContent(note.content);
+    setExistingAttachments(note.attachments || []);
+    setDeletedAttachments([]);
+    setNewFiles([]);
+    setIsEditing(true);
+  };
+
   const cancelEdit = () => {
     setIsEditing(false);
     setEditContent(note.content);
@@ -93,23 +101,20 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
 
     setSubmitting(true);
     try {
-      const formData = new FormData();
-      formData.append('content', editContent);
+      // 构造更新数据
+      // 在 PocketBase 中，更新多文件字段时，如果传递一个数组：
+      // 1. 数组中的字符串会被视为要保留的现有文件名
+      // 2. 数组中的 File/Blob 对象会被视为要新增的文件
+      // 3. 不在数组中的现有文件将被删除
+      const data: any = {
+        content: editContent,
+        attachments: [
+          ...existingAttachments, // 保留的现有附件（文件名字符串）
+          ...newFiles            // 新增的附件（File 对象）
+        ]
+      };
 
-      // 处理待删除的旧附件
-      if (deletedAttachments.length > 0) {
-        // PocketBase 使用 '-' 前缀来删除文件字段中的特定文件
-        for (const filename of deletedAttachments) {
-          formData.append('attachments-', filename);
-        }
-      }
-
-      // 处理新增的附件
-      for (const file of newFiles) {
-        formData.append('attachments', file);
-      }
-
-      await pb.collection('notes').update(note.id, formData);
+      await pb.collection('notes').update(note.id, data);
       toast.success('更新成功');
       setIsEditing(false);
       onUpdate();
@@ -163,10 +168,7 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
-                  onClick={() => {
-                    setIsEditing(true);
-                    setEditContent(note.content);
-                  }}
+                  onClick={startEditing}
                 >
                   <HugeiconsIcon icon={PencilEdit01Icon} size={16} />
                 </Button>
