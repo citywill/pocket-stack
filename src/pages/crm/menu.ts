@@ -2,9 +2,16 @@ import {
   Building01Icon,
   Briefcase01Icon,
   Agreement01Icon,
+  DashboardCircleIcon,
 } from '@hugeicons/core-free-icons';
 
 export const crmMenu = [
+  {
+    title: 'CRM概览',
+    path: '/',
+    icon: DashboardCircleIcon,
+    userOnly: true,
+  },
   {
     title: '客户单位',
     path: '/crm/companies',
