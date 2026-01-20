@@ -14,7 +14,7 @@ export const ExampleRoutes = (
     <Route element={<ProtectedRoute />}>
       <Route path="/" element={<MainLayout />}>
         <Route path="examples/blank" element={<Blank />} />
-        <Route path="examples/dashboard" element={<ExampleDashboard />} />
+        <Route path="/" element={<ExampleDashboard />} />
         <Route path="examples/table" element={<ExampleTable />} />
         <Route path="examples/card" element={<ExampleCard />} />
         <Route path="examples/form" element={<Form />} />

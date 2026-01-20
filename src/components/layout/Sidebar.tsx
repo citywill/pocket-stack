@@ -3,15 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Home01Icon,
   ChartLineData01Icon,
   ArrowDown01Icon,
   Settings01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
-import { taskMenu } from '@/pages/task/menu';
-import { crmMenu } from '@/pages/crm/menu';
-import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
 import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
@@ -42,19 +38,10 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     title: '仪表盘',
-    path: '/',
-    icon: Home01Icon,
-    userOnly: true,
-  },
-  {
-    title: '仪表盘',
     path: '/admin/dashboard',
     icon: ChartLineData01Icon,
     adminOnly: true,
   },
-  taskMenu,
-  crmMenu,
-  aiAssistantMenu,
   exampleMenu,
   {
     title: '系统管理',

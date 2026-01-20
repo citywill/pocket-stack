@@ -3,10 +3,6 @@ import { MainLayout } from '@/components/layout';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
-import { Dashboard } from '@/pages/task/Dashboard';
-import { TaskRoutes } from '@/pages/task/routes';
-import { CrmRoutes } from '@/pages/crm/routes';
-import { AiAssistantRoutes } from '@/pages/AiAssistant/routes';
 import { ExampleRoutes } from '@/pages/examples/routes';
 import { AdminDashboard } from '@/pages/admin/AdminDashboard';
 import { Users } from '@/pages/admin/Users';
@@ -33,7 +29,6 @@ export function App() {
               {ExampleRoutes}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
-                  <Route index element={<Dashboard />} />
                   <Route path="admin/dashboard" element={
                     <AdminOnlyRoute><AdminDashboard /></AdminOnlyRoute>
                   } />
@@ -53,9 +48,6 @@ export function App() {
                     </AdminOnlyRoute>
                   } />
                   <Route path="profile" element={<Profile />} />
-                  {TaskRoutes}
-                  {CrmRoutes}
-                  {AiAssistantRoutes}
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
