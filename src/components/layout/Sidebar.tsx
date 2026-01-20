@@ -6,8 +6,8 @@ import {
   ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
-import { exampleMenu } from '@/pages/examples/menu';
 import { adminMenu } from '@/pages/admin/menu';
+import { crmMenu } from '@/pages/crm/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -36,7 +36,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   ...adminMenu,
-  exampleMenu,
+  ...crmMenu,
 ];
 
 interface SidebarProps {

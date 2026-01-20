@@ -5,6 +5,7 @@ import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { ExampleRoutes } from '@/pages/examples/routes';
 import { AdminRoutes } from '@/pages/admin/routes';
+import { CrmRoutes } from '@/pages/crm/routes';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
@@ -27,6 +28,7 @@ export function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
                   {AdminRoutes}
+                  {CrmRoutes}
                   <Route path="profile" element={<Profile />} />
                 </Route>
               </Route>
