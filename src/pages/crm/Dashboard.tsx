@@ -102,12 +102,14 @@ export default function CrmDashboard() {
 
       // 1. Fetch Metrics
       const [companiesRes, opportunitiesRes, contractsRes] = await Promise.all([
-        pb.collection('crm_companies').getList(1, 1),
+        pb.collection('crm_companies').getList(1, 1, { requestKey: null }),
         pb.collection('crm_opportunities').getList(1, 1, {
           filter: 'status != "赢单关闭" && status != "输单关闭"',
+          requestKey: null,
         }),
         pb.collection('crm_contracts').getFullList({
           filter: 'status = "执行中" || status = "已完成"',
+          requestKey: null,
         }),
       ]);
 
@@ -124,6 +126,7 @@ export default function CrmDashboard() {
       // 简单起见，获取过去12个月的商机并按月分组
       const allOpps = await pb.collection('crm_opportunities').getFullList({
         sort: 'created',
+        requestKey: null,
       });
       const monthlyData: Record<string, number> = {};
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -138,7 +141,7 @@ export default function CrmDashboard() {
       setOpportunityTrend(months.map(name => ({ name, value: monthlyData[name] })));
 
       // 3. Fetch Contract Status Data
-      const allContracts = await pb.collection('crm_contracts').getFullList();
+      const allContracts = await pb.collection('crm_contracts').getFullList({ requestKey: null });
       const statusCounts: Record<string, number> = {};
       allContracts.forEach(c => {
         statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
@@ -160,9 +163,9 @@ export default function CrmDashboard() {
 
       // 4. Recent Activities
       const [recentCos, recentOpps, recentCons] = await Promise.all([
-        pb.collection('crm_companies').getList(1, 5, { sort: '-created', expand: 'creator' }),
-        pb.collection('crm_opportunities').getList(1, 5, { sort: '-created', expand: 'company,creator' }),
-        pb.collection('crm_contracts').getList(1, 5, { sort: '-created', expand: 'company,creator' }),
+        pb.collection('crm_companies').getList(1, 5, { sort: '-created', expand: 'creator', requestKey: null }),
+        pb.collection('crm_opportunities').getList(1, 5, { sort: '-created', expand: 'company,creator', requestKey: null }),
+        pb.collection('crm_contracts').getList(1, 5, { sort: '-created', expand: 'company,creator', requestKey: null }),
       ]);
 
       const activities = [
@@ -179,6 +182,7 @@ export default function CrmDashboard() {
       // 注意：这里需要 expand 用户信息，假设 contract 有 creator 字段
       const contractsWithUsers = await pb.collection('crm_contracts').getFullList({
         expand: 'creator',
+        requestKey: null,
       });
       const userPerformance: Record<string, { amount: number, count: number, name: string }> = {};
 
