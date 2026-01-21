@@ -1,15 +1,12 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Note01Icon,
-  UserIcon,
-  StarIcon,
-  ArchiveIcon,
   Delete02Icon,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-export type NoteFilter = 'all' | 'favorites' | 'archived' | 'trash';
+export type NoteFilter = 'all' | 'trash';
 
 interface NotesSidebarProps {
   activeFilter: NoteFilter;
@@ -20,8 +17,6 @@ interface NotesSidebarProps {
 export function NotesSidebar({ activeFilter, onFilterChange, className }: NotesSidebarProps) {
   const menuItems = [
     { id: 'all', label: '全部', icon: Note01Icon },
-    { id: 'favorites', label: '收藏', icon: StarIcon },
-    { id: 'archived', label: '归档', icon: ArchiveIcon },
     { id: 'trash', label: '回收站', icon: Delete02Icon },
   ] as const;
 

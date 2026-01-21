@@ -79,12 +79,6 @@ export default function Notes() {
         filters.push(`content ~ "${query}"`);
       }
 
-      if (filter === 'favorites') {
-        filters.push(`isFavorite = true`);
-      } else if (filter === 'archived') {
-        filters.push(`isArchived = true`);
-      }
-
       if (filters.length > 0) {
         options.filter = filters.join(' && ');
       }
@@ -155,9 +149,9 @@ export default function Notes() {
 
   return (
     <div className="flex justify-center min-h-[calc(100vh-64px)] bg-[#f7f7f7]">
-      <div className="flex w-full max-w-5xl px-4 gap-6">
+      <div className="flex w-full max-w-4xl px-4 gap-6 justify-center">
         {/* 桌面端侧边栏 - 固定在左侧 */}
-        <aside className="hidden md:block w-48 shrink-0 pt-6">
+        <aside className="hidden md:block w-70 shrink-0 pt-6">
           <div className="sticky top-6">
             <NotesSidebar
               activeFilter={activeFilter}
@@ -168,7 +162,7 @@ export default function Notes() {
         </aside>
 
         {/* 主内容区 */}
-        <main className="flex-1 max-w-xl pt-6">
+        <main className="flex-1 w-full max-w-xl pt-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               {/* 移动端侧边栏触发按钮 */}
