@@ -11,13 +11,13 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NoteHeatmap } from './NoteHeatmap';
-import { Separator } from '@/components/ui/separator';
 
 export type NoteFilter = 'all' | 'trash';
 
 interface Tag {
   id: string;
   name: string;
+  count?: number;
 }
 
 interface NotesSidebarProps {
@@ -37,7 +37,7 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
     if (user?.id) {
       fetchTags();
     }
-  }, [user?.id]);
+  }, [user?.id, heatmapData]); // 当热力图数据更新时（通常意味着笔记有增删改），刷新标签计数
 
   const fetchTags = async () => {
     try {
@@ -46,7 +46,22 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
         sort: 'name',
         requestKey: null,
       });
-      setTags(records);
+
+      // 并行获取每个标签的笔记数量（仅统计当前用户的、未被软删除的笔记）
+      const tagsWithCounts = await Promise.all(records.map(async (tag) => {
+        try {
+          // 必须通过 note 关系字段进行过滤，确保统计的是有效笔记
+          const result = await pb.collection('note_tag_links').getList(1, 1, {
+            filter: `tag = "${tag.id}" && note.user = "${user?.id}" && note.isDeleted != true`,
+            requestKey: null,
+          });
+          return { ...tag, count: result.totalItems };
+        } catch (e) {
+          return { ...tag, count: 0 };
+        }
+      }));
+
+      setTags(tagsWithCounts);
     } catch (error: any) {
       if (!error.isAbort) {
         console.error('Failed to fetch tags:', error);
@@ -120,7 +135,19 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
                 )}
                 onClick={() => handleTagClick(tag.id)}
               >
-                <span className="text-sm"># {tag.name}</span>
+                <div className="flex items-center justify-between w-full">
+                  <span className="text-sm"># {tag.name}</span>
+                  {tag.count !== undefined && tag.count > 0 && (
+                    <span className={cn(
+                      "text-[10px] px-1.5 py-0.5 rounded-full",
+                      activeTagId === tag.id
+                        ? "bg-blue-200/50 text-blue-700"
+                        : "bg-slate-100 text-muted-foreground"
+                    )}>
+                      {tag.count}
+                    </span>
+                  )}
+                </div>
               </Button>
             ))}
           </div>
