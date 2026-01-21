@@ -13,7 +13,6 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import {
   UserIcon,
   Logout01Icon,
-  Settings01Icon,
   ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
 import { pb } from '@/lib/pocketbase';
