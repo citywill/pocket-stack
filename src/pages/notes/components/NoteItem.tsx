@@ -40,6 +40,7 @@ interface Note {
   user: string;
   attachments?: string[];
   isDeleted?: boolean;
+  noted: string;
   created: string;
   updated: string;
   expand?: {
@@ -63,6 +64,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(note.content);
+  const [editNoted, setEditNoted] = useState(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
   const [submitting, setSubmitting] = useState(false);
   const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
   const [existingAttachments, setExistingAttachments] = useState<string[]>(attachmentsArray);
@@ -81,6 +83,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
 
   const startEditing = () => {
     setEditContent(note.content);
+    setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
     const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
     setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
@@ -91,6 +94,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
   const cancelEdit = () => {
     setIsEditing(false);
     setEditContent(note.content);
+    setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
     const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
     setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
@@ -99,6 +103,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
 
   const handleUpdate = async () => {
     const isContentChanged = editContent.trim() !== note.content;
+    const isNotedChanged = new Date(editNoted).getTime() !== new Date(note.noted).getTime();
     const isAttachmentsChanged = deletedAttachments.length > 0 || newFiles.length > 0;
 
     if (!editContent.trim()) {
@@ -106,23 +111,19 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
       return;
     }
 
-    if (!isContentChanged && !isAttachmentsChanged) {
+    if (!isContentChanged && !isAttachmentsChanged && !isNotedChanged) {
       setIsEditing(false);
       return;
     }
 
     setSubmitting(true);
     try {
-      // 构造更新数据
-      // 在 PocketBase 中，更新多文件字段时，如果传递一个数组：
-      // 1. 数组中的字符串会被视为要保留的现有文件名
-      // 2. 数组中的 File/Blob 对象会被视为要新增的文件
-      // 3. 不在数组中的现有文件将被删除
       const data: any = {
         content: editContent,
+        noted: new Date(editNoted).toISOString(),
         attachments: [
-          ...existingAttachments, // 保留的现有附件（文件名字符串）
-          ...newFiles            // 新增的附件（File 对象）
+          ...existingAttachments,
+          ...newFiles
         ]
       };
 
@@ -173,11 +174,11 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-muted-foreground text-sm whitespace-nowrap cursor-help">
-                    {note.created ? formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN }) : '刚刚'}
+                    {note.noted ? formatDistanceToNow(new Date(note.noted), { addSuffix: true, locale: zhCN }) : (note.created ? formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN }) : '刚刚')}
                   </span>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{note.created ? format(new Date(note.created), 'yyyy-MM-dd HH:mm:ss') : '刚刚'}</p>
+                  <p>{note.noted ? format(new Date(note.noted), 'yyyy-MM-dd HH:mm:ss') : (note.created ? format(new Date(note.created), 'yyyy-MM-dd HH:mm:ss') : '刚刚')}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -233,6 +234,14 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
 
         {isEditing ? (
           <div className="mt-2 space-y-2">
+            <div className="flex items-center gap-2 mb-2">
+              <input
+                type="datetime-local"
+                className="bg-muted/50 rounded-lg px-2 py-1 text-xs border-none focus:ring-1 focus:ring-blue-500/20 outline-none"
+                value={editNoted}
+                onChange={(e) => setEditNoted(e.target.value)}
+              />
+            </div>
             <Textarea
               autoFocus
               className="min-h-[100px] resize-none focus-visible:ring-1 text-[15px] p-2 bg-muted/50 rounded-xl border-none"

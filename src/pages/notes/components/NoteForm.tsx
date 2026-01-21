@@ -23,6 +23,7 @@ interface NoteFormProps {
 export function NoteForm({ onSuccess }: NoteFormProps) {
     const { user } = useAuth();
     const [content, setContent] = useState('');
+    const [noted, setNoted] = useState(new Date().toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
     const [submitting, setSubmitting] = useState(false);
     const [files, setFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,6 +37,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
             const formData = new FormData();
             formData.append('content', content);
             formData.append('user', user.id);
+            formData.append('noted', new Date(noted).toISOString());
 
             for (const file of files) {
                 formData.append('attachments', file);
@@ -45,6 +47,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
 
             setContent('');
             setFiles([]);
+            setNoted(new Date().toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
             toast.success('发布成功');
             onSuccess();
         } catch (error: any) {

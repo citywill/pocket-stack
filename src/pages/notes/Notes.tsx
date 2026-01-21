@@ -27,6 +27,7 @@ interface Note {
   isFavorite?: boolean;
   isArchived?: boolean;
   isDeleted?: boolean;
+  noted: string;
   created: string;
   updated: string;
   expand?: {
@@ -59,7 +60,7 @@ export default function Notes() {
 
     try {
       const options: any = {
-        sort: '-created',
+        sort: '-noted',
         expand: 'user',
         requestKey: null,
       };
