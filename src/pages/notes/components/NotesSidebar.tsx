@@ -33,6 +33,13 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
   const [tags, setTags] = useState<Tag[]>([]);
   const activeTagId = searchParams.get('tag');
 
+  // 计算统计数据
+  const stats = {
+    notes: heatmapData.reduce((acc, curr) => acc + curr.count, 0),
+    tags: tags.length,
+    days: heatmapData.length
+  };
+
   useEffect(() => {
     if (user?.id) {
       fetchTags();
@@ -90,7 +97,25 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
 
   return (
     <div className={cn("w-64 flex flex-col gap-6 p-4 h-full bg-transparent overflow-y-auto", className)}>
-      <NoteHeatmap heatmapData={heatmapData} />
+      <div className="space-y-4">
+        {/* 统计概览 */}
+        <div className="flex justify-between gap-2">
+          <div className="text-center">
+            <div className="text-3xl text-gray-400">{stats.notes}</div>
+            <div className="text-xs text-gray-400">笔记</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl text-gray-400">{stats.tags}</div>
+            <div className="text-xs text-gray-400">标签</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl text-gray-400">{stats.days}</div>
+            <div className="text-xs text-gray-400">天数</div>
+          </div>
+        </div>
+
+        <NoteHeatmap heatmapData={heatmapData} />
+      </div>
 
       <div className="space-y-1">
         {menuItems.map((item) => (

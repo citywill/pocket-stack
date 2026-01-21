@@ -85,12 +85,6 @@ export function NoteHeatmap({ heatmapData }: NoteHeatmapProps) {
         .heatmap-container .react-calendar-heatmap .color-scale-3 { fill: #3b82f6; } /* blue-500 */
         .heatmap-container .react-calendar-heatmap .color-scale-4 { fill: #1d4ed8; } /* blue-700 */
         
-        .heatmap-container .react-calendar-heatmap .active-square {
-          stroke: #3b82f6;
-          stroke-width: 2px;
-          paint-order: stroke;
-        }
-
         .heatmap-container .react-calendar-heatmap {
           height: auto;
           width: 100%;
