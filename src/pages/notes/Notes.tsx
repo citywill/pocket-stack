@@ -5,10 +5,17 @@ import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Search01Icon, ArrowDown01Icon } from '@hugeicons/core-free-icons';
+import { Search01Icon, ArrowDown01Icon, Menu01Icon } from '@hugeicons/core-free-icons';
 import { NoteForm } from './components/NoteForm';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const PER_PAGE = 10;
 
@@ -38,6 +45,7 @@ export default function Notes() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<NoteFilter>('all');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
@@ -126,7 +134,7 @@ export default function Notes() {
   return (
     <div className="flex justify-center min-h-[calc(100vh-64px)] bg-[#f7f7f7]">
       <div className="flex w-full max-w-5xl px-4 gap-6">
-        {/* 侧边栏 - 固定在左侧 */}
+        {/* 桌面端侧边栏 - 固定在左侧 */}
         <aside className="hidden md:block w-48 shrink-0 pt-6">
           <div className="sticky top-6">
             <NotesSidebar
@@ -138,10 +146,33 @@ export default function Notes() {
         </aside>
 
         {/* 主内容区 */}
-        <main className="flex-1 max-w-2xl pt-6">
+        <main className="flex-1 max-w-xl pt-6">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-xl font-bold text-foreground/80">笔记</h1>
-            <div className="relative w-48 md:w-64">
+            <div className="flex items-center gap-3">
+              {/* 移动端侧边栏触发按钮 */}
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl bg-white shadow-sm">
+                    <HugeiconsIcon icon={Menu01Icon} size={20} className="text-foreground/70" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-64 border-none bg-[#f7f7f7]">
+                  <SheetHeader className="p-6 pb-2 text-left">
+                    <SheetTitle className="text-xl font-bold text-foreground/80">笔记</SheetTitle>
+                  </SheetHeader>
+                  <NotesSidebar
+                    activeFilter={activeFilter}
+                    onFilterChange={(filter) => {
+                      setActiveFilter(filter);
+                      setIsSheetOpen(false);
+                    }}
+                    className="w-full"
+                  />
+                </SheetContent>
+              </Sheet>
+              <h1 className="text-xl font-bold text-foreground/80">笔记</h1>
+            </div>
+            <div className="relative w-40 md:w-64">
               <HugeiconsIcon
                 icon={Search01Icon}
                 size={18}
