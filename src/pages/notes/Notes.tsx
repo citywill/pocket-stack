@@ -17,6 +17,8 @@ interface Note {
   content: string;
   user: string;
   attachments?: string[];
+  isFavorite?: boolean;
+  isArchived?: boolean;
   created: string;
   updated: string;
   expand?: {
@@ -55,13 +57,16 @@ export default function Notes() {
 
       const filters: string[] = [];
 
+      // 始终只查询当前用户的笔记
+      if (user?.id) {
+        filters.push(`user = "${user.id}"`);
+      }
+
       if (query.trim()) {
         filters.push(`content ~ "${query}"`);
       }
 
-      if (filter === 'mine' && user?.id) {
-        filters.push(`user = "${user.id}"`);
-      } else if (filter === 'favorites') {
+      if (filter === 'favorites') {
         filters.push(`isFavorite = true`);
       } else if (filter === 'archived') {
         filters.push(`isArchived = true`);

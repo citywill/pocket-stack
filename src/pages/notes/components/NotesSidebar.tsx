@@ -8,7 +8,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-export type NoteFilter = 'all' | 'mine' | 'favorites' | 'archived';
+export type NoteFilter = 'all' | 'favorites' | 'archived';
 
 interface NotesSidebarProps {
   activeFilter: NoteFilter;
@@ -19,7 +19,6 @@ interface NotesSidebarProps {
 export function NotesSidebar({ activeFilter, onFilterChange, className }: NotesSidebarProps) {
   const menuItems = [
     { id: 'all', label: '全部', icon: Note01Icon },
-    { id: 'mine', label: '我的', icon: UserIcon },
     { id: 'favorites', label: '收藏', icon: StarIcon },
     { id: 'archived', label: '归档', icon: ArchiveIcon },
   ] as const;
