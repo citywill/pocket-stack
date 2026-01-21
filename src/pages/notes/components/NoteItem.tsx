@@ -14,6 +14,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Delete02Icon,
   PencilEdit01Icon,
   CheckmarkCircle02Icon,
@@ -23,7 +29,7 @@ import {
   ViewIcon,
   Image01Icon
 } from '@hugeicons/core-free-icons';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { toast } from 'sonner';
 
@@ -157,9 +163,18 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-1 min-w-0">
-            <span className="text-muted-foreground text-sm whitespace-nowrap">
-              {note.created ? formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN }) : '刚刚'}
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-muted-foreground text-sm whitespace-nowrap cursor-help">
+                    {note.created ? formatDistanceToNow(new Date(note.created), { addSuffix: true, locale: zhCN }) : '刚刚'}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{note.created ? format(new Date(note.created), 'yyyy-MM-dd HH:mm:ss') : '刚刚'}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           {user?.id === note.user && (
             <div className="flex gap-1">
