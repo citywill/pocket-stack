@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -90,18 +89,9 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
         }
     };
 
-    const getAvatarUrl = (record: any) => {
-        if (!record || !record.avatar) return '';
-        return pb.files.getURL(record, record.avatar);
-    };
-
     return (
         <Card className="p-4 rounded-2xl shadow-sm border-none bg-white transition-all duration-300 focus-within:shadow-md overflow-visible">
             <div className="flex gap-4">
-                <Avatar className="h-10 w-10">
-                    <AvatarImage src={getAvatarUrl(user)} />
-                    <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
-                </Avatar>
                 <form onSubmit={handleSubmit} className="flex-1">
                     <Textarea
                         autoFocus
@@ -145,7 +135,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
 
                     <Separator className="bg-slate-100/50" />
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between pt-4">
                         <div className="flex items-center gap-1">
                             <input
                                 type="file"
@@ -182,7 +172,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
                         <Button
                             type="submit"
                             disabled={submitting || (!content.trim() && files.length === 0)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-medium transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-medium transition-all hover:shadow-md disabled:opacity-50"
                         >
                             {submitting ? '发布中...' : '发布'}
                         </Button>

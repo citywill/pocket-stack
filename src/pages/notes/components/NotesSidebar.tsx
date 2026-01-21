@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NoteHeatmap } from './NoteHeatmap';
+import { UserMenu } from './UserMenu';
 
 export type NoteFilter = 'all' | 'trash';
 
@@ -98,6 +99,9 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
   return (
     <div className={cn("w-64 flex flex-col gap-6 p-4 h-full bg-transparent overflow-y-auto", className)}>
       <div className="space-y-4">
+        {/* 用户菜单 */}
+        <UserMenu />
+
         {/* 统计概览 */}
         <div className="flex justify-between gap-2">
           <div className="text-center">
