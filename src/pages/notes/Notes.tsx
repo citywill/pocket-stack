@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { pb } from '@/lib/pocketbase';
+import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Search01Icon, ArrowDown01Icon } from '@hugeicons/core-free-icons';
 import { NoteForm } from './components/NoteForm';
 import { NoteItem } from './components/NoteItem';
+import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
 
 const PER_PAGE = 10;
 
@@ -28,14 +30,16 @@ interface Note {
 }
 
 export default function Notes() {
+  const { user } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<NoteFilter>('all');
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchNotes = useCallback(async (query = searchQuery, targetPage = 1, isAppend = false) => {
+  const fetchNotes = useCallback(async (query = searchQuery, targetPage = 1, isAppend = false, filter = activeFilter) => {
     if (isAppend) {
       setLoadingMore(true);
     } else {
@@ -46,10 +50,25 @@ export default function Notes() {
       const options: any = {
         sort: '-created',
         expand: 'user',
+        requestKey: null,
       };
 
+      const filters: string[] = [];
+
       if (query.trim()) {
-        options.filter = `content ~ "${query}"`;
+        filters.push(`content ~ "${query}"`);
+      }
+
+      if (filter === 'mine' && user?.id) {
+        filters.push(`user = "${user.id}"`);
+      } else if (filter === 'favorites') {
+        filters.push(`isFavorite = true`);
+      } else if (filter === 'archived') {
+        filters.push(`isArchived = true`);
+      }
+
+      if (filters.length > 0) {
+        options.filter = filters.join(' && ');
       }
 
       const result = await pb.collection('notes').getList<Note>(targetPage, PER_PAGE, options);
@@ -71,15 +90,15 @@ export default function Notes() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, activeFilter, user?.id]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchNotes(searchQuery, 1, false);
+      fetchNotes(searchQuery, 1, false, activeFilter);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, fetchNotes]);
+  }, [searchQuery, activeFilter, fetchNotes]);
 
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return;
@@ -100,68 +119,77 @@ export default function Notes() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto py-6 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">笔记管理</h1>
-        <div className="relative w-64">
-          <HugeiconsIcon
-            icon={Search01Icon}
-            size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            placeholder="搜索笔记..."
-            className="pl-10 rounded-full bg-muted/50 border-1 focus-visible:ring-1"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
+    <div className="flex justify-center min-h-[calc(100vh-64px)] bg-[#f7f7f7]">
+      <div className="flex w-full max-w-5xl px-4 gap-6">
+        {/* 侧边栏 - 固定在左侧 */}
+        <aside className="hidden md:block w-48 shrink-0 pt-6">
+          <div className="sticky top-6">
+            <NotesSidebar
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+              className="w-full p-0"
+            />
+          </div>
+        </aside>
 
-      {/* 发布框 */}
-      <NoteForm onSuccess={fetchNotes} />
-
-      {/* 笔记列表 */}
-      <div className="space-y-px pb-10">
-        {loading ? (
-          <div className="text-center py-10 text-muted-foreground">加载中...</div>
-        ) : notes.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground">暂无笔记</div>
-        ) : (
-          <>
-            {notes.map((note) => (
-              <NoteItem
-                key={note.id}
-                note={note}
-                onDelete={handleDelete}
-                onUpdate={() => fetchNotes(searchQuery, 1, false)}
+        {/* 主内容区 */}
+        <main className="flex-1 max-w-2xl pt-6">
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-xl font-bold text-foreground/80">笔记</h1>
+            <div className="relative w-48 md:w-64">
+              <HugeiconsIcon
+                icon={Search01Icon}
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               />
-            ))}
-
-            {/* 加载更多 */}
-            <div className="mt-8 flex justify-center">
-              {hasMore ? (
-                <Button
-                  variant="ghost"
-                  className="rounded-full text-muted-foreground hover:text-primary hover:bg-primary/5 px-8"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? (
-                    "加载中..."
-                  ) : (
-                    <>
-                      <HugeiconsIcon icon={ArrowDown01Icon} size={18} className="mr-2" />
-                      加载更多
-                    </>
-                  )}
-                </Button>
-              ) : notes.length > 0 ? (
-                <span className="text-sm text-muted-foreground">没有更多笔记了</span>
-              ) : null}
+              <Input
+                placeholder="搜索..."
+                className="pl-10 h-9 rounded-xl bg-white border-none shadow-sm focus-visible:ring-1 focus-visible:ring-blue-500/20"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
-          </>
-        )}
+          </div>
+
+          {/* 发布框 */}
+          <NoteForm onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
+
+          {/* 笔记列表 */}
+          <div className="space-y-4 pb-10 mt-6">
+            {loading ? (
+              <div className="text-center py-10 text-muted-foreground">加载中...</div>
+            ) : notes.length === 0 ? (
+              <div className="text-center py-10 text-muted-foreground bg-white rounded-2xl shadow-sm">暂无笔记</div>
+            ) : (
+              <>
+                {notes.map((note) => (
+                  <NoteItem
+                    key={note.id}
+                    note={note}
+                    onDelete={handleDelete}
+                    onUpdate={() => fetchNotes(searchQuery, 1, false, activeFilter)}
+                  />
+                ))}
+
+                {/* 加载更多 */}
+                <div className="mt-8 flex justify-center pb-10">
+                  {hasMore ? (
+                    <Button
+                      variant="ghost"
+                      className="rounded-xl text-muted-foreground hover:text-primary hover:bg-white px-8 shadow-sm"
+                      onClick={handleLoadMore}
+                      disabled={loadingMore}
+                    >
+                      {loadingMore ? "加载中..." : "加载更多"}
+                    </Button>
+                  ) : notes.length > 0 ? (
+                    <span className="text-sm text-muted-foreground">没有更多笔记了</span>
+                  ) : null}
+                </div>
+              </>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );

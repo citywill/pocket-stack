@@ -81,7 +81,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
     };
 
     return (
-        <Card className="p-4 mb-6 rounded-2xl shadow-sm border border-transparent bg-card/50 backdrop-blur transition-all duration-300 focus-within:border-blue-500/30 focus-within:ring-4 focus-within:ring-blue-500/5 focus-within:bg-card">
+        <Card className="p-4 rounded-2xl shadow-sm border-none bg-white transition-all duration-300 focus-within:shadow-md">
             <div className="flex gap-4">
                 <Avatar className="h-10 w-10">
                     <AvatarImage src={getAvatarUrl(user)} />
