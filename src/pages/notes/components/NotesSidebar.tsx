@@ -24,6 +24,7 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
 
   return (
     <div className={cn("w-64 flex flex-col gap-6 p-4 h-full bg-transparent", className)}>
+      <NoteHeatmap heatmapData={heatmapData} />
       <div className="space-y-1">
         {menuItems.map((item) => (
           <Button
@@ -32,7 +33,7 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
             className={cn(
               "w-full justify-start gap-3 rounded-xl h-10 px-3 transition-all duration-200",
               activeFilter === item.id
-                ? "bg-white shadow-sm text-blue-600 font-medium"
+                ? "bg-white text-blue-600 font-medium"
                 : "text-muted-foreground hover:bg-white/50 hover:text-foreground"
             )}
             onClick={() => onFilterChange(item.id)}
@@ -43,7 +44,6 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
         ))}
       </div>
 
-      <NoteHeatmap heatmapData={heatmapData} />
     </div>
   );
 }

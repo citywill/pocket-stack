@@ -197,7 +197,7 @@ export default function Notes() {
 
   return (
     <div className="flex justify-center min-h-[calc(100vh-64px)] bg-[#f7f7f7]">
-      <div className="flex w-full max-w-4xl px-4 gap-6 justify-center">
+      <div className="flex w-full max-w-4xl px-4 gap-8 justify-center">
         {/* 桌面端侧边栏 - 固定在左侧 */}
         <aside className="hidden md:block w-70 shrink-0 pt-6">
           <div className="sticky top-6">
