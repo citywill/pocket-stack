@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Search01Icon, ArrowDown01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
+import { Search01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { NoteCreate } from './components/NoteCreate';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
@@ -157,11 +157,7 @@ export default function Notes() {
 
         if (noteIds.length === 0) {
           // 如果该标签下没有笔记，则直接返回空列表，避免无效查询
-          if (isAppend) {
-            setNotes(prev => []);
-          } else {
-            setNotes([]);
-          }
+          setNotes([]);
           setHasMore(false);
           setPage(targetPage);
           return; // 提前结束

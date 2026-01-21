@@ -4,10 +4,7 @@ import { cn } from '@/lib/utils';
 import { adminMenu } from '@/pages/admin/menu';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Home01Icon,
-  ChartLineData01Icon,
   Note01Icon,
-  Settings01Icon,
   ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';

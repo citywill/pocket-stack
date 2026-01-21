@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,6 @@ import {
   Cancel01Icon,
   ArrowTurnBackwardIcon,
   FileAttachmentIcon,
-  Image01Icon,
 } from '@hugeicons/core-free-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';

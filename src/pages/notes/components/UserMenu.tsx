@@ -15,14 +15,13 @@ import {
   Settings01Icon,
   ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
-import { cn } from '@/lib/utils';
 import { pb } from '@/lib/pocketbase';
 
 interface UserMenuProps {
   className?: string;
 }
 
-export function UserMenu({ className }: UserMenuProps) {
+export function UserMenu({ }: UserMenuProps) {
   const { user, logout } = useAuth();
 
   if (!user) return null;

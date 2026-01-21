@@ -1,4 +1,3 @@
-import React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Tooltip } from 'react-tooltip';
@@ -47,26 +46,26 @@ export function NoteHeatmap({ heatmapData }: NoteHeatmapProps) {
                     values={heatmapData}
                     gutterSize={3}
                     onClick={handleSquareClick}
-                    classForValue={(value) => {
+                    classForValue={(value: any) => {
                         let className = 'color-empty';
-                        if (value && value.count > 0) {
-                            if (value.count === 1) className = 'color-scale-1';
-                            else if (value.count === 2) className = 'color-scale-2';
-                            else if (value.count === 3) className = 'color-scale-3';
+                        if (value && (value as any).count > 0) {
+                            if ((value as any).count === 1) className = 'color-scale-1';
+                            else if ((value as any).count === 2) className = 'color-scale-2';
+                            else if ((value as any).count === 3) className = 'color-scale-3';
                             else className = 'color-scale-4';
                         }
 
-                        if (value && value.date === activeFrom) {
+                        if (value && (value as any).date === activeFrom) {
                             className += ' active-square';
                         }
                         return className;
                     }}
                     tooltipDataAttrs={(value: any) => {
-                        if (!value || !value.date) return { 'data-tooltip-id': 'heatmap-tooltip', 'data-tooltip-content': '无记录' };
+                        if (!value || !value.date) return { 'data-tooltip-id': 'heatmap-tooltip', 'data-tooltip-content': '无记录' } as any;
                         return {
                             'data-tooltip-id': 'heatmap-tooltip',
                             'data-tooltip-content': `${value.date}: ${value.count} 条记录`,
-                        };
+                        } as any;
                     }}
                     showWeekdayLabels={false}
                     showMonthLabels={false}
