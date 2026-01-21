@@ -1,87 +1,91 @@
-# Pocket Stack: AI-Friendly Full-Stack Development Solution
+# Pocket Stack ：AI友好的全栈开发解决方案
 
-A modern, full-stack admin system scaffold built with **React 19 + TypeScript + Vite + shadcn/ui + PocketBase**.
+采用 AI 友好的技术栈：基于 React 19 + TypeScript + Vite + shadcn/ui + PocketBase 构建的现代化、全栈后台管理系统脚手架，并结合 Shadcn & PocketBase MCP，提供完整、流畅、全栈、98分的 Vibe Coding 开发体验。
 
-This project adopts an AI-friendly tech stack and combines Shadcn & PocketBase MCP to provide a complete, smooth, full-stack, 98-point Vibe Coding development experience.
+简体中文 | [English](README_en.md)
 
-English | [简体中文](README_zh-CN.md)
+![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
 
-![Pocket Stack Example Page](docs/assets/screenshot-admin.png)
+## 📄 更多信息
 
-## 🎶 Vibe Coding Performance
+- [演示](https://pocket-stack.zeabur.app/)
+- [文档](https://citywill.github.io/pocket-stack/)
 
-98% of Pocket Stack's features were developed using Vibe Coding. After testing on multiple development agents, although results vary, all can complete development.
+## 基于 PockeStack 的 Vibe Coding 图示
 
-| IDE         | Model           | Score | Description                                                                                |
-| ----------- | --------------- | ----- | ------------------------------------------------------------------------------------------ |
-| Trae China  | Doubao-Seed-1.8 | 90    | Can achieve vibe development. Half the features work on first try, half need debug prompts |
-| Trae Global | Ginimi-3-flash  | 95    | Can achieve vibe development. 20% of cases need debug prompts                              |
-| Antigravity | Ginimi-3-flash  | 98    | Can achieve vibe development. Almost all work on first try                                 |
-| Antigravity | Ginimi-3-Pro    | 98    | Can achieve vibe development. Almost perfect                                               |
+![Pocket Stack Vibe Coding 图示](docs/assets/diagram.png)
 
-## 🌟 Core Features
+## 🎶 Vibe Coding 效果
 
-- 🎨 **Frontend Features**: Built with shadcn/ui (Maia style) and Tailwind CSS v4, with built-in dark mode. Uses [HugeIcons](https://hugeicons.com/) icon library. Adaptive layout for Desktop, Tablet, and Mobile.
-- 🚀 **Backend Features**: Native integration with [PocketBase](https://pocketbase.io/) for authentication and data storage.
-- 🧩 **Modular Architecture**: Supports decoupled business module development. Each module independently configures routes (`routes.tsx`) and menus (`menu.ts`) for plug-and-play integration.
-- 📋 **Business Example**: Built-in personal task management system with multi-state transitions, priority settings, and user data isolation.
-- 🎪 **Authentication**: Supports "Super Admin" and "Regular Admin" login modes.
-- 🛡️ **Permission Control**:
-    - Route-level protection (`ProtectedRoute`, `AdminOnlyRoute`).
-    - Sidebar menu dynamically filtered based on role.
-    - UI automatically downgrades or hides based on permissions.
-    - Backend API Rules ensure tenant/user-level data physical isolation.
+经过在多个开发 Agent 测试，Pocket Stack 可以使用免费的 Trae 表现出几乎完美的 Vibe Coding。
 
-## 🌐 Tech Stack
+| IDE         | 大模型          | 打分 | 说明                                                        |
+| ----------- | --------------- | ---- | ----------------------------------------------------------- |
+| Trae 国内版 | Doubao-Seed-1.8 | 90分 | 可以实现vibe开发。一半功能一次成型，一半需要补充debug提示词 |
+| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。20%的情况需补充debug提示词                |
 
-| Domain                 | Solution                     |
-| :--------------------- | :--------------------------- |
-| **Backend/Auth**       | PocketBase                   |
-| **Frontend Framework** | React 19 + TypeScript        |
-| **Build Tool**         | Vite                         |
-| **UI Components**      | shadcn/ui (@base-ui/react)   |
-| **Styling**            | Tailwind CSS v4 (Maia Style) |
-| **Routing**            | React Router v7              |
-| **Icons**              | HugeIcons React              |
+## 🌟 核心特性
 
-## 📁 Directory Structure
+- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 [HugeIcons](https://hugeicons.com/) 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
+- 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
+- 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立配置路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
+- 📋 **业务示例**：内置个人任务管理系统，支持多状态流转、优先级设定及用户数据隔离。
+- 🎪 **身份认证**：支持“超级管理员”与“普通管理员”登录模式。
+- 🛡️ **权限控制**：
+    - 路由级保护 (`ProtectedRoute`, `AdminOnlyRoute`)。
+    - 侧边栏菜单根据角色动态过滤。
+    - UI 自动根据权限进行降级或隐藏。
+    - 后端 API Rules 确保租户/用户级数据物理隔离。
+
+## 🌐 技术栈
+
+| 领域          | 技术方案                     |
+| :------------ | :--------------------------- |
+| **后端/认证** | PocketBase                   |
+| **前端框架**  | React 19 + TypeScript        |
+| **构建工具**  | Vite                         |
+| **UI 组件**   | shadcn/ui (@base-ui/react)   |
+| **样式**      | Tailwind CSS v4 (Maia Style) |
+| **路由**      | React Router v7              |
+| **图标**      | HugeIcons React              |
+
+## 📁 目录结构
 
 ```text
-├── pb_schemas/          # PocketBase collection configurations (JSON)
+├── pb_schemas/          # PocketBase 集合配置 (JSON)
 └── src/
     ├── components/
-    │   ├── layout/          # Layout components (Sidebar, Header, MainLayout)
-    │   ├── ui/              # shadcn/ui component library
-    │   ├── auth-provider.tsx # Authentication context logic
-    │   └── protected-route.tsx # Route guard component
-    ├── pages/               # Business pages
-    │   ├── {module}/        # Business modules (e.g., task, crm)
-    │   │   ├── components/  # Module-specific components
-    │   │   ├── routes.tsx   # Module route configuration
-    │   │   └── menu.ts      # Module menu configuration
-    │   └── login/           # Basic pages
-    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
-    ├── App.tsx              # Router and Provider root configuration
-    └── main.tsx             # Application entry point
+    │   ├── layout/          # 布局组件 (Sidebar, Header, MainLayout)
+    │   ├── ui/              # shadcn/ui 组件库
+    │   ├── auth-provider.tsx # 权限上下文逻辑
+    │   └── protected-route.tsx # 路由守卫组件
+    ├── pages/               # 业务页面
+    │   ├── {module}/        # 业务模块 (如 task, crm)
+    │   │   ├── components/  # 模块私有组件
+    │   │   ├── routes.tsx   # 模块路由配置
+    │   │   └── menu.ts      # 模块菜单配置
+    │   └── login/           # 基础页面
+    ├── lib/                 # 工具类 (pocketbase SDK, tailwind utils)
+    ├── App.tsx              # 路由与 Provider 根配置
+    └── main.tsx             # 应用入口
 ```
 
-## 🚀 Quick Start
+## 🚀 快速开始
 
-### 1. Start Backend (PocketBase)
-1. Download [PocketBase](https://pocketbase.io/docs/) binary file.
-2. Run `./pocketbase serve`.
-3. Visit `http://127.0.0.1:8090/_/` to create admin account and configure collections.
+### 1. 启动后端 (PocketBase)
+1. 下载 [PocketBase](https://pocketbase.io/docs/) 二进制文件。
+2. 运行 `./pocketbase serve`。
+3. 访问 `http://127.0.0.1:8090/_/` 创建管理员账号并配置集合。
 
-### 2. Run Frontend
+### 2. 运行前端
 ```bash
+# 编辑 .env 文件，配置 PocketBase 后端地址
+cp .env.example .env
 
-# Install dependencies
+# 安装依赖
 npm install
 
-# Start development server
+# 启动开发服务器
 npm run dev
 ```
 
-### 3. Backend Configuration (Optional)
-
-If the project includes PocketBase Schemas files (located in `pb_schemas/`), you can import the configuration in the PocketBase admin panel.

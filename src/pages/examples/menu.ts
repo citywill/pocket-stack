@@ -4,7 +4,7 @@ export const exampleMenu = {
   title: '示例页面',
   icon: PrismIcon,
   children: [
-    { title: '仪表盘', path: '/examples/dashboard' },
+    { title: '仪表盘', path: '/' },
     { title: '空页面', path: '/examples/blank' },
     { title: '表格', path: '/examples/table' },
     { title: '卡片', path: '/examples/card' },

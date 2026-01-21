@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import { adminMenu } from '@/pages/admin/menu';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
   Home01Icon,
   ChartLineData01Icon,
   Note01Icon,
-  ArrowDown01Icon,
   Settings01Icon,
+  ArrowDown01Icon,
 } from '@hugeicons/core-free-icons';
 import { Logo } from '@/components/logo';
-import { taskMenu } from '@/pages/task/menu';
-import { crmMenu } from '@/pages/crm/menu';
-import { aiAssistantMenu } from '@/pages/AiAssistant/menu';
-import { exampleMenu } from '@/pages/examples/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -42,33 +39,12 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   {
-    title: '仪表盘',
-    path: '/',
-    icon: Home01Icon,
-    userOnly: true,
-  },
-  {
-    title: '仪表盘',
-    path: '/admin/dashboard',
-    icon: ChartLineData01Icon,
-    adminOnly: true,
-  },
-  {
     title: '笔记管理',
-    path: '/notes',
+    path: '/',
     icon: Note01Icon,
     userOnly: true,
   },
-  {
-    title: '系统管理',
-    icon: Settings01Icon,
-    adminOnly: true,
-    children: [
-      { title: '全局配置', path: '/admin/settings' },
-      { title: '用户管理', path: '/admin/users' },
-      { title: '系统初始化', path: '/admin/install' },
-    ],
-  },
+  ...adminMenu,
 ];
 
 interface SidebarProps {

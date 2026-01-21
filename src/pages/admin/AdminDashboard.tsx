@@ -3,25 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Bookmark01Icon,
-  HourglassIcon,
-  CheckmarkCircle01Icon,
   UserIcon
 } from '@hugeicons/core-free-icons';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  status: 'todo' | 'in_progress' | 'completed';
-  priority: 'low' | 'medium' | 'high';
-  updated?: string;
-  created?: string;
-  user: string;
-}
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 
 interface User {
   id: string;
@@ -31,18 +17,6 @@ interface User {
   created: string;
   updated: string;
 }
-
-const statusMap = {
-  todo: { label: '待办', color: 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400', icon: Bookmark01Icon, chartColor: '#6b7280', gradient: ['#6b7280', '#9ca3af'] },
-  in_progress: { label: '进行中', color: 'bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400', icon: HourglassIcon, chartColor: '#3b82f6', gradient: ['#3b82f6', '#60a5fa'] },
-  completed: { label: '已完成', color: 'bg-green-100 text-green-600 dark:bg-green-900/20 dark:text-green-400', icon: CheckmarkCircle01Icon, chartColor: '#10b981', gradient: ['#10b981', '#34d399'] },
-};
-
-// const priorityMap = {
-//   low: { label: '低', color: 'text-neutral-500' },
-//   medium: { label: '中', color: 'text-blue-500' },
-//   high: { label: '高', color: 'text-red-500' },
-// };
 
 // Custom tooltip style
 const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
@@ -62,38 +36,16 @@ const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
   return null;
 };
 
-// Custom pie tooltip
-const PieTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700">
-        <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-1">{data.name}</p>
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">{data.value} 个任务</p>
-        <p className="text-xs text-neutral-500 dark:text-neutral-500">占比: {(payload[0].percent ? payload[0].percent * 100 : 0).toFixed(1)}%</p>
-      </div>
-    );
-  }
-  return null;
-};
-
 export function AdminDashboard() {
   const { user } = useAuth();
-  // const [tasks, setTasks] = useState<Task[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState([
-    { title: '待办任务', value: '0', icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
-    { title: '进行中', value: '0', icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
-    { title: '已完成', value: '0', icon: CheckmarkCircle01Icon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-950/50' },
-    { title: '总任务', value: '0', icon: Bookmark01Icon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/50' },
     { title: '活跃用户', value: '0', icon: UserIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-950/50' },
     { title: '总用户数', value: '0', icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
   ]);
 
   // Chart data
-  const [trendData, setTrendData] = useState<any[]>([]);
-  const [statusData, setStatusData] = useState<any[]>([]);
   const [userTrendData, setUserTrendData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -101,14 +53,6 @@ export function AdminDashboard() {
 
     const fetchData = async () => {
       try {
-        // Fetch all tasks (global data)
-        const tasksResult = await pb.collection('tasks').getFullList<Task>({
-          filter: `archived = false`,
-          sort: '-created',
-          signal: undefined,
-        });
-        // setTasks(tasksResult);
-
         // Fetch all users
         const usersResult = await pb.collection('users').getFullList<User>({
           sort: '-created',
@@ -117,46 +61,13 @@ export function AdminDashboard() {
         setUsers(usersResult);
 
         // Update stats
-        const todoCount = tasksResult.filter(t => t.status === 'todo').length;
-        const inProgressCount = tasksResult.filter(t => t.status === 'in_progress').length;
-        const completedCount = tasksResult.filter(t => t.status === 'completed').length;
-        const totalCount = tasksResult.length;
         const activeUsers = usersResult.length;
         const totalUsers = usersResult.length;
 
         setStats([
-          { title: '待办任务', value: todoCount.toString(), icon: Bookmark01Icon, color: 'text-neutral-600 dark:text-neutral-400', bgColor: 'bg-neutral-50 dark:bg-neutral-900/50' },
-          { title: '进行中', value: inProgressCount.toString(), icon: HourglassIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-50 dark:bg-blue-950/50' },
-          { title: '已完成', value: completedCount.toString(), icon: CheckmarkCircle01Icon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-50 dark:bg-green-950/50' },
-          { title: '总任务', value: totalCount.toString(), icon: Bookmark01Icon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-50 dark:bg-purple-950/50' },
           { title: '活跃用户', value: activeUsers.toString(), icon: UserIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-50 dark:bg-orange-950/50' },
           { title: '总用户数', value: totalUsers.toString(), icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
         ]);
-
-        // Prepare status distribution data
-        setStatusData([
-          { name: '待办', value: todoCount, color: statusMap.todo.chartColor, gradient: statusMap.todo.gradient },
-          { name: '进行中', value: inProgressCount, color: statusMap.in_progress.chartColor, gradient: statusMap.in_progress.gradient },
-          { name: '已完成', value: completedCount, color: statusMap.completed.chartColor, gradient: statusMap.completed.gradient },
-        ]);
-
-        // Prepare task trend data (group by day)
-        const trendMap: { [key: string]: number } = {};
-        tasksResult.forEach(task => {
-          if (task.created) {
-            const date = new Date(task.created);
-            const dayKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-            trendMap[dayKey] = (trendMap[dayKey] || 0) + 1;
-          }
-        });
-
-        // Convert to array and sort by date
-        const trendArray = Object.entries(trendMap).map(([date, count]) => ({
-          date,
-          count
-        })).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-        setTrendData(trendArray);
 
         // Prepare user trend data (group by day)
         const userTrendMap: { [key: string]: number } = {};
@@ -200,7 +111,7 @@ export function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
         {stats.map((stat) => {
           return (
             <Card key={stat.title} className="overflow-hidden hover:shadow-md transition-shadow">
@@ -222,122 +133,6 @@ export function AdminDashboard() {
             </Card>
           );
         })}
-      </div>
-
-      {/* Charts Section */}
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
-        <Card className="hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">全局任务创建趋势</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="h-64 flex items-center justify-center">
-                <div className="animate-pulse">
-                  <p className="text-neutral-500">加载中...</p>
-                </div>
-              </div>
-            ) : trendData.length === 0 ? (
-              <div className="h-64 flex items-center justify-center">
-                <p className="text-neutral-500">暂无数据</p>
-              </div>
-            ) : (
-              <div className="relative">
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={trendData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.5} />
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.05} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-                    <XAxis
-                      dataKey="date"
-                      stroke="#9ca3af"
-                      tick={{ fill: '#6b7280', fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(value) => value.slice(5)}
-                      tickMargin={10}
-                    />
-                    <YAxis
-                      stroke="#9ca3af"
-                      tick={{ fill: '#6b7280', fontSize: 12 }}
-                      tickLine={false}
-                      axisLine={false}
-                      allowDecimals={false}
-                    />
-                    <Tooltip content={<CustomTooltip unit="个任务" />} cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '5 5' }} />
-                    <Area
-                      type="monotone"
-                      dataKey="count"
-                      stroke="#3b82f6"
-                      strokeWidth={3}
-                      fillOpacity={1}
-                      fill="url(#colorCount)"
-                      animationDuration={1500}
-                      animationBegin={200}
-                      activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 4, fill: '#ffffff' }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-all duration-300">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">全局任务状态分布</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="h-64 flex items-center justify-center">
-                <div className="animate-pulse">
-                  <p className="text-neutral-500">加载中...</p>
-                </div>
-              </div>
-            ) : statusData.length === 0 ? (
-              <div className="h-64 flex items-center justify-center">
-                <p className="text-neutral-500">暂无数据</p>
-              </div>
-            ) : (
-              <div className="relative">
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <defs>
-                      {statusData.map((entry, index) => (
-                        <linearGradient key={`gradient-${index}`} id={`gradient-${index}`} x1="0" y1="0" x2="1" y2="0">
-                          <stop offset="0%" stopColor={entry.color} stopOpacity={0.8} />
-                          <stop offset="100%" stopColor={entry.color} stopOpacity={0.3} />
-                        </linearGradient>
-                      ))}
-                    </defs>
-                    <Pie
-                      data={statusData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={5}
-                      dataKey="value"
-                      animationDuration={1500}
-                      animationBegin={200}
-                      label={({ name, percent }) => `${name}: ${((percent || 0) * 100).toFixed(1)}%`}
-                      labelLine={false}
-                    >
-                      {statusData.map((_, index) => (
-                        <Cell key={`cell-${index}`} fill={`url(#gradient-${index})`} stroke="#ffffff" strokeWidth={2} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<PieTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </CardContent>
-        </Card>
       </div>
 
       {/* User Chart Section */}
