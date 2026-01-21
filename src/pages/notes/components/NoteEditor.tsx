@@ -13,11 +13,13 @@ import {
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { TagInput } from './TagInput';
+import type { Tag } from './TagInput';
 
 export interface NoteEditorData {
     content: string;
     files: File[];
     tagIds: string[];
+    tempTags?: Tag[];
     noted?: string;
     existingAttachments?: string[];
 }
@@ -52,6 +54,7 @@ export function NoteEditor({
     const [content, setContent] = useState(initialData?.content || '');
     const [files, setFiles] = useState<File[]>(initialData?.files || []);
     const [tagIds, setTagIds] = useState<string[]>(initialData?.tagIds || []);
+    const [tempTags, setTempTags] = useState<Tag[]>(initialData?.tempTags || []);
     const [existingAttachments, setExistingAttachments] = useState<string[]>([]);
     const [noted, setNoted] = useState(initialData?.noted || new Date().toISOString().slice(0, 16));
     const [showTagInput, setShowTagInput] = useState(false);
@@ -86,6 +89,7 @@ export function NoteEditor({
             content,
             files,
             tagIds,
+            tempTags,
             noted: new Date(noted).toISOString(),
             existingAttachments
         });
@@ -95,6 +99,7 @@ export function NoteEditor({
             setContent('');
             setFiles([]);
             setTagIds([]);
+            setTempTags([]);
             setExistingAttachments([]);
             setShowTagInput(false);
         }
@@ -128,6 +133,13 @@ export function NoteEditor({
         return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(filename);
     };
 
+    const handleTagChange = (newTagIds: string[], newTempTags?: Tag[]) => {
+        setTagIds(newTagIds);
+        if (newTempTags) {
+            setTempTags(newTempTags);
+        }
+    };
+
     const FormContent = (
         <form onSubmit={handleFormSubmit} className="flex-1">
             {showDate && (
@@ -152,8 +164,9 @@ export function NoteEditor({
             <div className="py-2">
                 <TagInput
                     selectedTagIds={tagIds}
-                    onChange={setTagIds}
-                    showAddControl={showTagInput}
+                    initialTempTags={tempTags}
+                    onChange={handleTagChange}
+                    showAddControl={false}
                 />
             </div>
 
@@ -240,21 +253,33 @@ export function NoteEditor({
                     >
                         <HugeiconsIcon icon={ImageAdd01Icon} size={20} />
                     </Button>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className={cn(
-                            "h-9 w-9 rounded-xl transition-all duration-200",
-                            showTagInput
-                                ? "text-blue-600 bg-blue-50"
-                                : "text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+                    <div className="flex items-center gap-1">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className={cn(
+                                "h-9 w-9 rounded-xl transition-all duration-200",
+                                showTagInput
+                                    ? "text-blue-600 bg-blue-50"
+                                    : "text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+                            )}
+                            onClick={() => setShowTagInput(!showTagInput)}
+                            title="添加标签"
+                        >
+                            <HugeiconsIcon icon={Tag01Icon} size={20} />
+                        </Button>
+                        {showTagInput && (
+                            <TagInput
+                                selectedTagIds={tagIds}
+                                initialTempTags={tempTags}
+                                onChange={handleTagChange}
+                                showAddControl={true}
+                                showSelectedTags={false}
+                                className="w-auto"
+                            />
                         )}
-                        onClick={() => setShowTagInput(!showTagInput)}
-                        title="编辑标签"
-                    >
-                        <HugeiconsIcon icon={Tag01Icon} size={20} />
-                    </Button>
+                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                     {onCancel && (

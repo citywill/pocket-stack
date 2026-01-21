@@ -35,8 +35,8 @@ export function UserMenu({ className }: UserMenuProps) {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="flex items-center gap-3 rounded-full hover:bg-white/50 transition-all duration-200 group text-left outline-none p-2">
-            <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
+          <button className="flex items-center gap-3 group text-left outline-none">
+            <Avatar className="h-9 w-9 border-2 border-white">
               <AvatarImage src={avatarUrl} alt={displayName} />
               <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
                 {initial}

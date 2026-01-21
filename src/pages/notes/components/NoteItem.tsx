@@ -145,16 +145,42 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
       await pb.collection('notes').update(note.id, formData);
 
       // 更新标签关联
-      if (isTagsChanged) {
-        // 1. 获取现有链接
+      if (isTagsChanged || (data.tempTags && data.tempTags.length > 0)) {
+        // 1. 处理临时标签
+        let finalTagIds = [...data.tagIds];
+        if (data.tempTags && data.tempTags.length > 0) {
+          const tempTagMap: Record<string, string> = {};
+          await Promise.all(data.tempTags.map(async (tempTag) => {
+            try {
+              const existing = await pb.collection('note_tags').getFirstListItem(`name="${tempTag.name}" && user="${user?.id}"`).catch(() => null);
+              let tagRecord;
+              if (existing) {
+                tagRecord = existing;
+              } else {
+                tagRecord = await pb.collection('note_tags').create({
+                  name: tempTag.name,
+                  user: user?.id
+                });
+              }
+              tempTagMap[tempTag.id] = tagRecord.id;
+            } catch (err) {
+              console.error('Failed to create temp tag in update:', tempTag.name, err);
+            }
+          }));
+          finalTagIds = finalTagIds.map(id => tempTagMap[id] || id);
+        }
+
+        const validTagIds = finalTagIds.filter(id => !id.startsWith('temp_'));
+
+        // 2. 获取现有链接
         const existingLinks = note.expand?.['note_tag_links(note)'] || [];
 
         // 2. 找出需要删除的链接
-        const linksToDelete = existingLinks.filter(link => !data.tagIds.includes(link.tag));
+        const linksToDelete = existingLinks.filter(link => !validTagIds.includes(link.tag));
         await Promise.all(linksToDelete.map(link => pb.collection('note_tag_links').delete(link.id, { requestKey: null })));
 
         // 3. 找出需要添加的链接
-        const tagsToAdd = data.tagIds.filter(tagId => !currentTagIds.includes(tagId));
+        const tagsToAdd = validTagIds.filter(tagId => !currentTagIds.includes(tagId));
         await Promise.all(tagsToAdd.map(tagId => pb.collection('note_tag_links').create({
           note: note.id,
           tag: tagId
