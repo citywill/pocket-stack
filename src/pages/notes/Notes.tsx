@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Search01Icon, ArrowDown01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
-import { NoteForm } from './components/NoteForm';
+import { NoteCreate } from './components/NoteCreate';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
 import {
@@ -152,9 +152,9 @@ export default function Notes() {
           fields: 'note',
           requestKey: null,
         });
-        
+
         const noteIds = links.map(link => link.note);
-        
+
         if (noteIds.length === 0) {
           // 如果该标签下没有笔记，则直接返回空列表，避免无效查询
           if (isAppend) {
@@ -166,12 +166,12 @@ export default function Notes() {
           setPage(targetPage);
           return; // 提前结束
         }
-        
+
         // 使用笔记 ID 列表进行过滤
         // id ?= ["id1", "id2"] 语法可能在某些版本不支持，使用 id = "id1" || id = "id2"
         if (noteIds.length > 0) {
-            const idFilters = noteIds.map(id => `id = "${id}"`).join(' || ');
-            filters.push(`(${idFilters})`);
+          const idFilters = noteIds.map(id => `id = "${id}"`).join(' || ');
+          filters.push(`(${idFilters})`);
         }
       }
 
@@ -312,7 +312,7 @@ export default function Notes() {
 
           {/* 发布框 */}
           {activeFilter !== 'trash' && !activeFrom && (
-            <NoteForm onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
+            <NoteCreate onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
           )}
 
           {/* 过滤区间显示 */}

@@ -1,8 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { HugeiconsIcon } from '@hugeicons/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -22,21 +21,19 @@ import {
 import {
   Delete02Icon,
   PencilEdit01Icon,
-  CheckmarkCircle02Icon,
-  Cancel01Icon,
   Download01Icon,
-  FileAttachmentIcon,
   ViewIcon,
-  Image01Icon,
+  Cancel01Icon,
   ArrowTurnBackwardIcon,
-  Tag01Icon
+  FileAttachmentIcon,
+  Image01Icon,
 } from '@hugeicons/core-free-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
-import { TagInput } from './TagInput';
 import { Badge } from '@/components/ui/badge';
+import { NoteEditor } from './NoteEditor';
+import type { NoteEditorData } from './NoteEditor';
 
 interface Tag {
   id: string;
@@ -83,55 +80,30 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
   const currentTagIds = note.expand?.['note_tag_links(note)']?.map(link => link.tag) || [];
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(note.content);
-  const [editNoted, setEditNoted] = useState(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
-  const [editTagIds, setEditTagIds] = useState<string[]>(currentTagIds);
   const [submitting, setSubmitting] = useState(false);
-  const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
-  const [existingAttachments, setExistingAttachments] = useState<string[]>(attachmentsArray);
-  const [deletedAttachments, setDeletedAttachments] = useState<string[]>([]);
-  const [newFiles, setNewFiles] = useState<File[]>([]);
-  const [showTagInput, setShowTagInput] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleEditKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
-      e.preventDefault();
-      handleUpdate();
-    } else if (e.key === 'Escape') {
-      cancelEdit();
-    }
-  };
 
   const startEditing = () => {
-    setEditContent(note.content);
-    setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
-    setEditTagIds(currentTagIds);
-    const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
-    setExistingAttachments(attachmentsArray);
-    setDeletedAttachments([]);
-    setNewFiles([]);
     setIsEditing(true);
   };
 
   const cancelEdit = () => {
     setIsEditing(false);
-    setEditContent(note.content);
-    setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
-    setEditTagIds(currentTagIds);
-    const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
-    setExistingAttachments(attachmentsArray);
-    setDeletedAttachments([]);
-    setNewFiles([]);
   };
 
-  const handleUpdate = async () => {
-    const isContentChanged = editContent.trim() !== note.content;
-    const isNotedChanged = new Date(editNoted).getTime() !== new Date(note.noted).getTime();
-    const isAttachmentsChanged = deletedAttachments.length > 0 || newFiles.length > 0;
-    const isTagsChanged = JSON.stringify(editTagIds.sort()) !== JSON.stringify(currentTagIds.sort());
+  const handleUpdate = async (data: NoteEditorData) => {
+    const isContentChanged = data.content.trim() !== note.content;
+    const isNotedChanged = data.noted && new Date(data.noted).getTime() !== new Date(note.noted).getTime();
 
-    if (!editContent.trim()) {
+    // 检查附件是否变化
+    const currentAttachments = Array.isArray(note.attachments) ? note.attachments : [];
+    const isExistingAttachmentsChanged = JSON.stringify(data.existingAttachments?.sort()) !== JSON.stringify(currentAttachments.sort());
+    const isNewFilesAdded = data.files.length > 0;
+    const isAttachmentsChanged = isExistingAttachmentsChanged || isNewFilesAdded;
+
+    // 检查标签是否变化
+    const isTagsChanged = JSON.stringify(data.tagIds.sort()) !== JSON.stringify(currentTagIds.sort());
+
+    if (!data.content.trim()) {
       toast.error('内容不能为空');
       return;
     }
@@ -143,16 +115,34 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
 
     setSubmitting(true);
     try {
-      const data: any = {
-        content: editContent,
-        noted: new Date(editNoted).toISOString(),
-        attachments: [
-          ...existingAttachments,
-          ...newFiles
-        ]
-      };
+      const formData = new FormData();
+      formData.append('content', data.content);
+      formData.append('noted', data.noted ? new Date(data.noted).toISOString() : new Date().toISOString());
 
-      await pb.collection('notes').update(note.id, data);
+      // 处理附件：PocketBase 更新附件时，如果想保留现有文件并添加新文件，
+      // 需要先列出要保留的文件名，然后 append 新的 File 对象。
+
+      // 1. 添加要保留的现有文件名
+      if (data.existingAttachments && data.existingAttachments.length > 0) {
+        data.existingAttachments.forEach(filename => {
+          formData.append('attachments', filename);
+        });
+      } else {
+        // 如果清空了所有附件，发送空字符串或根据 PB 版本可能需要特殊处理
+        // 在 PB 中，如果 attachments 字段是多文件，不发送该字段通常意味着保留原样
+        // 发送空值或仅发送新文件则会覆盖旧文件。
+        // 这里显式设置为空以确保如果 existingAttachments 为空则删除旧文件
+        formData.append('attachments', '');
+      }
+
+      // 2. 添加新上传的文件
+      if (data.files && data.files.length > 0) {
+        data.files.forEach(file => {
+          formData.append('attachments', file);
+        });
+      }
+
+      await pb.collection('notes').update(note.id, formData);
 
       // 更新标签关联
       if (isTagsChanged) {
@@ -160,11 +150,11 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
         const existingLinks = note.expand?.['note_tag_links(note)'] || [];
 
         // 2. 找出需要删除的链接
-        const linksToDelete = existingLinks.filter(link => !editTagIds.includes(link.tag));
+        const linksToDelete = existingLinks.filter(link => !data.tagIds.includes(link.tag));
         await Promise.all(linksToDelete.map(link => pb.collection('note_tag_links').delete(link.id, { requestKey: null })));
 
         // 3. 找出需要添加的链接
-        const tagsToAdd = editTagIds.filter(tagId => !currentTagIds.includes(tagId));
+        const tagsToAdd = data.tagIds.filter(tagId => !currentTagIds.includes(tagId));
         await Promise.all(tagsToAdd.map(tagId => pb.collection('note_tag_links').create({
           note: note.id,
           tag: tagId
@@ -182,22 +172,6 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setNewFiles(prev => [...prev, ...files]);
-    }
-  };
-
-  const removeExistingAttachment = (filename: string) => {
-    setExistingAttachments(prev => prev.filter(f => f !== filename));
-    setDeletedAttachments(prev => [...prev, filename]);
-  };
-
-  const removeNewFile = (index: number) => {
-    setNewFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const getFileUrl = (filename: string) => {
@@ -276,124 +250,22 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
         </div>
 
         {isEditing ? (
-          <div className="mt-2 space-y-2">
-            <div className="flex items-center gap-2 mb-2">
-              <input
-                type="datetime-local"
-                className="bg-muted/50 rounded-lg px-2 py-1 text-xs border-none focus:ring-1 focus:ring-blue-500/20 outline-none"
-                value={editNoted}
-                onChange={(e) => setEditNoted(e.target.value)}
-              />
-            </div>
-            <Textarea
-              autoFocus
-              className="min-h-[100px] resize-none focus-visible:ring-1 text-[15px] p-2 bg-muted/50 rounded-xl border-none"
-              value={editContent}
-              onChange={(e) => setEditContent(e.target.value)}
-              onKeyDown={handleEditKeyDown}
-            />
-
-            <div className="py-1">
-              <TagInput
-                selectedTagIds={editTagIds}
-                onChange={setEditTagIds}
-                showAddControl={showTagInput}
-              />
-            </div>
-
-            {/* 编辑模式下的附件管理 */}
-            <div className="space-y-3 py-2">
-              {/* 现有附件 */}
-              {existingAttachments.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {existingAttachments.map((filename) => (
-                    <div key={filename} className="flex items-center gap-2 p-1.5 pl-2 rounded-lg border border-muted bg-muted/30 group">
-                      <HugeiconsIcon icon={isImage(filename) ? Image01Icon : FileAttachmentIcon} size={14} className="text-blue-500" />
-                      <span className="text-xs max-w-[100px] truncate">{filename}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeExistingAttachment(filename)}
-                        className="text-muted-foreground hover:text-destructive p-0.5 rounded-full hover:bg-destructive/10 transition-colors"
-                      >
-                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* 新选附件 */}
-              {newFiles.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {newFiles.map((file, index) => (
-                    <div key={index} className="flex items-center gap-2 p-1.5 pl-2 rounded-lg border border-blue-500/20 bg-blue-500/5 group">
-                      <HugeiconsIcon icon={FileAttachmentIcon} size={14} className="text-blue-500" />
-                      <span className="text-xs max-w-[100px] truncate">{file.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeNewFile(index)}
-                        className="text-muted-foreground hover:text-destructive p-0.5 rounded-full hover:bg-destructive/10 transition-colors"
-                      >
-                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="flex items-center gap-2">
-                <input
-                  type="file"
-                  multiple
-                  ref={fileInputRef}
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full text-xs h-8"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <HugeiconsIcon icon={Image01Icon} size={14} className="mr-1.5" />
-                  上传附件
-                </Button>
-                <Button
-                  variant={showTagInput ? "secondary" : "outline"}
-                  size="sm"
-                  className={cn(
-                    "rounded-full text-xs h-8",
-                    showTagInput && "bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100"
-                  )}
-                  onClick={() => setShowTagInput(!showTagInput)}
-                >
-                  <HugeiconsIcon icon={Tag01Icon} size={14} className="mr-1.5" />
-                  {showTagInput ? "收起标签" : "添加标签"}
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="rounded-full"
-                onClick={cancelEdit}
-              >
-                <HugeiconsIcon icon={Cancel01Icon} size={16} className="mr-1" />
-                取消
-              </Button>
-              <Button
-                size="sm"
-                className="rounded-full bg-blue-500 hover:bg-blue-600 text-white"
-                onClick={handleUpdate}
-                disabled={submitting || !editContent.trim()}
-              >
-                <HugeiconsIcon icon={CheckmarkCircle02Icon} size={16} className="mr-1" />
-                保存
-              </Button>
-            </div>
-          </div>
+          <NoteEditor
+            noCard
+            showDate
+            className="mt-2"
+            getAttachmentUrl={getFileUrl}
+            initialData={{
+              content: note.content,
+              tagIds: currentTagIds,
+              noted: new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'),
+              existingAttachments: Array.isArray(note.attachments) ? note.attachments : []
+            }}
+            onSubmit={handleUpdate}
+            onCancel={cancelEdit}
+            submitting={submitting}
+            submitLabel="保存"
+          />
         ) : (
           <div className="text-[15px] leading-relaxed break-words prose prose-sm max-w-none">
             <ReactMarkdown
@@ -441,20 +313,20 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
           </div>
         )}
 
-        {Array.isArray(note.attachments) && note.attachments.length > 0 && (
+        {!isEditing && Array.isArray(note.attachments) && note.attachments.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {note.attachments.map((filename) => (
               <div key={filename} className="group relative">
                 {isImage(filename) ? (
                   <Dialog>
                     <DialogTrigger asChild>
-                      <div className="relative h-20 w-20 rounded-lg overflow-hidden border border-muted bg-muted cursor-pointer">
+                      <div className="relative h-20 w-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 cursor-pointer">
                         <img
                           src={getFileUrl(filename)}
                           alt={filename}
                           className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
                           <HugeiconsIcon icon={ViewIcon} size={20} className="text-white" />
                         </div>
                       </div>
@@ -495,11 +367,16 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                     href={getFileUrl(filename)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 p-2 rounded-lg border border-muted bg-muted/30 hover:bg-muted/50 transition-colors"
+                    className="relative block h-20 w-20 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 hover:bg-slate-200 transition-colors group"
+                    title={filename}
                   >
-                    <HugeiconsIcon icon={FileAttachmentIcon} size={16} className="text-blue-500" />
-                    <span className="text-xs max-w-[120px] truncate">{filename}</span>
-                    <HugeiconsIcon icon={Download01Icon} size={14} className="text-muted-foreground" />
+                    <div className="w-full h-full flex flex-col items-center justify-center p-2">
+                      <HugeiconsIcon icon={FileAttachmentIcon} size={24} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                      <span className="text-[10px] text-slate-500 mt-1 w-full truncate text-center px-1">{filename}</span>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <HugeiconsIcon icon={Download01Icon} size={16} className="text-slate-600" />
+                    </div>
                   </a>
                 )}
               </div>
