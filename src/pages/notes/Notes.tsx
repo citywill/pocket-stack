@@ -20,6 +20,11 @@ import {
 
 const PER_PAGE = 10;
 
+interface Tag {
+  id: string;
+  name: string;
+}
+
 interface Note {
   id: string;
   content: string;
@@ -37,7 +42,14 @@ interface Note {
       username: string;
       name: string;
       avatar: string;
-    }
+    },
+    'note_tag_links(note)'?: {
+      id: string;
+      tag: string;
+      expand?: {
+        tag: Tag;
+      }
+    }[]
   }
 }
 
@@ -46,6 +58,7 @@ export default function Notes() {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeFrom = searchParams.get('from');
   const activeTo = searchParams.get('to');
+  const activeTag = searchParams.get('tag');
   const [notes, setNotes] = useState<Note[]>([]);
   const [heatmapData, setHeatmapData] = useState<{ date: string; count: number }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -85,12 +98,15 @@ export default function Notes() {
     }
   }, [user?.id]);
 
-  // 移除 redundant 的 useEffect，交给 fetchNotes 触发
-  // useEffect(() => {
-  //   fetchHeatmapData();
-  // }, [fetchHeatmapData]);
-
-  const fetchNotes = useCallback(async (query = searchQuery, targetPage = 1, isAppend = false, filter = activeFilter, from = activeFrom, to = activeTo) => {
+  const fetchNotes = useCallback(async (
+    query = searchQuery,
+    targetPage = 1,
+    isAppend = false,
+    filter = activeFilter,
+    from = activeFrom,
+    to = activeTo,
+    tag = activeTag
+  ) => {
     if (isAppend) {
       setLoadingMore(true);
     } else {
@@ -102,8 +118,8 @@ export default function Notes() {
         fetchHeatmapData(); // 刷新数据时同步刷新热力图数据
       }
       const options: any = {
-        sort: '-noted',
-        expand: 'user',
+        sort: '-noted,-created',
+        expand: 'user,note_tag_links(note).tag',
         requestKey: null,
       };
 
@@ -125,6 +141,12 @@ export default function Notes() {
 
       if (query.trim()) {
         filters.push(`content ~ "${query}"`);
+      }
+
+      // 标签筛选：通过关联表反向查询
+      if (tag) {
+        // 注意：PocketBase 支持反向关联查询，例如：note_tag_links_via_note.tag = "TAG_ID"
+        filters.push(`note_tag_links_via_note.tag = "${tag}"`);
       }
 
       if (filters.length > 0) {
@@ -154,15 +176,15 @@ export default function Notes() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchNotes(searchQuery, 1, false, activeFilter, activeFrom, activeTo);
+      fetchNotes(searchQuery, 1, false, activeFilter, activeFrom, activeTo, activeTag);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, activeFilter, activeFrom, activeTo, fetchNotes]);
+  }, [searchQuery, activeFilter, activeFrom, activeTo, activeTag, fetchNotes]);
 
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return;
-    fetchNotes(searchQuery, page + 1, true);
+    fetchNotes(searchQuery, page + 1, true, activeFilter, activeFrom, activeTo, activeTag);
   };
 
   const handleDelete = async (id: string) => {
@@ -171,6 +193,13 @@ export default function Notes() {
 
     try {
       if (isTrash) {
+        // 先删除关联表中的数据
+        const links = await pb.collection('note_tag_links').getFullList({
+          filter: `note = "${id}"`
+        });
+        await Promise.all(links.map(link => pb.collection('note_tag_links').delete(link.id)));
+
+        // 再彻底删除笔记
         await pb.collection('notes').delete(id);
         toast.success('已彻底删除');
       } else {

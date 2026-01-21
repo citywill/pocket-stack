@@ -28,11 +28,20 @@ import {
   FileAttachmentIcon,
   ViewIcon,
   Image01Icon,
-  ArrowTurnBackwardIcon
+  ArrowTurnBackwardIcon,
+  Tag01Icon
 } from '@hugeicons/core-free-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { TagInput } from './TagInput';
+import { Badge } from '@/components/ui/badge';
+
+interface Tag {
+  id: string;
+  name: string;
+}
 
 interface Note {
   id: string;
@@ -49,7 +58,14 @@ interface Note {
       username: string;
       name: string;
       avatar: string;
-    }
+    },
+    'note_tag_links(note)'?: {
+      id: string;
+      tag: string;
+      expand?: {
+        tag: Tag;
+      }
+    }[]
   }
 }
 
@@ -62,14 +78,20 @@ interface NoteItemProps {
 
 export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps) {
   const { user } = useAuth();
+
+  // 获取当前笔记的标签ID列表
+  const currentTagIds = note.expand?.['note_tag_links(note)']?.map(link => link.tag) || [];
+
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(note.content);
   const [editNoted, setEditNoted] = useState(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
+  const [editTagIds, setEditTagIds] = useState<string[]>(currentTagIds);
   const [submitting, setSubmitting] = useState(false);
   const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
   const [existingAttachments, setExistingAttachments] = useState<string[]>(attachmentsArray);
   const [deletedAttachments, setDeletedAttachments] = useState<string[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [showTagInput, setShowTagInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleEditKeyDown = (e: React.KeyboardEvent) => {
@@ -84,6 +106,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
   const startEditing = () => {
     setEditContent(note.content);
     setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
+    setEditTagIds(currentTagIds);
     const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
     setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
@@ -95,6 +118,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
     setIsEditing(false);
     setEditContent(note.content);
     setEditNoted(new Date(note.noted).toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
+    setEditTagIds(currentTagIds);
     const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
     setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
@@ -105,13 +129,14 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
     const isContentChanged = editContent.trim() !== note.content;
     const isNotedChanged = new Date(editNoted).getTime() !== new Date(note.noted).getTime();
     const isAttachmentsChanged = deletedAttachments.length > 0 || newFiles.length > 0;
+    const isTagsChanged = JSON.stringify(editTagIds.sort()) !== JSON.stringify(currentTagIds.sort());
 
     if (!editContent.trim()) {
       toast.error('内容不能为空');
       return;
     }
 
-    if (!isContentChanged && !isAttachmentsChanged && !isNotedChanged) {
+    if (!isContentChanged && !isAttachmentsChanged && !isNotedChanged && !isTagsChanged) {
       setIsEditing(false);
       return;
     }
@@ -128,6 +153,24 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
       };
 
       await pb.collection('notes').update(note.id, data);
+
+      // 更新标签关联
+      if (isTagsChanged) {
+        // 1. 获取现有链接
+        const existingLinks = note.expand?.['note_tag_links(note)'] || [];
+
+        // 2. 找出需要删除的链接
+        const linksToDelete = existingLinks.filter(link => !editTagIds.includes(link.tag));
+        await Promise.all(linksToDelete.map(link => pb.collection('note_tag_links').delete(link.id, { requestKey: null })));
+
+        // 3. 找出需要添加的链接
+        const tagsToAdd = editTagIds.filter(tagId => !currentTagIds.includes(tagId));
+        await Promise.all(tagsToAdd.map(tagId => pb.collection('note_tag_links').create({
+          note: note.id,
+          tag: tagId
+        }, { requestKey: null })));
+      }
+
       toast.success('更新成功');
       setIsEditing(false);
       onUpdate();
@@ -250,6 +293,14 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
               onKeyDown={handleEditKeyDown}
             />
 
+            <div className="py-1">
+              <TagInput
+                selectedTagIds={editTagIds}
+                onChange={setEditTagIds}
+                showAddControl={showTagInput}
+              />
+            </div>
+
             {/* 编辑模式下的附件管理 */}
             <div className="space-y-3 py-2">
               {/* 现有附件 */}
@@ -307,6 +358,18 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                   <HugeiconsIcon icon={Image01Icon} size={14} className="mr-1.5" />
                   上传附件
                 </Button>
+                <Button
+                  variant={showTagInput ? "secondary" : "outline"}
+                  size="sm"
+                  className={cn(
+                    "rounded-full text-xs h-8",
+                    showTagInput && "bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100"
+                  )}
+                  onClick={() => setShowTagInput(!showTagInput)}
+                >
+                  <HugeiconsIcon icon={Tag01Icon} size={14} className="mr-1.5" />
+                  {showTagInput ? "收起标签" : "添加标签"}
+                </Button>
               </div>
             </div>
 
@@ -359,6 +422,22 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
             >
               {note.content}
             </ReactMarkdown>
+            {/* 标签显示 */}
+            {note.expand?.['note_tag_links(note)'] && note.expand['note_tag_links(note)'].length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {note.expand['note_tag_links(note)'].map(link => (
+                  link.expand?.tag && (
+                    <Badge
+                      key={link.id}
+                      variant="secondary"
+                      className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100 font-normal"
+                    >
+                      #{link.expand.tag.name}
+                    </Badge>
+                  )
+                ))}
+              </div>
+            )}
           </div>
         )}
 

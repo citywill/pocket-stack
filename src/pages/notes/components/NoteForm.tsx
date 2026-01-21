@@ -9,12 +9,13 @@ import { Separator } from '@/components/ui/separator';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
     ImageAdd01Icon,
-    SmileIcon,
-    Calendar01Icon,
     Cancel01Icon,
-    FileAttachmentIcon
+    FileAttachmentIcon,
+    Tag01Icon
 } from '@hugeicons/core-free-icons';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
+import { TagInput } from './TagInput';
 
 interface NoteFormProps {
     onSuccess: () => void;
@@ -23,9 +24,10 @@ interface NoteFormProps {
 export function NoteForm({ onSuccess }: NoteFormProps) {
     const { user } = useAuth();
     const [content, setContent] = useState('');
-    const [noted, setNoted] = useState(new Date().toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
     const [submitting, setSubmitting] = useState(false);
     const [files, setFiles] = useState<File[]>([]);
+    const [tagIds, setTagIds] = useState<string[]>([]);
+    const [showTagInput, setShowTagInput] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = async (e?: React.FormEvent) => {
@@ -37,17 +39,27 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
             const formData = new FormData();
             formData.append('content', content);
             formData.append('user', user.id);
-            formData.append('noted', new Date(noted).toISOString());
+            formData.append('noted', new Date().toISOString());
 
             for (const file of files) {
                 formData.append('attachments', file);
             }
 
-            await pb.collection('notes').create(formData);
+            const record = await pb.collection('notes').create(formData);
+
+            // 异步维护标签关联表
+            if (tagIds.length > 0) {
+                await Promise.all(tagIds.map(tagId =>
+                    pb.collection('note_tag_links').create({
+                        note: record.id,
+                        tag: tagId
+                    }, { requestKey: null })
+                ));
+            }
 
             setContent('');
             setFiles([]);
-            setNoted(new Date().toLocaleString('sv-SE').slice(0, 16).replace(' ', 'T'));
+            setTagIds([]);
             toast.success('发布成功');
             onSuccess();
         } catch (error: any) {
@@ -84,7 +96,7 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
     };
 
     return (
-        <Card className="p-4 rounded-2xl shadow-sm border-none bg-white transition-all duration-300 focus-within:shadow-md">
+        <Card className="p-4 rounded-2xl shadow-sm border-none bg-white transition-all duration-300 focus-within:shadow-md overflow-visible">
             <div className="flex gap-4">
                 <Avatar className="h-10 w-10">
                     <AvatarImage src={getAvatarUrl(user)} />
@@ -100,47 +112,77 @@ export function NoteForm({ onSuccess }: NoteFormProps) {
                         onKeyDown={handleKeyDown}
                     />
 
+                    <div className="py-2">
+                        <TagInput
+                            selectedTagIds={tagIds}
+                            onChange={setTagIds}
+                            showAddControl={showTagInput}
+                        />
+                    </div>
+
                     {files.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
                             {files.map((file, index) => (
-                                <div key={index} className="relative group bg-muted/50 rounded-lg p-2 flex items-center gap-2 border border-blue-500/10">
-                                    <HugeiconsIcon icon={FileAttachmentIcon} size={16} className="text-blue-500" />
-                                    <span className="text-xs max-w-[100px] truncate">{file.name}</span>
+                                <div key={index} className="relative group">
+                                    <div className="h-20 w-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                        {file.type.startsWith('image/') ? (
+                                            <img src={URL.createObjectURL(file)} alt="" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <HugeiconsIcon icon={FileAttachmentIcon} className="text-slate-400" />
+                                        )}
+                                    </div>
                                     <button
                                         type="button"
                                         onClick={() => removeFile(index)}
-                                        className="text-muted-foreground hover:text-destructive transition-colors"
+                                        className="absolute -top-1 -right-1 bg-white rounded-full shadow-sm border border-slate-100 p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                        <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                                        <HugeiconsIcon icon={Cancel01Icon} size={12} className="text-slate-500" />
                                     </button>
                                 </div>
                             ))}
                         </div>
                     )}
 
-                    <Separator className="my-3 opacity-50" />
+                    <Separator className="bg-slate-100/50" />
+
                     <div className="flex items-center justify-between">
-                        <div className="flex gap-2 text-primary">
+                        <div className="flex items-center gap-1">
                             <input
                                 type="file"
-                                multiple
                                 ref={fileInputRef}
-                                className="hidden"
                                 onChange={handleFileChange}
+                                multiple
+                                className="hidden"
                             />
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full"
+                                className="h-9 w-9 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <HugeiconsIcon icon={ImageAdd01Icon} size={20} />
                             </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className={cn(
+                                    "h-9 w-9 rounded-xl transition-all duration-200",
+                                    showTagInput
+                                        ? "text-blue-600 bg-blue-50"
+                                        : "text-slate-500 hover:text-blue-600 hover:bg-blue-50"
+                                )}
+                                onClick={() => setShowTagInput(!showTagInput)}
+                                title="编辑标签"
+                            >
+                                <HugeiconsIcon icon={Tag01Icon} size={20} />
+                            </Button>
                         </div>
                         <Button
-                            disabled={(!content.trim() && files.length === 0) || submitting}
-                            className="rounded-full px-6 bg-blue-500 hover:bg-blue-600 text-white font-bold"
+                            type="submit"
+                            disabled={submitting || (!content.trim() && files.length === 0)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-full font-medium transition-all shadow-sm hover:shadow-md disabled:opacity-50"
                         >
                             {submitting ? '发布中...' : '发布'}
                         </Button>
