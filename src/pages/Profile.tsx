@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { 
-  UserIcon, 
-  Mail01Icon, 
-  ImageAdd01Icon, 
+import {
+  UserIcon,
+  Mail01Icon,
+  ImageAdd01Icon,
   Loading01Icon,
   Tick01Icon,
-  AlertCircleIcon
+  AlertCircleIcon,
+  ArrowLeft02Icon
 } from '@hugeicons/core-free-icons';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
 
 export function Profile() {
+  const navigate = useNavigate();
   const { user, isSuperAdmin, login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -63,7 +66,7 @@ export function Profile() {
 
       const collection = user?.collectionName || (isSuperAdmin ? '_superusers' : 'users');
       await pb.collection(collection).update(user!.id, data);
-      
+
       setMessage({ type: 'success', text: '个人基本信息更新成功！' });
     } catch (error: any) {
       console.error('Update profile error:', error);
@@ -108,22 +111,32 @@ export function Profile() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 text-maia">
-          个人中心
-        </h1>
-        <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-          查看并管理您的个人账户信息
-        </p>
+    <div className="space-y-6 max-w-4xl mx-auto pt-6">
+      <div className="flex flex-col gap-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-fit -ml-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          onClick={() => navigate(-1)}
+        >
+          <HugeiconsIcon icon={ArrowLeft02Icon} className="mr-2 h-4 w-4" />
+          返回
+        </Button>
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 text-maia">
+            个人中心
+          </h1>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            查看并管理您的个人账户信息
+          </p>
+        </div>
       </div>
 
       {message && (
-        <div className={`flex items-center gap-2 p-4 rounded-xl border ${
-          message.type === 'success' 
-            ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400' 
-            : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400'
-        }`}>
+        <div className={`flex items-center gap-2 p-4 rounded-xl border ${message.type === 'success'
+          ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
+          : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400'
+          }`}>
           <HugeiconsIcon icon={message.type === 'success' ? Tick01Icon : AlertCircleIcon} className="h-5 w-5 shrink-0" />
           <p className="text-sm font-medium">{message.text}</p>
         </div>
@@ -141,8 +154,8 @@ export function Profile() {
                   ) : (
                     <HugeiconsIcon icon={UserIcon} className="h-12 w-12 text-neutral-400" />
                   )}
-                  <label 
-                    htmlFor="avatar-upload" 
+                  <label
+                    htmlFor="avatar-upload"
                     className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm"
                   >
                     <HugeiconsIcon icon={ImageAdd01Icon} className="h-8 w-8" />
@@ -150,13 +163,12 @@ export function Profile() {
                 </div>
                 <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
               </div>
-              
+
               <div className="mt-6 text-center">
                 <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">{user?.name || '管理员'}</h2>
                 <div className="flex items-center justify-center gap-1.5 mt-1">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${
-                    isSuperAdmin ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
-                  }`}>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${isSuperAdmin ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
+                    }`}>
                     {isSuperAdmin ? 'Super Admin' : 'Regular User'}
                   </span>
                 </div>
@@ -183,25 +195,25 @@ export function Profile() {
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">用户名 / 昵称</Label>
-                  <Input 
-                    id="name" 
-                    value={formData.name} 
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="请输入您的姓名"
                     className="h-10 border-neutral-200 dark:border-neutral-800"
                   />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email" className="opacity-50">邮箱地址 (不可修改)</Label>
-                  <Input 
-                    id="email" 
-                    value={formData.email} 
+                  <Input
+                    id="email"
+                    value={formData.email}
                     disabled
                     className="h-10 bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800"
                   />
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={loading}
                   className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
@@ -222,22 +234,22 @@ export function Profile() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="sm:col-span-2 grid gap-2">
                     <Label htmlFor="oldPassword">当前密码</Label>
-                    <Input 
-                      id="oldPassword" 
+                    <Input
+                      id="oldPassword"
                       type="password"
                       value={formData.oldPassword}
-                      onChange={(e) => setFormData({...formData, oldPassword: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, oldPassword: e.target.value })}
                       className="h-10 border-neutral-200 dark:border-neutral-800"
                       required
                     />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="newPassword">新密码</Label>
-                    <Input 
-                      id="newPassword" 
+                    <Input
+                      id="newPassword"
                       type="password"
                       value={formData.newPassword}
-                      onChange={(e) => setFormData({...formData, newPassword: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
                       className="h-10 border-neutral-200 dark:border-neutral-800"
                       minLength={8}
                       required
@@ -245,18 +257,18 @@ export function Profile() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="confirmPassword">确认新密码</Label>
-                    <Input 
-                      id="confirmPassword" 
+                    <Input
+                      id="confirmPassword"
                       type="password"
                       value={formData.confirmPassword}
-                      onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                       className="h-10 border-neutral-200 dark:border-neutral-800"
                       required
                     />
                   </div>
                 </div>
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   variant="outline"
                   disabled={loading}
                   className="mt-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30"
