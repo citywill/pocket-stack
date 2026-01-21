@@ -5,23 +5,25 @@ import {
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { NoteHeatmap } from './NoteHeatmap';
 
 export type NoteFilter = 'all' | 'trash';
 
 interface NotesSidebarProps {
   activeFilter: NoteFilter;
   onFilterChange: (filter: NoteFilter) => void;
+  heatmapData?: { date: string; count: number }[];
   className?: string;
 }
 
-export function NotesSidebar({ activeFilter, onFilterChange, className }: NotesSidebarProps) {
+export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], className }: NotesSidebarProps) {
   const menuItems = [
     { id: 'all', label: '全部', icon: Note01Icon },
     { id: 'trash', label: '回收站', icon: Delete02Icon },
   ] as const;
 
   return (
-    <div className={cn("w-48 flex flex-col gap-2 p-4 h-full bg-transparent", className)}>
+    <div className={cn("w-64 flex flex-col gap-6 p-4 h-full bg-transparent", className)}>
       <div className="space-y-1">
         {menuItems.map((item) => (
           <Button
@@ -40,6 +42,8 @@ export function NotesSidebar({ activeFilter, onFilterChange, className }: NotesS
           </Button>
         ))}
       </div>
+
+      <NoteHeatmap heatmapData={heatmapData} />
     </div>
   );
 }

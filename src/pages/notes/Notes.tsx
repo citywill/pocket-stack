@@ -1,11 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Search01Icon, ArrowDown01Icon, Menu01Icon } from '@hugeicons/core-free-icons';
+import { Search01Icon, ArrowDown01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 import { NoteForm } from './components/NoteForm';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
@@ -42,7 +43,11 @@ interface Note {
 
 export default function Notes() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeFrom = searchParams.get('from');
+  const activeTo = searchParams.get('to');
   const [notes, setNotes] = useState<Note[]>([]);
+  const [heatmapData, setHeatmapData] = useState<{ date: string; count: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +56,41 @@ export default function Notes() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchNotes = useCallback(async (query = searchQuery, targetPage = 1, isAppend = false, filter = activeFilter) => {
+  const fetchHeatmapData = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      // 获取用户所有未删除笔记的时间戳
+      const records = await pb.collection('notes').getFullList<Note>({
+        filter: `user = "${user.id}" && isDeleted != true`,
+        fields: 'noted,created',
+        requestKey: null,
+      });
+
+      // 统计每天的数量
+      const counts: Record<string, number> = {};
+      records.forEach(record => {
+        const dateStr = new Date(record.noted || record.created).toISOString().split('T')[0];
+        counts[dateStr] = (counts[dateStr] || 0) + 1;
+      });
+
+      const formattedData = Object.entries(counts).map(([date, count]) => ({
+        date,
+        count
+      }));
+      setHeatmapData(formattedData);
+    } catch (error: any) {
+      if (!error.isAbort) {
+        console.error('Failed to fetch heatmap data:', error);
+      }
+    }
+  }, [user?.id]);
+
+  // 移除 redundant 的 useEffect，交给 fetchNotes 触发
+  // useEffect(() => {
+  //   fetchHeatmapData();
+  // }, [fetchHeatmapData]);
+
+  const fetchNotes = useCallback(async (query = searchQuery, targetPage = 1, isAppend = false, filter = activeFilter, from = activeFrom, to = activeTo) => {
     if (isAppend) {
       setLoadingMore(true);
     } else {
@@ -59,6 +98,9 @@ export default function Notes() {
     }
 
     try {
+      if (!isAppend) {
+        fetchHeatmapData(); // 刷新数据时同步刷新热力图数据
+      }
       const options: any = {
         sort: '-noted',
         expand: 'user',
@@ -74,6 +116,11 @@ export default function Notes() {
         } else {
           filters.push(`user = "${user.id}" && isDeleted != true`);
         }
+      }
+
+      if (from && to) {
+        // 构建起止时间进行过滤，支持日期格式 (YYYY-MM-DD)
+        filters.push(`noted >= "${from} 00:00:00" && noted <= "${to} 23:59:59"`);
       }
 
       if (query.trim()) {
@@ -107,11 +154,11 @@ export default function Notes() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchNotes(searchQuery, 1, false, activeFilter);
+      fetchNotes(searchQuery, 1, false, activeFilter, activeFrom, activeTo);
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchQuery, activeFilter, fetchNotes]);
+  }, [searchQuery, activeFilter, activeFrom, activeTo, fetchNotes]);
 
   const handleLoadMore = () => {
     if (loadingMore || !hasMore) return;
@@ -157,6 +204,7 @@ export default function Notes() {
             <NotesSidebar
               activeFilter={activeFilter}
               onFilterChange={setActiveFilter}
+              heatmapData={heatmapData}
               className="w-full p-0"
             />
           </div>
@@ -183,6 +231,7 @@ export default function Notes() {
                       setActiveFilter(filter);
                       setIsSheetOpen(false);
                     }}
+                    heatmapData={heatmapData}
                     className="w-full"
                   />
                 </SheetContent>
@@ -207,8 +256,31 @@ export default function Notes() {
           </div>
 
           {/* 发布框 */}
-          {activeFilter !== 'trash' && (
+          {activeFilter !== 'trash' && !activeFrom && (
             <NoteForm onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
+          )}
+
+          {/* 过滤区间显示 */}
+          {activeFrom && (
+            <div className="flex items-center justify-between px-4 py-2 mb-4 bg-blue-50/50 border border-blue-100/50 rounded-xl">
+              <div className="flex items-center gap-2 text-sm text-blue-600 font-medium">
+                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                正在查看: {activeFrom === activeTo ? activeFrom : `${activeFrom} 至 ${activeTo}`} 的记录
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 text-blue-600 hover:text-blue-700 hover:bg-blue-100/50 gap-1 rounded-lg"
+                onClick={() => {
+                  searchParams.delete('from');
+                  searchParams.delete('to');
+                  setSearchParams(searchParams);
+                }}
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                清除
+              </Button>
+            </div>
           )}
 
           {/* 笔记列表 */}
