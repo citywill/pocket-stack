@@ -4,11 +4,12 @@ import {
   UserIcon,
   StarIcon,
   ArchiveIcon,
+  Delete02Icon,
 } from '@hugeicons/core-free-icons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-export type NoteFilter = 'all' | 'favorites' | 'archived';
+export type NoteFilter = 'all' | 'favorites' | 'archived' | 'trash';
 
 interface NotesSidebarProps {
   activeFilter: NoteFilter;
@@ -21,6 +22,7 @@ export function NotesSidebar({ activeFilter, onFilterChange, className }: NotesS
     { id: 'all', label: '全部', icon: Note01Icon },
     { id: 'favorites', label: '收藏', icon: StarIcon },
     { id: 'archived', label: '归档', icon: ArchiveIcon },
+    { id: 'trash', label: '回收站', icon: Delete02Icon },
   ] as const;
 
   return (

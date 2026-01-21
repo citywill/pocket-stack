@@ -26,6 +26,7 @@ interface Note {
   attachments?: string[];
   isFavorite?: boolean;
   isArchived?: boolean;
+  isDeleted?: boolean;
   created: string;
   updated: string;
   expand?: {
@@ -67,7 +68,11 @@ export default function Notes() {
 
       // 始终只查询当前用户的笔记
       if (user?.id) {
-        filters.push(`user = "${user.id}"`);
+        if (filter === 'trash') {
+          filters.push(`user = "${user.id}" && isDeleted = true`);
+        } else {
+          filters.push(`user = "${user.id}" && isDeleted != true`);
+        }
       }
 
       if (query.trim()) {
@@ -119,15 +124,32 @@ export default function Notes() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('确定要删除这条笔记吗？')) return;
+    const isTrash = activeFilter === 'trash';
+    if (!confirm(isTrash ? '确定要彻底删除这条笔记吗？此操作不可恢复。' : '确定要将这条笔记移入回收站吗？')) return;
 
     try {
-      await pb.collection('notes').delete(id);
-      toast.success('删除成功');
+      if (isTrash) {
+        await pb.collection('notes').delete(id);
+        toast.success('已彻底删除');
+      } else {
+        await pb.collection('notes').update(id, { isDeleted: true });
+        toast.success('已移入回收站');
+      }
       setNotes(notes.filter(n => n.id !== id));
     } catch (error) {
       console.error('Failed to delete note:', error);
-      toast.error('删除失败');
+      toast.error(isTrash ? '删除失败' : '移入回收站失败');
+    }
+  };
+
+  const handleRestore = async (id: string) => {
+    try {
+      await pb.collection('notes').update(id, { isDeleted: false });
+      toast.success('已恢复笔记');
+      setNotes(notes.filter(n => n.id !== id));
+    } catch (error) {
+      console.error('Failed to restore note:', error);
+      toast.error('恢复失败');
     }
   };
 
@@ -170,7 +192,9 @@ export default function Notes() {
                   />
                 </SheetContent>
               </Sheet>
-              <h1 className="text-xl font-bold text-foreground/80">笔记</h1>
+              <h1 className="text-xl font-bold text-foreground/80">
+                {activeFilter === 'trash' ? '回收站' : '笔记'}
+              </h1>
             </div>
             <div className="relative w-40 md:w-64">
               <HugeiconsIcon
@@ -188,7 +212,9 @@ export default function Notes() {
           </div>
 
           {/* 发布框 */}
-          <NoteForm onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
+          {activeFilter !== 'trash' && (
+            <NoteForm onSuccess={() => fetchNotes(searchQuery, 1, false, activeFilter)} />
+          )}
 
           {/* 笔记列表 */}
           <div className="space-y-4 pb-10 mt-6">
@@ -204,6 +230,7 @@ export default function Notes() {
                     note={note}
                     onDelete={handleDelete}
                     onUpdate={() => fetchNotes(searchQuery, 1, false, activeFilter)}
+                    onRestore={handleRestore}
                   />
                 ))}
 

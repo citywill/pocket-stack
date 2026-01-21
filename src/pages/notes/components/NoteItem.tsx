@@ -27,7 +27,8 @@ import {
   Download01Icon,
   FileAttachmentIcon,
   ViewIcon,
-  Image01Icon
+  Image01Icon,
+  ArrowTurnBackwardIcon
 } from '@hugeicons/core-free-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
@@ -38,6 +39,7 @@ interface Note {
   content: string;
   user: string;
   attachments?: string[];
+  isDeleted?: boolean;
   created: string;
   updated: string;
   expand?: {
@@ -54,14 +56,16 @@ interface NoteItemProps {
   note: Note;
   onDelete: (id: string) => void;
   onUpdate: () => void;
+  onRestore?: (id: string) => void;
 }
 
-export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
+export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps) {
   const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(note.content);
   const [submitting, setSubmitting] = useState(false);
-  const [existingAttachments, setExistingAttachments] = useState<string[]>(note.attachments || []);
+  const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
+  const [existingAttachments, setExistingAttachments] = useState<string[]>(attachmentsArray);
   const [deletedAttachments, setDeletedAttachments] = useState<string[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -77,7 +81,8 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
 
   const startEditing = () => {
     setEditContent(note.content);
-    setExistingAttachments(note.attachments || []);
+    const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
+    setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
     setNewFiles([]);
     setIsEditing(true);
@@ -86,7 +91,8 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
   const cancelEdit = () => {
     setIsEditing(false);
     setEditContent(note.content);
-    setExistingAttachments(note.attachments || []);
+    const attachmentsArray = Array.isArray(note.attachments) ? note.attachments : [];
+    setExistingAttachments(attachmentsArray);
     setDeletedAttachments([]);
     setNewFiles([]);
   };
@@ -178,24 +184,49 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
           </div>
           {user?.id === note.user && (
             <div className="flex gap-1">
-              {!isEditing && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
-                  onClick={startEditing}
-                >
-                  <HugeiconsIcon icon={PencilEdit01Icon} size={16} />
-                </Button>
+              {note.isDeleted ? (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
+                    onClick={() => onRestore?.(note.id)}
+                    title="恢复"
+                  >
+                    <HugeiconsIcon icon={ArrowTurnBackwardIcon} size={16} />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive"
+                    onClick={() => onDelete(note.id)}
+                    title="彻底删除"
+                  >
+                    <HugeiconsIcon icon={Delete02Icon} size={16} />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {!isEditing && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
+                      onClick={startEditing}
+                    >
+                      <HugeiconsIcon icon={PencilEdit01Icon} size={16} />
+                    </Button>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive"
+                    onClick={() => onDelete(note.id)}
+                  >
+                    <HugeiconsIcon icon={Delete02Icon} size={16} />
+                  </Button>
+                </>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive"
-                onClick={() => onDelete(note.id)}
-              >
-                <HugeiconsIcon icon={Delete02Icon} size={16} />
-              </Button>
             </div>
           )}
         </div>
@@ -322,7 +353,7 @@ export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
           </div>
         )}
 
-        {note.attachments && note.attachments.length > 0 && (
+        {Array.isArray(note.attachments) && note.attachments.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">
             {note.attachments.map((filename) => (
               <div key={filename} className="group relative">
