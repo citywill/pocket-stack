@@ -229,6 +229,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'text/event-stream',
                 },
                 body: JSON.stringify({
                     model: model,
@@ -238,7 +239,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                             content: systemPrompt
                         },
                         ...messages
-                            .filter(m => m.id !== 'welcome')
+                            .filter(m => m.id !== 'welcome' && !m.id.startsWith('temp-'))
                             .map(m => ({
                                 role: m.role === 'ai' ? 'assistant' : 'user',
                                 content: m.content

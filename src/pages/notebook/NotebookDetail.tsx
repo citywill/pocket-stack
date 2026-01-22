@@ -61,9 +61,13 @@ export default function NotebookDetail() {
             };
             setNotebook(mapped);
         } catch (error) {
-            if (error instanceof ClientResponseError && error.isAbort) {
-                // 如果是请求被取消，则不作为错误处理
-                return;
+            if (error instanceof ClientResponseError) {
+                if (error.isAbort) return;
+                if (error.status === 404) {
+                    console.warn("笔记本不存在或已被删除:", id);
+                    if (!silent) setNotebook(null);
+                    return;
+                }
             }
             console.error("获取笔记本详情失败:", error);
             if (!silent) setNotebook(null);
