@@ -21,6 +21,7 @@ import { ClientResponseError } from 'pocketbase';
 import { NoteItem } from './components/NoteItem';
 import { NoteContent } from './components/NoteContent';
 import { CreateNoteDialog } from './components/CreateNoteDialog';
+import { EditNoteDialog } from './components/EditNoteDialog';
 import { AiChatContainer } from './components/AiChatContainer';
 import { Artifact } from './components/Artifact';
 
@@ -39,6 +40,8 @@ export default function NotebookDetail() {
     const [loading, setLoading] = useState(true);
     const [selectedNoteIndex, setSelectedNoteIndex] = useState<string | null>(null);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [editingNote, setEditingNote] = useState<{ id: string, title: string, type: string, content: string } | null>(null);
     const [isNotesCollapsed, setIsNotesCollapsed] = useState(false);
     const [isResultsCollapsed, setIsResultsCollapsed] = useState(false);
 
@@ -164,6 +167,19 @@ export default function NotebookDetail() {
         }
     };
 
+    const handleEditNote = (noteId: string) => {
+        const note = noteItems.find(n => n.id === noteId);
+        if (note) {
+            setEditingNote({
+                id: note.id,
+                title: note.title,
+                type: note.type,
+                content: note.content
+            });
+            setIsEditDialogOpen(true);
+        }
+    };
+
     if (loading) {
         return (
             <div className="h-screen w-screen flex flex-col items-center justify-center bg-slate-50">
@@ -284,6 +300,10 @@ export default function NotebookDetail() {
                                                 e.stopPropagation();
                                                 togglePin(item.id);
                                             }}
+                                            onEdit={(e) => {
+                                                e.stopPropagation();
+                                                handleEditNote(item.id);
+                                            }}
                                             onRemove={(e) => {
                                                 e.stopPropagation();
                                                 removeItem(item.id);
@@ -363,6 +383,13 @@ export default function NotebookDetail() {
                 isOpen={isCreateDialogOpen}
                 onOpenChange={setIsCreateDialogOpen}
                 notebookId={id!}
+                onSuccess={fetchNotes}
+            />
+
+            <EditNoteDialog
+                isOpen={isEditDialogOpen}
+                onOpenChange={setIsEditDialogOpen}
+                note={editingNote}
                 onSuccess={fetchNotes}
             />
         </div>

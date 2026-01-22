@@ -8,7 +8,8 @@ import {
     MoreVerticalIcon,
     ArrowUp01Icon,
     ArrowDown01Icon,
-    Delete02Icon
+    Delete02Icon,
+    PencilEdit01Icon
 } from "@hugeicons/core-free-icons";
 import {
     DropdownMenu,
@@ -30,6 +31,7 @@ interface NoteItemProps {
     onSelect: () => void;
     onToggleActive: (checked: boolean) => void;
     onTogglePin: (e: React.MouseEvent) => void;
+    onEdit: (e: React.MouseEvent) => void;
     onRemove: (e: React.MouseEvent) => void;
 }
 
@@ -40,6 +42,7 @@ export const NoteItem: React.FC<NoteItemProps> = ({
     onSelect,
     onToggleActive,
     onTogglePin,
+    onEdit,
     onRemove
 }) => {
     return (
@@ -79,6 +82,10 @@ export const NoteItem: React.FC<NoteItemProps> = ({
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuItem className="gap-2" onClick={onEdit}>
+                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                            <span>编辑</span>
+                        </DropdownMenuItem>
                         <DropdownMenuItem className="gap-2" onClick={onTogglePin}>
                             <HugeiconsIcon icon={item.isPinned ? ArrowDown01Icon : ArrowUp01Icon} className="w-4 h-4" />
                             <span>{item.isPinned ? '取消置顶' : '置顶'}</span>
