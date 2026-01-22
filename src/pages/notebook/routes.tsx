@@ -8,8 +8,10 @@ import { MainLayout } from '@/components/layout';
 export const NotebookRoutes = (
   <Route element={<ProtectedRoute />}>
     <Route element={<MainLayout />}>
-      <Route path="notebook/list" element={<NotebookList />} />
+      <Route path="notebook" element={<NotebookList />} />
       <Route path="notebook/builder" element={<BuilderManager />} />
+    </Route>
+    <Route element={<ProtectedRoute />}>
       <Route path="notebook/:id" element={<NotebookDetail />} />
     </Route>
   </Route>
