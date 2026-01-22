@@ -34,6 +34,7 @@ import {
 import { pb } from '@/lib/pocketbase';
 import type { NotebookEntry } from './mocks/notebookMocks';
 import { ClientResponseError } from 'pocketbase';
+import { toast } from 'sonner';
 
 export default function NotebookList() {
     const navigate = useNavigate();
@@ -43,6 +44,12 @@ export default function NotebookList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [newNotebookTitle, setNewNotebookTitle] = useState("");
+
+    // 编辑相关状态
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [editingNotebook, setEditingNotebook] = useState<NotebookEntry | null>(null);
+    const [editTitle, setEditTitle] = useState("");
+
     const itemsPerPage = 6;
 
     // 获取笔记本列表
@@ -106,13 +113,70 @@ export default function NotebookList() {
     // 处理删除笔记
     const handleDeleteNotebook = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (!window.confirm("确定要删除该笔记吗？")) return;
+        if (!window.confirm("确定要删除该笔记吗？此操作不可恢复。")) return;
 
         try {
+            // 1. 删除关联的笔记 (notebook_notes)
+            const notes = await pb.collection('notebook_notes').getFullList({
+                filter: `notebook_id = "${id}"`,
+            });
+            for (const note of notes) {
+                await pb.collection('notebook_notes').delete(note.id);
+            }
+
+            // 2. 删除关联的构件 (notebook_artifacts)
+            const artifacts = await pb.collection('notebook_artifacts').getFullList({
+                filter: `notebook = "${id}"`,
+            });
+            for (const artifact of artifacts) {
+                await pb.collection('notebook_artifacts').delete(artifact.id);
+            }
+
+            // 3. 删除关联的会话记录 (notebook_chats)
+            const chats = await pb.collection('notebook_chats').getFullList({
+                filter: `notebook_id = "${id}"`,
+            });
+            for (const chat of chats) {
+                await pb.collection('notebook_chats').delete(chat.id);
+            }
+
+            // 4. 最后删除笔记本
             await pb.collection('notebooks').delete(id);
             setNotebooks(prev => prev.filter(nb => nb.id !== id));
+            toast.success("笔记本已删除");
         } catch (error) {
             console.error("删除笔记本失败:", error);
+            toast.error("删除失败，请稍后重试");
+        }
+    };
+
+    // 处理打开编辑对话框
+    const handleOpenEdit = (nb: NotebookEntry, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setEditingNotebook(nb);
+        setEditTitle(nb.title);
+        setIsEditDialogOpen(true);
+    };
+
+    // 处理保存编辑
+    const handleUpdateNotebook = async () => {
+        if (!editingNotebook || !editTitle.trim()) return;
+
+        try {
+            await pb.collection('notebooks').update(editingNotebook.id, {
+                title: editTitle.trim()
+            });
+
+            setNotebooks(prev => prev.map(nb =>
+                nb.id === editingNotebook.id ? { ...nb, title: editTitle.trim() } : nb
+            ));
+
+            setIsEditDialogOpen(false);
+            setEditingNotebook(null);
+            toast.success("修改成功");
+        } catch (error) {
+            console.error("更新笔记本失败:", error);
+            toast.error("修改失败，请稍后重试");
         }
     };
 
@@ -185,6 +249,48 @@ export default function NotebookList() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+
+                {/* 编辑研判笔记对话框 */}
+                <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                    <DialogContent className="sm:max-w-[425px] rounded-2xl">
+                        <DialogHeader>
+                            <DialogTitle>编辑研判笔记</DialogTitle>
+                            <DialogDescription>
+                                修改笔记本的标题。
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="edit-title">笔记标题</Label>
+                                <Input
+                                    id="edit-title"
+                                    className="rounded-xl"
+                                    value={editTitle}
+                                    onChange={(e) => setEditTitle(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') handleUpdateNotebook();
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button
+                                variant="outline"
+                                className="rounded-xl"
+                                onClick={() => setIsEditDialogOpen(false)}
+                            >
+                                取消
+                            </Button>
+                            <Button
+                                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+                                onClick={handleUpdateNotebook}
+                                disabled={!editTitle.trim() || editTitle === editingNotebook?.title}
+                            >
+                                保存修改
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             {/* 筛选区域 */}
@@ -239,10 +345,7 @@ export default function NotebookList() {
                                             variant="ghost"
                                             size="icon"
                                             className="w-8 h-8 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                // 编辑逻辑可以后续实现
-                                            }}
+                                            onClick={(e) => handleOpenEdit(nb, e)}
                                         >
                                             <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
                                         </Button>
