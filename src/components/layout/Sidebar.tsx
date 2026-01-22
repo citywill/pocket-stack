@@ -8,6 +8,7 @@ import {
 import { Logo } from '@/components/logo';
 import { exampleMenu } from '@/pages/examples/menu';
 import { adminMenu } from '@/pages/admin/menu';
+import { notebookMenu } from '@/pages/notebook/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
   DropdownMenu,
@@ -36,6 +37,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   ...adminMenu,
+  notebookMenu,
   exampleMenu,
 ];
 
