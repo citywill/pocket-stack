@@ -22,7 +22,7 @@ const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
             const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
             try {
-                mermaid.render(id, chart).then(({ svg }) => {
+                mermaid.render(id, chart).then(({ svg }: { svg: string }) => {
                     if (ref.current) {
                         ref.current.innerHTML = svg;
                     }

@@ -1,7 +1,4 @@
-import React from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Book01Icon } from "@hugeicons/core-free-icons";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -16,11 +13,11 @@ interface NoteContentProps {
     onToggleActive: (checked: boolean) => void;
 }
 
-export const NoteContent: React.FC<NoteContentProps> = ({
+export const NoteContent = ({
     item,
     isActive,
     onToggleActive
-}) => {
+}: NoteContentProps) => {
     return (
         <div className="h-full flex flex-col bg-white">
             <div className="p-6 space-y-6">

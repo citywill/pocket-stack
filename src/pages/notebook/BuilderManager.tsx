@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,13 +25,10 @@ import {
     Delete02Icon,
     FlowIcon,
     LegalDocument01Icon,
-    Search01Icon,
-    Settings02Icon,
-    AiChat02Icon
+    Search01Icon
 } from "@hugeicons/core-free-icons";
 import { pb } from '@/lib/pocketbase';
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 interface NotebookBuilder {
     id: string;

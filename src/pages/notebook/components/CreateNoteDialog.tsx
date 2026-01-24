@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -22,12 +22,12 @@ interface CreateNoteDialogProps {
     onSuccess: () => void;
 }
 
-export const CreateNoteDialog: React.FC<CreateNoteDialogProps> = ({
+export const CreateNoteDialog = ({
     isOpen,
     onOpenChange,
     notebookId,
     onSuccess
-}) => {
+}: CreateNoteDialogProps) => {
     const [title, setTitle] = useState('');
     const [type, setType] = useState('其它知识');
     const [content, setContent] = useState('');
@@ -127,7 +127,7 @@ export const CreateNoteDialog: React.FC<CreateNoteDialogProps> = ({
                         <div className="border border-slate-200 rounded-xl overflow-hidden min-h-[300px]">
                             <SimpleMDE
                                 value={content}
-                                onChange={(value) => setContent(value)}
+                                onChange={(value: string) => setContent(value)}
                                 options={editorOptions}
                             />
                         </div>

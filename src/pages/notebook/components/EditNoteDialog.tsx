@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -27,12 +27,12 @@ interface EditNoteDialogProps {
     onSuccess: () => void;
 }
 
-export const EditNoteDialog: React.FC<EditNoteDialogProps> = ({
+export const EditNoteDialog = ({
     isOpen,
     onOpenChange,
     note,
     onSuccess
-}) => {
+}: EditNoteDialogProps) => {
     const [title, setTitle] = useState('');
     const [type, setType] = useState('其它知识');
     const [content, setContent] = useState('');
@@ -73,7 +73,7 @@ export const EditNoteDialog: React.FC<EditNoteDialogProps> = ({
 
         try {
             setLoading(true);
-            
+
             await pb.collection('notebook_notes').update(note.id, {
                 title: title,
                 content: content,
@@ -131,7 +131,7 @@ export const EditNoteDialog: React.FC<EditNoteDialogProps> = ({
                         <div className="border border-slate-200 rounded-xl overflow-hidden min-h-[300px]">
                             <SimpleMDE
                                 value={content}
-                                onChange={(value) => setContent(value)}
+                                onChange={(value: string) => setContent(value)}
                                 options={editorOptions}
                             />
                         </div>

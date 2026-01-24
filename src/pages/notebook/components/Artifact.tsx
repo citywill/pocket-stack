@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
@@ -42,22 +42,17 @@ interface ArtifactProps {
     onArtifactUpdate?: () => void;
 }
 
-export const Artifact: React.FC<ArtifactProps> = ({
+export const Artifact = ({
     notebookId,
     activeNotes,
     onArtifactUpdate
-}) => {
+}: ArtifactProps) => {
     const [builders, setBuilders] = useState<NotebookBuilder[]>([]);
     const [artifacts, setArtifacts] = useState<ArtifactItem[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [selectedArtifact, setSelectedArtifact] = useState<ArtifactItem | null>(null);
 
-    useEffect(() => {
-        fetchBuilders();
-        fetchArtifacts();
-    }, [notebookId]);
-
-    const fetchBuilders = async () => {
+    const fetchBuilders = useCallback(async () => {
         try {
             const records = await pb.collection('notebook_builder').getFullList<NotebookBuilder>({
                 sort: 'created',
@@ -67,9 +62,9 @@ export const Artifact: React.FC<ArtifactProps> = ({
         } catch (error) {
             console.error("获取生成器列表失败:", error);
         }
-    };
+    }, []);
 
-    const fetchArtifacts = async () => {
+    const fetchArtifacts = useCallback(async () => {
         try {
             const records = await pb.collection('notebook_artifacts').getFullList<ArtifactItem>({
                 filter: `notebook = "${notebookId}"`,
@@ -80,7 +75,12 @@ export const Artifact: React.FC<ArtifactProps> = ({
         } catch (error) {
             console.error("获取作品列表失败:", error);
         }
-    };
+    }, [notebookId]);
+
+    useEffect(() => {
+        fetchBuilders();
+        fetchArtifacts();
+    }, [fetchBuilders, fetchArtifacts]);
 
     const handleArtifactUpdate = (artifact: ArtifactItem, isFinal?: boolean, tempId?: string) => {
         setArtifacts(prev => {

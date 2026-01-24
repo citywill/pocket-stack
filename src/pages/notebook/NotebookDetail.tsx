@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -24,14 +24,6 @@ import { CreateNoteDialog } from './components/CreateNoteDialog';
 import { EditNoteDialog } from './components/EditNoteDialog';
 import { AiChatContainer } from './components/AiChatContainer';
 import { Artifact } from './components/Artifact';
-
-interface NotebookBuilder {
-    id: string;
-    title: string;
-    icon: string;
-    prompt: string;
-    type: 'mindmap' | 'text' | 'table';
-}
 
 export default function NotebookDetail() {
     const { id } = useParams();
