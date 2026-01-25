@@ -7,6 +7,7 @@ export const exampleMenu = {
     { title: '仪表盘', path: '/' },
     { title: '空页面', path: '/examples/blank' },
     { title: '表格', path: '/examples/table' },
+    { title: 'CURD 示例', path: '/examples/curd' },
     { title: '卡片', path: '/examples/card' },
     { title: '表单', path: '/examples/form' },
     { title: '落地页（游客访问）', path: '/examples/portal/landing', external: true },
