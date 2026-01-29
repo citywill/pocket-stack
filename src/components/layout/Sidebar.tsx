@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  ArrowDown01Icon,
-} from '@hugeicons/core-free-icons';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { exampleMenu } from '@/pages/examples/menu';
 import { adminMenu } from '@/pages/admin/menu';
@@ -21,7 +18,7 @@ import {
 interface MenuItem {
   title: string;
   path?: string;
-  icon: any; // 使用 any 以兼容 Hugeicons 图标类型
+  icon: any;
   adminOnly?: boolean;
   userOnly?: boolean;
   external?: boolean;
@@ -122,6 +119,7 @@ function NavItem({
   const [isOpen, setIsOpen] = useState(isChildActive);
 
   const isActive = item.path ? location.pathname === item.path : false;
+  const Icon = item.icon;
 
   const handleLinkClick = () => {
     if (onClick) onClick();
@@ -143,8 +141,7 @@ function NavItem({
           isCollapsed && "justify-center px-0"
         )}
       >
-        <HugeiconsIcon
-          icon={item.icon}
+        <Icon
           className={cn(
             'h-5 w-5 shrink-0',
             isActive
@@ -170,8 +167,7 @@ function NavItem({
                 : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
             )}
           >
-            <HugeiconsIcon
-              icon={item.icon}
+            <Icon
               className={cn(
                 'h-5 w-5 shrink-0',
                 isChildActive
@@ -214,13 +210,12 @@ function NavItem({
         className={cn(
           'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 outline-none',
           isChildActive
-            ? 'text-blue-600 dark:text-blue-400'
+            ? 'text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
             : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
         )}
       >
         <div className="flex items-center gap-3">
-          <HugeiconsIcon
-            icon={item.icon}
+          <Icon
             className={cn(
               'h-5 w-5 shrink-0',
               isChildActive
@@ -230,8 +225,7 @@ function NavItem({
           />
           <span>{item.title}</span>
         </div>
-        <HugeiconsIcon
-          icon={ArrowDown01Icon}
+        <ChevronDownIcon
           className={cn(
             'h-4 w-4 transition-transform duration-200',
             isOpen ? 'rotate-180' : ''

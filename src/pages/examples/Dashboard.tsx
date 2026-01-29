@@ -1,18 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ChartLineData01Icon,
-  ShoppingCart01Icon,
-  UserGroupIcon,
-  Money01Icon,
-  ArrowUp01Icon,
-  ArrowDown01Icon,
-  Calendar01Icon,
-  Download01Icon,
-  MoreHorizontalIcon,
-} from '@hugeicons/core-free-icons';
+  ChartBarIcon,
+  ShoppingCartIcon,
+  UsersIcon,
+  BanknotesIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
+  CalendarIcon,
+  ArrowDownTrayIcon,
+  EllipsisHorizontalIcon,
+} from '@heroicons/react/24/outline';
 import {
   XAxis,
   YAxis,
@@ -66,7 +65,7 @@ function MetricCard({
   value,
   change,
   trend,
-  icon,
+  icon: Icon,
   description
 }: {
   title: string;
@@ -83,7 +82,7 @@ function MetricCard({
           {title}
         </CardTitle>
         <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-          <HugeiconsIcon icon={icon} className="h-5 w-5" />
+          <Icon className="h-5 w-5" />
         </div>
       </CardHeader>
       <CardContent>
@@ -93,10 +92,11 @@ function MetricCard({
             "flex items-center text-xs font-medium",
             trend === 'up' ? "text-green-600" : "text-red-600"
           )}>
-            <HugeiconsIcon
-              icon={trend === 'up' ? ArrowUp01Icon : ArrowDown01Icon}
-              className="mr-0.5 h-3 w-3"
-            />
+            {trend === 'up' ? (
+              <ArrowUpIcon className="mr-0.5 h-3 w-3" />
+            ) : (
+              <ArrowDownIcon className="mr-0.5 h-3 w-3" />
+            )}
             {change}
           </span>
           <span className="text-xs text-neutral-500">{description}</span>
@@ -121,11 +121,11 @@ export function ExampleDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" className="hidden md:flex">
-            <HugeiconsIcon icon={Calendar01Icon} className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4" />
             2024年12月
           </Button>
           <Button className="bg-blue-600 hover:bg-blue-700">
-            <HugeiconsIcon icon={Download01Icon} className="mr-2 h-4 w-4" />
+            <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
             导出报表
           </Button>
         </div>
@@ -138,7 +138,7 @@ export function ExampleDashboard() {
           value="¥128,430.00"
           change="+12.5%"
           trend="up"
-          icon={Money01Icon}
+          icon={BanknotesIcon}
           description="较上月"
         />
         <MetricCard
@@ -146,7 +146,7 @@ export function ExampleDashboard() {
           value="1,240"
           change="+8.2%"
           trend="up"
-          icon={ShoppingCart01Icon}
+          icon={ShoppingCartIcon}
           description="较上月"
         />
         <MetricCard
@@ -154,7 +154,7 @@ export function ExampleDashboard() {
           value="324"
           change="-2.4%"
           trend="down"
-          icon={UserGroupIcon}
+          icon={UsersIcon}
           description="较上月"
         />
         <MetricCard
@@ -162,7 +162,7 @@ export function ExampleDashboard() {
           value="12,430"
           change="+15.3%"
           trend="up"
-          icon={ChartLineData01Icon}
+          icon={ChartBarIcon}
           description="较上月"
         />
       </div>
@@ -274,7 +274,7 @@ export function ExampleDashboard() {
                 <div key={order.id} className="flex items-center justify-between border-b border-neutral-100 pb-4 last:border-0 last:pb-0 dark:border-neutral-800">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                      <HugeiconsIcon icon={ShoppingCart01Icon} className="h-5 w-5 text-neutral-500" />
+                      <ShoppingCartIcon className="h-5 w-5 text-neutral-500" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-neutral-900 dark:text-neutral-50">{order.customer}</p>
@@ -331,7 +331,7 @@ export function ExampleDashboard() {
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <HugeiconsIcon icon={MoreHorizontalIcon} className="h-4 w-4" />
+                    <EllipsisHorizontalIcon className="h-4 w-4" />
                   </Button>
                 </div>
               ))}

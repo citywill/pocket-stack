@@ -25,18 +25,17 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Search01Icon,
-  FilterIcon,
-  Calendar01Icon,
-  PencilEdit01Icon,
-  Delete01Icon,
-  PlusSignIcon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Sorting05Icon,
-} from '@hugeicons/core-free-icons';
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  CalendarIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  PlusIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowsUpDownIcon
+} from '@heroicons/react/24/outline';
 import { format, isWithinInterval, parseISO, startOfDay, endOfDay } from 'date-fns';
 import { type DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
@@ -185,7 +184,7 @@ export function ExampleTable() {
           </p>
         </div>
         <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700">
-          <HugeiconsIcon icon={PlusSignIcon} className="mr-2 h-4 w-4" />
+          <PlusIcon className="mr-2 h-4 w-4" />
           创建订单
         </Button>
       </div>
@@ -194,8 +193,7 @@ export function ExampleTable() {
       <div className="bg-white dark:bg-neutral-900/50 border border-neutral-200 dark:border-neutral-800 p-3 rounded-2xl">
         <div className="flex gap-4">
           <div className="relative">
-            <HugeiconsIcon
-              icon={Search01Icon}
+            <MagnifyingGlassIcon
               className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
             />
             <Input
@@ -208,7 +206,7 @@ export function ExampleTable() {
 
           <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
             <SelectTrigger>
-              <HugeiconsIcon icon={FilterIcon} className="mr-2 h-4 w-4 text-neutral-400" />
+              <FunnelIcon className="mr-2 h-4 w-4 text-neutral-400" />
               <SelectValue placeholder="筛选状态" />
             </SelectTrigger>
             <SelectContent>
@@ -229,7 +227,7 @@ export function ExampleTable() {
                   !dateRange && 'text-neutral-400'
                 )}
               >
-                <HugeiconsIcon icon={Calendar01Icon} className="mr-2 h-4 w-4" />
+                <CalendarIcon className="mr-2 h-4 w-4" />
                 {dateRange?.from ? (
                   dateRange.to ? (
                     <>
@@ -291,7 +289,7 @@ export function ExampleTable() {
                   >
                     <div className="flex items-center gap-1">
                       订单号
-                      <HugeiconsIcon icon={Sorting05Icon} className="h-3 w-3" />
+                      <ArrowsUpDownIcon className="h-3 w-3" />
                     </div>
                   </th>
                   <th
@@ -300,7 +298,7 @@ export function ExampleTable() {
                   >
                     <div className="flex items-center gap-1">
                       客户
-                      <HugeiconsIcon icon={Sorting05Icon} className="h-3 w-3" />
+                      <ArrowsUpDownIcon className="h-3 w-3" />
                     </div>
                   </th>
                   <th
@@ -309,7 +307,7 @@ export function ExampleTable() {
                   >
                     <div className="flex items-center gap-1">
                       金额
-                      <HugeiconsIcon icon={Sorting05Icon} className="h-3 w-3" />
+                      <ArrowsUpDownIcon className="h-3 w-3" />
                     </div>
                   </th>
                   <th className="pb-3 text-left text-sm font-medium text-neutral-600 dark:text-neutral-400">
@@ -324,7 +322,7 @@ export function ExampleTable() {
                   >
                     <div className="flex items-center gap-1">
                       日期
-                      <HugeiconsIcon icon={Sorting05Icon} className="h-3 w-3" />
+                      <ArrowsUpDownIcon className="h-3 w-3" />
                     </div>
                   </th>
                   <th className="pb-3 text-right text-sm font-medium text-neutral-600 dark:text-neutral-400">
@@ -371,7 +369,7 @@ export function ExampleTable() {
                           onClick={() => handleOpenDialog(order)}
                           className="h-8 w-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                         >
-                          <HugeiconsIcon icon={PencilEdit01Icon} className="h-4 w-4" />
+                          <PencilSquareIcon className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -379,7 +377,7 @@ export function ExampleTable() {
                           onClick={() => handleDelete(order.id)}
                           className="h-8 w-8 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
-                          <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4" />
+                          <TrashIcon className="h-4 w-4" />
                         </Button>
                       </div>
                     </td>
@@ -403,7 +401,7 @@ export function ExampleTable() {
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-1 h-4 w-4" />
+                <ArrowLeftIcon className="mr-1 h-4 w-4" />
                 上一页
               </Button>
               <div className="flex items-center gap-1">
@@ -426,7 +424,7 @@ export function ExampleTable() {
                 onClick={() => setCurrentPage(currentPage + 1)}
               >
                 下一页
-                <HugeiconsIcon icon={ArrowRight01Icon} className="ml-1 h-4 w-4" />
+                <ArrowRightIcon className="ml-1 h-4 w-4" />
               </Button>
             </div>
           </div>

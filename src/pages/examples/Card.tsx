@@ -1,22 +1,20 @@
 import { useState, useMemo, useEffect } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft01Icon,
-  ArrowRight01Icon,
-  Search01Icon,
-  Download01Icon,
-  Share01Icon,
-  MoreVerticalIcon,
-  File01Icon,
-  Pdf01Icon,
-  Doc01Icon,
-  Image01Icon,
-  PlusSignIcon,
-  Delete02Icon,
-  PencilEdit01Icon,
-  CheckmarkCircle01Icon,
-  InformationCircleIcon
-} from '@hugeicons/core-free-icons';
+  MagnifyingGlassIcon,
+  ArrowDownTrayIcon,
+  ShareIcon,
+  EllipsisVerticalIcon,
+  DocumentIcon,
+  DocumentTextIcon,
+  PhotoIcon,
+  PlusIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  CheckCircleIcon,
+  InformationCircleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
+} from '@heroicons/react/24/outline';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -199,13 +197,13 @@ export function ExampleCard() {
   const getFileIcon = (type: Document['type']) => {
     switch (type) {
       case 'pdf':
-        return <HugeiconsIcon icon={Pdf01Icon} className="h-10 w-10 text-rose-500" />;
+        return <DocumentTextIcon className="h-10 w-10 text-rose-500" />;
       case 'doc':
-        return <HugeiconsIcon icon={Doc01Icon} className="h-10 w-10 text-blue-500" />;
+        return <DocumentIcon className="h-10 w-10 text-blue-500" />;
       case 'image':
-        return <HugeiconsIcon icon={Image01Icon} className="h-10 w-10 text-emerald-500" />;
+        return <PhotoIcon className="h-10 w-10 text-emerald-500" />;
       default:
-        return <HugeiconsIcon icon={File01Icon} className="h-10 w-10 text-neutral-400" />;
+        return <DocumentIcon className="h-10 w-10 text-neutral-400" />;
     }
   };
 
@@ -215,19 +213,19 @@ export function ExampleCard() {
       case 'published':
         return (
           <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-100 flex items-center gap-1">
-            <HugeiconsIcon icon={CheckmarkCircle01Icon} size={12} /> 已发布
+            <CheckCircleIcon className="size-3" /> 已发布
           </Badge>
         );
       case 'draft':
         return (
           <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-100 flex items-center gap-1">
-            <HugeiconsIcon icon={PencilEdit01Icon} size={12} /> 草稿
+            <PencilSquareIcon className="size-3" /> 草稿
           </Badge>
         );
       case 'archived':
         return (
           <Badge variant="outline" className="bg-neutral-50 text-neutral-500 border-neutral-100 flex items-center gap-1">
-            <HugeiconsIcon icon={InformationCircleIcon} size={12} /> 已归档
+            <InformationCircleIcon className="size-3" /> 已归档
           </Badge>
         );
     }
@@ -244,7 +242,7 @@ export function ExampleCard() {
         </div>
         <div className="flex items-center gap-3">
           <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 rounded-2xl dark:shadow-none transition-all hover:scale-[1.02] active:scale-[0.98]">
-            <HugeiconsIcon icon={PlusSignIcon} size={18} /> 上传文档
+            <PlusIcon className="size-5" /> 上传文档
           </Button>
         </div>
       </div>
@@ -253,7 +251,7 @@ export function ExampleCard() {
       <Card className="border-none dark:bg-neutral-900/50 p-1 rounded-2xl">
         <CardContent className="p-2 flex flex-col md:flex-row items-center gap-4">
           <div className="relative flex-1 w-full">
-            <HugeiconsIcon icon={Search01Icon} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 h-4 w-4" />
+            <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 h-4 w-4" />
             <Input
               placeholder="搜索文档名称..."
               className="pl-11 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 rounded-2xl focus:ring-2 focus:ring-blue-500/20 transition-all"
@@ -299,22 +297,22 @@ export function ExampleCard() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
-                          <HugeiconsIcon icon={MoreVerticalIcon} size={18} />
+                          <EllipsisVerticalIcon className="size-5" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-40 rounded-xl p-1.5">
                         <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer">
-                          <HugeiconsIcon icon={PencilEdit01Icon} size={16} /> 编辑
+                          <PencilSquareIcon className="size-4" /> 编辑
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer">
-                          <HugeiconsIcon icon={Share01Icon} size={16} /> 分享
+                          <ShareIcon className="size-4" /> 分享
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer text-blue-600">
-                          <HugeiconsIcon icon={Download01Icon} size={16} /> 下载
+                          <ArrowDownTrayIcon className="size-4" /> 下载
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer text-rose-600 focus:text-rose-600">
-                          <HugeiconsIcon icon={Delete02Icon} size={16} /> 删除
+                          <TrashIcon className="size-4" /> 删除
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -365,7 +363,7 @@ export function ExampleCard() {
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                 >
-                  <HugeiconsIcon icon={ArrowLeft01Icon} size={16} />
+                  <ChevronLeftIcon className="size-4" />
                   上一页
                 </Button>
                 <div className="flex items-center gap-1 mx-2">
@@ -392,7 +390,7 @@ export function ExampleCard() {
                   disabled={currentPage === totalPages}
                 >
                   下一页
-                  <HugeiconsIcon icon={ArrowRight01Icon} size={16} />
+                  <ChevronRightIcon className="size-4" />
                 </Button>
               </div>
             </div>
@@ -401,7 +399,7 @@ export function ExampleCard() {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 bg-neutral-50 dark:bg-neutral-900/50 rounded-3xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
           <div className="p-6 bg-white dark:bg-neutral-900 rounded-full shadow-sm mb-4">
-            <HugeiconsIcon icon={Search01Icon} className="h-10 w-10 text-neutral-300" />
+            <MagnifyingGlassIcon className="h-10 w-10 text-neutral-300" />
           </div>
           <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">未找到相关文档</h3>
           <p className="text-neutral-500 mt-1">尝试调整搜索关键词或筛选条件</p>

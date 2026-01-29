@@ -1,8 +1,8 @@
-import { PrismIcon } from '@hugeicons/core-free-icons';
+import { CubeIcon } from '@heroicons/react/24/outline';
 
 export const exampleMenu = {
   title: '示例页面',
-  icon: PrismIcon,
+  icon: CubeIcon,
   children: [
     { title: '仪表盘', path: '/' },
     { title: '空页面', path: '/examples/blank' },

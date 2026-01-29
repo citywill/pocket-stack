@@ -2,18 +2,17 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  AiChat02Icon,
-  CloudSavingDone02Icon,
-  SecurityCheckIcon,
-  ZapIcon,
-  ArrowRight01Icon,
-  GithubIcon,
-  Menu01Icon,
-  WorkflowSquare01Icon,
-  Layers01Icon
-} from '@hugeicons/core-free-icons';
+  ChatBubbleBottomCenterTextIcon,
+  CloudArrowUpIcon,
+  ShieldCheckIcon,
+  BoltIcon,
+  ArrowRightIcon,
+  Squares2X2Icon,
+  CpuChipIcon,
+  Bars3Icon,
+  CodeBracketIcon
+} from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { cn } from '@/lib/utils';
 
@@ -22,37 +21,37 @@ export function LandingPage() {
     {
       title: 'PocketBase 集成',
       description: '内置 PocketBase 后端支持，实现极速身份验证和实时数据同步。',
-      icon: CloudSavingDone02Icon,
+      icon: CloudArrowUpIcon,
       color: 'bg-blue-500'
     },
     {
       title: 'AI 智能驱动',
       description: '集成多种 LLM 模型，提供 AI 对话和智能数据分析助手。',
-      icon: AiChat02Icon,
+      icon: ChatBubbleBottomCenterTextIcon,
       color: 'bg-purple-500'
     },
     {
       title: '模块化架构',
       description: '遵循严格的模块化开发规范，路由与菜单自动注册，易于扩展。',
-      icon: Layers01Icon,
+      icon: Squares2X2Icon,
       color: 'bg-green-500'
     },
     {
       title: '企业级安全',
       description: '完善的角色权限控制系统，支持管理员与普通用户权限隔离处理。',
-      icon: SecurityCheckIcon,
+      icon: ShieldCheckIcon,
       color: 'bg-red-500'
     },
     {
       title: '极致性能',
       description: '基于 Vite + React 19，响应迅速，体验流畅。',
-      icon: ZapIcon,
+      icon: BoltIcon,
       color: 'bg-yellow-500'
     },
     {
       title: 'shadcn/ui 设计',
       description: '采用现代化 UI 组件库，配合 rounded-2xl 圆角风格，极致美观。',
-      icon: WorkflowSquare01Icon,
+      icon: CpuChipIcon,
       color: 'bg-indigo-500'
     }
   ];
@@ -78,7 +77,7 @@ export function LandingPage() {
               <Link to="/register">立即开启</Link>
             </Button>
             <Button variant="outline" size="icon" className="md:hidden rounded-xl">
-              <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5" />
+              <Bars3Icon className="h-5 w-5" />
             </Button>
           </div>
         </div>
@@ -107,12 +106,12 @@ export function LandingPage() {
               <Button size="lg" className="h-14 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 text-lg font-bold shadow-xl shadow-blue-500/25 group" asChild>
                 <Link to="/register">
                   开始使用
-                  <HugeiconsIcon icon={ArrowRight01Icon} className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRightIcon className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="h-14 px-8 rounded-2xl text-lg font-bold border-neutral-200 dark:border-neutral-800" asChild>
                 <a href="https://github.com" target="_blank" rel="noopener noreferrer">
-                  <HugeiconsIcon icon={GithubIcon} className="mr-2 h-5 w-5" />
+                  <CodeBracketIcon className="mr-2 h-5 w-5" />
                   GitHub 源码
                 </a>
               </Button>
@@ -149,7 +148,7 @@ export function LandingPage() {
                 <Card key={index} className="group border-none shadow-none bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300">
                   <CardContent className="p-8">
                     <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg", feature.color)}>
-                      <HugeiconsIcon icon={feature.icon} className="h-7 w-7" />
+                      <feature.icon className="h-7 w-7" />
                     </div>
                     <h3 className="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-3 group-hover:text-blue-600 transition-colors">
                       {feature.title}

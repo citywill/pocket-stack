@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { 
-  Menu01Icon, 
-  Cancel01Icon,
-  Notification01Icon, 
-  Search01Icon, 
-  Logout01Icon, 
-  SidebarLeft01Icon,
-  SidebarRight01Icon,
-  UserIcon
-} from '@hugeicons/core-free-icons';
+import {
+  Bars3Icon,
+  XMarkIcon,
+  BellIcon,
+  MagnifyingGlassIcon,
+  ArrowRightOnRectangleIcon as LogoutIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -35,7 +34,7 @@ interface HeaderProps {
 export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar }: HeaderProps) {
   const { user, logout, isSuperAdmin } = useAuth();
 
-  const avatarUrl = user?.avatar 
+  const avatarUrl = user?.avatar
     ? `${pb.baseUrl}/api/files/${user.collectionName || (isSuperAdmin ? '_superusers' : 'users')}/${user.id}/${user.avatar}`
     : null;
 
@@ -56,10 +55,11 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
             className="hidden lg:flex bg-white dark:bg-neutral-950"
             title={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
           >
-            <HugeiconsIcon 
-              icon={isCollapsed ? SidebarRight01Icon : SidebarLeft01Icon} 
-              className="h-5 w-5 text-neutral-500" 
-            />
+            {isCollapsed ? (
+              <ChevronDoubleRightIcon className="h-5 w-5 text-neutral-500" />
+            ) : (
+              <ChevronDoubleLeftIcon className="h-5 w-5 text-neutral-500" />
+            )}
           </Button>
 
           <Button
@@ -68,14 +68,18 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
             className={cn("lg:hidden", isMobileOpen && "bg-neutral-100 dark:bg-neutral-800")}
             onClick={onMenuClick}
           >
-            <HugeiconsIcon icon={isMobileOpen ? Cancel01Icon : Menu01Icon} className="h-5 w-5" />
+            {isMobileOpen ? (
+              <XMarkIcon className="h-5 w-5" />
+            ) : (
+              <Bars3Icon className="h-5 w-5" />
+            )}
           </Button>
 
           <Logo className="lg:hidden scale-90" />
 
           {/* Search */}
           <div className="relative hidden md:block">
-            <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
             <Input
               type="search"
               placeholder="搜索..."
@@ -87,9 +91,9 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
         {/* Right section */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          
+
           <Button variant="outline" size="icon" className="relative border-1 bg-white dark:bg-neutral-950">
-            <HugeiconsIcon icon={Notification01Icon} className="h-5 w-5" />
+            <BellIcon className="h-5 w-5" />
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500"></span>
           </Button>
 
@@ -116,16 +120,16 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem asChild>
                 <Link to="/profile" className="flex items-center cursor-pointer">
-                  <HugeiconsIcon icon={UserIcon} className="mr-2 h-4 w-4" />
+                  <UserIcon className="mr-2 h-4 w-4" />
                   <span>个人信息</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={logout}
                 className="cursor-pointer text-red-600 focus:text-red-700"
               >
-                <HugeiconsIcon icon={Logout01Icon} className="mr-2 h-4 w-4" />
+                <LogoutIcon className="mr-2 h-4 w-4" />
                 <span>退出登录</span>
               </DropdownMenuItem>
             </DropdownMenuContent>

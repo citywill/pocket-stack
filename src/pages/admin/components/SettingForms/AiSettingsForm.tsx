@@ -3,14 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  AiChat02Icon,
+  CpuChipIcon,
   InformationCircleIcon,
-  FloppyDiskIcon,
-  ViewIcon,
-  ViewOffIcon
-} from '@hugeicons/core-free-icons';
+  DocumentCheckIcon,
+  EyeIcon,
+  EyeSlashIcon
+} from '@heroicons/react/24/outline';
 import { InputGroup, InputGroupAddon, InputGroupButton } from '@/components/ui/input-group';
 
 interface SystemSetting {
@@ -25,6 +24,13 @@ export const AI_PRESET_SETTINGS = [
   { key: 'ai_api_url', label: 'AI API URL', description: '大模型接口地址 (默认: https://api.deepseek.com/v1/chat/completions)' },
   { key: 'ai_model', label: 'AI 模型名称', description: '使用的模型 ID (默认: deepseek-chat)' },
 ];
+
+export const metadata = {
+  id: 'ai',
+  title: 'AI 设置',
+  icon: CpuChipIcon,
+  presetSettings: AI_PRESET_SETTINGS,
+};
 
 interface AiSettingsFormProps {
   settings: Record<string, SystemSetting>;
@@ -45,7 +51,7 @@ export function AiSettingsForm({
     <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <HugeiconsIcon icon={AiChat02Icon} className="h-5 w-5 text-blue-500" />
+          <CpuChipIcon className="h-5 w-5 text-blue-500" />
           AI 接口配置
         </CardTitle>
         <CardDescription>管理大模型 API 接口参数，配置后可启用真实对话功能。</CardDescription>
@@ -82,10 +88,11 @@ export function AiSettingsForm({
                         onClick={() => setShowApiKey(!showApiKey)}
                         title={showApiKey ? "隐藏密钥" : "显示密钥"}
                       >
-                        <HugeiconsIcon
-                          icon={showApiKey ? ViewOffIcon : ViewIcon}
-                          className="h-4 w-4"
-                        />
+                        {showApiKey ? (
+                          <EyeSlashIcon className="h-4 w-4" />
+                        ) : (
+                          <EyeIcon className="h-4 w-4" />
+                        )}
                       </InputGroupButton>
                     </InputGroupAddon>
                   </InputGroup>
@@ -102,7 +109,7 @@ export function AiSettingsForm({
 
                 {setting.description && (
                   <p className="text-xs text-neutral-500 flex items-center gap-1">
-                    <HugeiconsIcon icon={InformationCircleIcon} className="h-3 w-3" />
+                    <InformationCircleIcon className="h-3 w-3" />
                     {setting.description}
                   </p>
                 )}
@@ -116,7 +123,7 @@ export function AiSettingsForm({
               disabled={loading}
               className="bg-blue-600 hover:bg-blue-700 rounded-2xl"
             >
-              <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 h-4 w-4" />
+              <DocumentCheckIcon className="mr-2 h-4 w-4" />
               {loading ? '保存中...' : '保存 AI 配置'}
             </Button>
           </div>

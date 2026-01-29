@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
   UserIcon
-} from '@hugeicons/core-free-icons';
+} from '@heroicons/react/24/outline';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
@@ -126,7 +125,7 @@ export function AdminDashboard() {
                     </p>
                   </div>
                   <div className={`rounded-full p-3 ${stat.bgColor} transition-transform hover:scale-110`}>
-                    <HugeiconsIcon icon={stat.icon} className={`h-6 w-6 ${stat.color}`} />
+                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
                 </div>
               </CardContent>
@@ -229,7 +228,7 @@ export function AdminDashboard() {
                         />
                       ) : (
                         <div className="rounded-full bg-indigo-100 dark:bg-indigo-900/30 p-3">
-                          <HugeiconsIcon icon={UserIcon} className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                          <UserIcon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
                         </div>
                       )}
                       <div>
