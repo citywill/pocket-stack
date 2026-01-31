@@ -17,7 +17,7 @@ export function MainLayout() {
       </div>
 
       {/* Mobile Sidebar (Slide-out from under Header) */}
-      <div 
+      <div
         className={cn(
           "lg:hidden fixed left-0 top-16 z-20 h-[calc(100vh-4rem)] w-64 bg-white transition-transform duration-300 ease-in-out dark:bg-neutral-950 border-r border-neutral-200 dark:border-neutral-800 shadow-xl",
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -28,19 +28,19 @@ export function MainLayout() {
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 z-10 bg-black/20 backdrop-blur-[2px] pt-16" 
-          onClick={() => setIsMobileMenuOpen(false)} 
+        <div
+          className="lg:hidden fixed inset-0 z-10 bg-black/20 backdrop-blur-[2px] pt-16"
+          onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      <Header 
-        isCollapsed={isCollapsed} 
+      <Header
+        isCollapsed={isCollapsed}
         isMobileOpen={isMobileMenuOpen}
-        onToggleSidebar={() => setIsCollapsed(!isCollapsed)} 
+        onToggleSidebar={() => setIsCollapsed(!isCollapsed)}
         onMenuClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
-      
+
       <main className={cn(
         "transition-all duration-300 pt-16 flex-1 flex flex-col",
         // Desktop margins
@@ -48,7 +48,7 @@ export function MainLayout() {
         // Mobile resets (hidden by lg prefixes above)
         "ml-0"
       )}>
-        <div className="p-4 md:p-6 lg:p-8 flex-1">
+        <div className="flex-1">
           <Outlet />
         </div>
         <Footer />

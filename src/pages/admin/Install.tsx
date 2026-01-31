@@ -120,7 +120,7 @@ export function Install() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6">
       <Card className="w-full max-w-2xl rounded-2xl border-none shadow-lg bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-4">
