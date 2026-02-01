@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { exampleMenu } from '@/pages/examples/menu';
+import { financeMenu } from '@/pages/finance/menu';
 import { adminMenu } from '@/pages/admin/menu';
 import { useAuth } from '@/components/auth-provider';
 import {
@@ -33,6 +34,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   ...adminMenu,
+  financeMenu,
   exampleMenu,
 ];
 

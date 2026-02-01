@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { ExampleRoutes } from '@/pages/examples/routes';
+import { FinanceRoutes } from '@/pages/finance/routes';
 import { AdminRoutes } from '@/pages/admin/routes';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
@@ -24,6 +25,7 @@ export function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               {ExampleRoutes}
+              {FinanceRoutes}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
                   {AdminRoutes}
