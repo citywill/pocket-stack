@@ -4,6 +4,7 @@ import { ExampleTable } from './Table';
 import { ExampleCard } from './Card';
 import { Form } from './Form';
 import { Blank } from './Blank';
+import { Loading } from './Loading';
 import CurdExample from './curd/Index';
 import { ProtectedRoute } from '@/components/protected-route';
 import { MainLayout } from '@/components/layout';
@@ -20,6 +21,7 @@ export const ExampleRoutes = (
         <Route path="examples/curd" element={<CurdExample />} />
         <Route path="examples/card" element={<ExampleCard />} />
         <Route path="examples/form" element={<Form />} />
+        <Route path="examples/loading" element={<Loading />} />
       </Route>
     </Route>
     <Route path="examples/portal">
