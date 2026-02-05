@@ -3,9 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
-import { exampleMenu } from '@/pages/examples/menu';
-import { adminMenu } from '@/pages/admin/menu';
 import { useAuth } from '@/components/auth-provider';
+import { menuItems, type MenuItem } from '../menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,27 +13,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-
-interface MenuItem {
-  title: string;
-  path?: string;
-  icon: any;
-  adminOnly?: boolean;
-  userOnly?: boolean;
-  external?: boolean;
-  children?: {
-    title: string;
-    path: string;
-    adminOnly?: boolean;
-    userOnly?: boolean;
-    external?: boolean;
-  }[];
-}
-
-const menuItems: MenuItem[] = [
-  ...adminMenu,
-  exampleMenu,
-];
 
 interface SidebarProps {
   isCollapsed?: boolean;
