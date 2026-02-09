@@ -1,10 +1,10 @@
 import { CubeIcon } from '@heroicons/react/24/outline';
 
-export const exampleMenu = {
+export const menu = {
   title: '示例页面',
   icon: CubeIcon,
   children: [
-    { title: '仪表盘', path: '/' },
+    { title: '仪表盘', path: '/examples/dashboard' },
     { title: '空页面', path: '/examples/blank' },
     { title: '表格', path: '/examples/table' },
     { title: '卡片', path: '/examples/card' },
