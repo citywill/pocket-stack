@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Home01Icon, ArrowLeft01Icon } from '@hugeicons/core-free-icons';
+import { HomeIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export function NotFound() {
   return (
@@ -25,12 +24,12 @@ export function NotFound() {
 
       <div className="flex flex-col sm:flex-row items-center gap-4">
         <Button variant="outline" onClick={() => window.history.back()}>
-          <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-2 h-4 w-4" />
+          <ArrowLeftIcon className="mr-2 h-4 w-4" />
           返回上一页
         </Button>
         <Button asChild>
           <Link to="/">
-            <HugeiconsIcon icon={Home01Icon} className="mr-2 h-4 w-4" />
+            <HomeIcon className="mr-2 h-4 w-4" />
             返回首页
           </Link>
         </Button>

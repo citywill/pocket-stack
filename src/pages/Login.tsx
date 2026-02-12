@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Mail01Icon, LockIcon, Loading01Icon } from '@hugeicons/core-free-icons';
+import { EnvelopeIcon, LockClosedIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 import { Logo } from '@/components/logo';
 
@@ -60,7 +59,7 @@ export function LoginPage() {
               <div className="space-y-2">
                 <Label htmlFor="email">账号 (邮箱)</Label>
                 <div className="relative">
-                  <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                  <EnvelopeIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
                   <Input
                     id="email"
                     type="email"
@@ -75,7 +74,7 @@ export function LoginPage() {
               <div className="space-y-2">
                 <Label htmlFor="password">密码</Label>
                 <div className="relative">
-                  <HugeiconsIcon icon={LockIcon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                  <LockClosedIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
                   <Input
                     id="password"
                     type="password"
@@ -103,7 +102,7 @@ export function LoginPage() {
 
               <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting ? (
-                  <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />
+                  <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
                 登录
               </Button>
