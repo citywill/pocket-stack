@@ -5,19 +5,18 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  SentIcon,
-  Add01Icon,
+  PaperAirplaneIcon,
+  PlusIcon,
   UserIcon,
-  Settings01Icon,
-  Delete02Icon,
-  ComputerVideoIcon,
-  RobotIcon,
-  AiChat02Icon,
-  LeftToRightListNumberIcon,
-  Copy01Icon,
-} from '@hugeicons/core-free-icons';
+  Cog6ToothIcon,
+  TrashIcon,
+  RectangleGroupIcon,
+  CpuChipIcon,
+  ChatBubbleLeftRightIcon,
+  Bars3BottomLeftIcon,
+  DocumentDuplicateIcon
+} from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { cn } from '@/lib/utils';
@@ -326,7 +325,7 @@ export function AIPlayground() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-120px)] overflow-hidden rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+    <div className="flex h-[calc(100vh-185px)] overflow-hidden rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 m-6">
       {/* Sessions Sidebar */}
       <div className={cn(
         "flex flex-col border-r border-neutral-200 dark:border-neutral-800 transition-all duration-300",
@@ -337,14 +336,14 @@ export function AIPlayground() {
             className="w-full justify-start p-5 bg-blue-100 border-1 border-blue-300 text-blue-700 hover:bg-blue-200 rounded-2xl"
             onClick={() => setCurrentSession(null)}
           >
-            <HugeiconsIcon icon={Add01Icon} className="h-5 w-5" />
+            <PlusIcon className="h-5 w-5" />
             <span className="font-medium">新对话</span>
           </Button>
 
           <div className="flex justify-between items-center">
             <h3 className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">历史对话</h3>
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setIsSidebarOpen(false)}>
-              <HugeiconsIcon icon={LeftToRightListNumberIcon} className="h-4 w-4" />
+              <Bars3BottomLeftIcon className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -387,7 +386,7 @@ export function AIPlayground() {
                   className="opacity-0 group-hover:opacity-100 h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all"
                   onClick={(e) => deleteSession(session.id, e)}
                 >
-                  <HugeiconsIcon icon={Delete02Icon} className="h-4 w-4" />
+                  <TrashIcon className="h-4 w-4" />
                 </Button>
               </div>
             ))}
@@ -406,7 +405,7 @@ export function AIPlayground() {
               className="rounded-xl bg-white dark:bg-neutral-900 shadow-md border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all"
               onClick={() => setIsSidebarOpen(true)}
             >
-              <HugeiconsIcon icon={LeftToRightListNumberIcon} className="h-5 w-5" />
+              <Bars3BottomLeftIcon className="h-5 w-5" />
             </Button>
           </div>
         )}
@@ -436,10 +435,10 @@ export function AIPlayground() {
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="icon" className="rounded-full">
-                  <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
+                  <CpuChipIcon className="h-5 w-5" />
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full">
-                  <HugeiconsIcon icon={Settings01Icon} className="h-5 w-5" />
+                  <Cog6ToothIcon className="h-5 w-5" />
                 </Button>
               </div>
             </div>
@@ -464,14 +463,14 @@ export function AIPlayground() {
                           <>
                             <AvatarImage src={user?.avatar ? pb.files.getURL(user, user.avatar) : ''} />
                             <AvatarFallback className="bg-neutral-200 dark:bg-neutral-800">
-                              <HugeiconsIcon icon={UserIcon} className="h-5 w-5" />
+                              <UserIcon className="h-5 w-5" />
                             </AvatarFallback>
                           </>
                         ) : (
                           <>
                             <AvatarImage src={currentSession.expand?.agent_id.avatar ? pb.files.getURL(currentSession.expand.agent_id, currentSession.expand.agent_id.avatar) : ''} />
                             <AvatarFallback className="bg-blue-100 text-blue-600">
-                              <HugeiconsIcon icon={RobotIcon} className="h-5 w-5" />
+                              <CpuChipIcon className="h-5 w-5" />
                             </AvatarFallback>
                           </>
                         )}
@@ -525,8 +524,7 @@ export function AIPlayground() {
                               onClick={() => handleCopy(msg.content)}
                               className="flex items-center gap-1 text-[10px] font-medium text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                             >
-                              <HugeiconsIcon
-                                icon={Copy01Icon}
+                              <DocumentDuplicateIcon
                                 className={cn("h-3 w-3")}
                               />
                             </button>
@@ -552,7 +550,7 @@ export function AIPlayground() {
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl text-neutral-400">
-                      <HugeiconsIcon icon={ComputerVideoIcon} className="h-5 w-5" />
+                      <RectangleGroupIcon className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
@@ -561,7 +559,7 @@ export function AIPlayground() {
                   disabled={!input.trim() || isLoading}
                   className="rounded-2xl h-12 w-12 bg-blue-600 hover:bg-blue-700 p-0 shadow-lg shadow-blue-500/20"
                 >
-                  <HugeiconsIcon icon={SentIcon} className="h-5 w-5" />
+                  <PaperAirplaneIcon className="h-5 w-5" />
                 </Button>
               </div>
             </div>
@@ -569,7 +567,7 @@ export function AIPlayground() {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
             <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/20 rounded-3xl flex items-center justify-center text-blue-600 mb-6">
-              <HugeiconsIcon icon={AiChat02Icon} className="h-10 w-10" />
+              <ChatBubbleLeftRightIcon className="h-10 w-10" />
             </div>
             <h3 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">欢迎来到 AI 助手</h3>
             <p className="text-neutral-500 dark:text-neutral-400 max-w-sm mb-8">
@@ -605,7 +603,7 @@ export function AIPlayground() {
                     </p>
                     <div className="mt-4 flex justify-end">
                       <div className="w-8 h-8 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all">
-                        <HugeiconsIcon icon={Add01Icon} className="h-4 w-4" />
+                        <PlusIcon className="h-4 w-4" />
                       </div>
                     </div>
                   </CardContent>

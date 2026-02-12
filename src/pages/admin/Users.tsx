@@ -4,20 +4,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
   UserIcon,
-  Mail01Icon,
-  Calendar01Icon,
-  Delete01Icon,
-  PencilEdit01Icon,
-  Add01Icon,
-  RefreshIcon,
-  Search01Icon,
-  ImageAdd01Icon,
-  ArrowLeft01Icon,
-  ArrowRight01Icon
-} from '@hugeicons/core-free-icons';
+  EnvelopeIcon,
+  CalendarIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  PlusIcon,
+  ArrowPathIcon,
+  MagnifyingGlassIcon,
+  PhotoIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
+} from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 import { cn } from '@/lib/utils';
 import {
@@ -28,6 +27,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'sonner';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -61,6 +71,8 @@ export function Users() {
   // Dialog state
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserRecord | null>(null);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: '',
@@ -174,33 +186,43 @@ export function Users() {
 
       if (editingUser) {
         await pb.collection('users').update(editingUser.id, data);
+        toast.success('更新成功');
       } else {
         data.append('email', formData.email);
         data.append('emailVisibility', 'true');
         await pb.collection('users').create(data);
+        toast.success('创建成功');
       }
       setIsDialogOpen(false);
       fetchUsers();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to save user:', error);
-      alert('保存失败，请检查输入或权限');
+      toast.error(error.message || '保存失败，请检查输入或权限');
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('确定要删除该用户吗？')) {
-      try {
-        await pb.collection('users').delete(id);
-        fetchUsers();
-      } catch (error) {
-        console.error('Failed to delete user:', error);
-        alert('删除失败');
-      }
+  const handleDeleteClick = (id: string) => {
+    setDeleteTargetId(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTargetId) return;
+    try {
+      await pb.collection('users').delete(deleteTargetId);
+      toast.success('删除成功');
+      fetchUsers();
+    } catch (error: any) {
+      console.error('Failed to delete user:', error);
+      toast.error(error.message || '删除失败');
+    } finally {
+      setDeleteConfirmOpen(false);
+      setDeleteTargetId(null);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
@@ -213,10 +235,10 @@ export function Users() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={() => fetchUsers()} disabled={loading} className="bg-white dark:bg-neutral-950">
-            <HugeiconsIcon icon={RefreshIcon} className={cn("h-4 w-4", loading && "animate-spin")} />
+            <ArrowPathIcon className={cn("h-4 w-4", loading && "animate-spin")} />
           </Button>
           <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => handleOpenDialog()}>
-            <HugeiconsIcon icon={Add01Icon} className="" />
+            <PlusIcon className="mr-2 h-4 w-4" />
             添加用户
           </Button>
         </div>
@@ -224,7 +246,7 @@ export function Users() {
 
       {/* Filter & Search */}
       <div className="relative">
-        <HugeiconsIcon icon={Search01Icon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
         <Input
           placeholder="搜索用户名或邮箱..."
           className="pl-9 bg-white dark:bg-neutral-950 h-11 ring-offset-white focus-visible:ring-blue-500"
@@ -269,7 +291,7 @@ export function Users() {
           ) : users.length === 0 ? (
             <div className="col-span-full py-20 bg-white/50 dark:bg-neutral-950/50 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 text-center flex flex-col items-center gap-3">
               <div className="h-12 w-12 rounded-full bg-neutral-100 dark:bg-neutral-900 flex items-center justify-center">
-                <HugeiconsIcon icon={Search01Icon} className="h-6 w-6 text-neutral-400" />
+                <MagnifyingGlassIcon className="h-6 w-6 text-neutral-400" />
               </div>
               <p className="text-neutral-500">没有发现符合条件的用户</p>
               <Button variant="ghost" size="sm" onClick={() => setSearchTerm('')}>清除搜索</Button>
@@ -290,7 +312,7 @@ export function Users() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <HugeiconsIcon icon={UserIcon} className="h-6 w-6" />
+                        <UserIcon className="h-6 w-6" />
                       )}
                     </div>
                     <div className="overflow-hidden">
@@ -315,11 +337,11 @@ export function Users() {
 
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
-                    <HugeiconsIcon icon={Mail01Icon} className="h-3.5 w-3.5 opacity-70 shrink-0" />
+                    <EnvelopeIcon className="h-3.5 w-3.5 opacity-70 shrink-0" />
                     <span className="truncate">{user.email}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-300">
-                    <HugeiconsIcon icon={Calendar01Icon} className="h-3.5 w-3.5 opacity-70 shrink-0" />
+                    <CalendarIcon className="h-3.5 w-3.5 opacity-70 shrink-0" />
                     <span>{new Date(user.created).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -331,16 +353,16 @@ export function Users() {
                     className="flex-1 h-8 text-[11px] text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                     onClick={() => handleOpenDialog(user)}
                   >
-                    <HugeiconsIcon icon={PencilEdit01Icon} className="mr-1.5 h-3.5 w-3.5" />
+                    <PencilSquareIcon className="mr-1.5 h-3.5 w-3.5" />
                     编辑
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="flex-1 h-8 text-[11px] text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
-                    onClick={() => handleDelete(user.id)}
+                    className="flex-1 h-8 text-[11px] text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                    onClick={() => handleDeleteClick(user.id)}
                   >
-                    <HugeiconsIcon icon={Delete01Icon} className="mr-1.5 h-3.5 w-3.5" />
+                    <TrashIcon className="mr-1.5 h-3.5 w-3.5" />
                     删除
                   </Button>
                 </div>
@@ -363,7 +385,7 @@ export function Users() {
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1 || loading}
               >
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="h-4 w-4" />
+                <ChevronLeftIcon className="h-4 w-4" />
                 上一页
               </Button>
 
@@ -381,7 +403,7 @@ export function Users() {
                 disabled={currentPage === totalPages || loading}
               >
                 下一页
-                <HugeiconsIcon icon={ArrowRight01Icon} className="h-4 w-4" />
+                <ChevronRightIcon className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -405,13 +427,13 @@ export function Users() {
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Preview" className="h-full w-full object-cover" />
                   ) : (
-                    <HugeiconsIcon icon={UserIcon} className="h-10 w-10 text-neutral-400" />
+                    <UserIcon className="h-10 w-10 text-neutral-400" />
                   )}
                   <label
                     htmlFor="avatar-upload"
                     className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-[2px]"
                   >
-                    <HugeiconsIcon icon={ImageAdd01Icon} className="h-6 w-6" />
+                    <PhotoIcon className="h-6 w-6" />
                   </label>
                 </div>
                 <input
@@ -502,6 +524,23 @@ export function Users() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确定要删除该用户吗？</AlertDialogTitle>
+            <AlertDialogDescription>
+              此操作不可撤销。该用户的所有关联数据也将受到影响。
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+              确定删除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

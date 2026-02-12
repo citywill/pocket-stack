@@ -21,7 +21,7 @@ English | [简体中文](README.md)
 
 ## 🌟 Core Features
 
-- 🎨 **Frontend Features**: Built with shadcn/ui (Maia style) and Tailwind CSS v4, with built-in dark mode. Uses [HugeIcons](https://hugeicons.com/) icon library. Adaptive layout for Desktop, Tablet, and Mobile.
+- 🎨 **Frontend Features**: Built with shadcn/ui (Maia style) and Tailwind CSS v4, with built-in dark mode. Uses heroicons library. Adaptive layout for Desktop, Tablet, and Mobile.
 - 🚀 **Backend Features**: Native integration with [PocketBase](https://pocketbase.io/) for authentication and data storage.
 - 🧩 **Modular Architecture**: Supports decoupled business module development. Each module independently configures routes (`routes.tsx`) and menus (`menu.ts`) for plug-and-play integration.
 - 📋 **Business Example**: Built-in personal task management system with multi-state transitions, priority settings, and user data isolation.
@@ -42,7 +42,7 @@ English | [简体中文](README.md)
 | **UI Components**      | shadcn/ui (@base-ui/react)   |
 | **Styling**            | Tailwind CSS v4 (Maia Style) |
 | **Routing**            | React Router v7              |
-| **Icons**              | HugeIcons React              |
+| **Icons**              | Heroicons React              |
 
 ## 📁 Directory Structure
 

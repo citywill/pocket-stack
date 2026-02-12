@@ -5,8 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Mail01Icon, LockIcon, Loading01Icon } from '@hugeicons/core-free-icons';
+import { EnvelopeIcon, LockClosedIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 import { Logo } from '@/components/logo';
 
@@ -36,9 +35,28 @@ export function RegisterPage() {
       navigate('/');
     } catch (err: any) {
       console.error('Registration error:', err);
-      // PocketBase error handling
-      const message = err?.data?.message || err?.message || '注册失败，请稍后重试';
-      // Field specific errors could be handled here too
+
+      // 处理 PocketBase 的详细错误信息
+      let message = '注册失败，请稍后重试';
+
+      if (err?.response?.data) {
+        const data = err.response.data;
+        // 检查特定字段的验证错误
+        if (data.email) {
+          message = '该邮箱已被注册或格式不正确';
+        } else if (data.password) {
+          message = '密码不符合要求（至少8位）';
+        } else if (data.passwordConfirm) {
+          message = '确认密码验证失败';
+        } else if (data.username) {
+          message = '用户名已被占用';
+        } else {
+          message = err.message || message;
+        }
+      } else if (err?.message) {
+        message = err.message;
+      }
+
       setError(message);
     } finally {
       setIsSubmitting(false);
@@ -58,76 +76,76 @@ export function RegisterPage() {
               创建一个新的普通用户账号
             </CardDescription>
           </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
-                {error}
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
+                  {error}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="email">账号 (邮箱)</Label>
+                <div className="relative">
+                  <EnvelopeIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="user@example.com"
+                    className="pl-9"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email">账号 (邮箱)</Label>
-              <div className="relative">
-                <HugeiconsIcon icon={Mail01Icon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="user@example.com"
-                  className="pl-9"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+              <div className="space-y-2">
+                <Label htmlFor="password">密码</Label>
+                <div className="relative">
+                  <LockClosedIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                  <Input
+                    id="password"
+                    type="password"
+                    className="pl-9"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">密码</Label>
-              <div className="relative">
-                <HugeiconsIcon icon={LockIcon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
-                <Input
-                  id="password"
-                  type="password"
-                  className="pl-9"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
+              <div className="space-y-2">
+                <Label htmlFor="passwordConfirm">确认密码</Label>
+                <div className="relative">
+                  <LockClosedIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+                  <Input
+                    id="passwordConfirm"
+                    type="password"
+                    className="pl-9"
+                    value={passwordConfirm}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                    required
+                    minLength={8}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="passwordConfirm">确认密码</Label>
-              <div className="relative">
-                <HugeiconsIcon icon={LockIcon} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
-                <Input
-                  id="passwordConfirm"
-                  type="password"
-                  className="pl-9"
-                  value={passwordConfirm}
-                  onChange={(e) => setPasswordConfirm(e.target.value)}
-                  required
-                  minLength={8}
-                />
-              </div>
-            </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              注册
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            已有账号?{' '}
-            <Link to="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
-              直接登录
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                注册
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-center">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              已有账号?{' '}
+              <Link to="/login" className="font-medium text-blue-600 hover:underline dark:text-blue-400">
+                直接登录
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

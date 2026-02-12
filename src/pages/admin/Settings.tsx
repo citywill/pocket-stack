@@ -2,10 +2,7 @@ import { useState, useEffect } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useSettings } from '@/lib/use-settings';
 import { toast } from 'sonner';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  Settings01Icon,
-} from '@hugeicons/core-free-icons';
+import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SystemSetting {
@@ -122,9 +119,9 @@ export function Settings() {
         };
 
         if (setting.id) {
-          return pb.collection('system_settings').update(setting.id, data);
+          return pb.collection('system_settings').update(setting.id, data, { requestKey: null });
         } else {
-          return pb.collection('system_settings').create(data);
+          return pb.collection('system_settings').create(data, { requestKey: null });
         }
       });
 
@@ -149,11 +146,11 @@ export function Settings() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
-            <HugeiconsIcon icon={Settings01Icon} className="h-8 w-8 text-blue-600" />
+            <Cog6ToothIcon className="h-8 w-8 text-blue-600" />
             系统设置
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
@@ -166,7 +163,7 @@ export function Settings() {
         <TabsList className="mb-6">
           {FORMS.map(form => (
             <TabsTrigger key={form.id} value={form.id}>
-              <HugeiconsIcon icon={form.icon} className="w-4 h-4 mr-2" />
+              <form.icon className="w-4 h-4 mr-2" />
               {form.title}
             </TabsTrigger>
           ))}

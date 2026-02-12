@@ -3,12 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-    GlobalIcon,
+    GlobeAltIcon,
     InformationCircleIcon,
-    FloppyDiskIcon
-} from '@hugeicons/core-free-icons';
+    DocumentCheckIcon
+} from '@heroicons/react/24/outline';
 
 interface SystemSetting {
     id: string;
@@ -26,7 +25,7 @@ export const GENERAL_PRESET_SETTINGS = [
 export const metadata = {
     id: 'general',
     title: '全局配置',
-    icon: GlobalIcon,
+    icon: GlobeAltIcon,
     presetSettings: GENERAL_PRESET_SETTINGS,
 };
 
@@ -47,7 +46,7 @@ export function GeneralSettingsForm({
         <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
             <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <HugeiconsIcon icon={GlobalIcon} className="h-5 w-5 text-blue-500" />
+                    <GlobeAltIcon className="h-5 w-5 text-blue-500" />
                     全局基本配置
                 </CardTitle>
                 <CardDescription>管理系统的基本信息，如名称、联系方式和版权信息。</CardDescription>
@@ -69,7 +68,7 @@ export function GeneralSettingsForm({
                                 </div>
 
                                 {setting.key === 'footer_text' ? (
-                                    <秘密Textarea
+                                    <Textarea
                                         id={setting.key}
                                         value={setting.value || ''}
                                         onChange={(e) => onUpdate(setting.key, e.target.value)}
@@ -88,7 +87,7 @@ export function GeneralSettingsForm({
 
                                 {setting.description && (
                                     <p className="text-xs text-neutral-500 flex items-center gap-1">
-                                        <HugeiconsIcon icon={InformationCircleIcon} className="h-3 w-3" />
+                                        <InformationCircleIcon className="h-3 w-3" />
                                         {setting.description}
                                     </p>
                                 )}
@@ -102,7 +101,7 @@ export function GeneralSettingsForm({
                             disabled={loading}
                             className="bg-blue-600 hover:bg-blue-700 rounded-2xl"
                         >
-                            <HugeiconsIcon icon={FloppyDiskIcon} className="mr-2 h-4 w-4" />
+                            <DocumentCheckIcon className="mr-2 h-4 w-4" />
                             {loading ? '保存中...' : '保存全局配置'}
                         </Button>
                     </div>
@@ -113,4 +112,4 @@ export function GeneralSettingsForm({
 }
 
 // 辅助组件处理 Textarea 类型，这里由于之前代码中是直接使用 Textarea，我们保持一致
-const 秘密Textarea = Textarea;
+// 移除未使用的变量

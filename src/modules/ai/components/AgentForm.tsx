@@ -6,8 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Camera01Icon, ImageAdd01Icon } from '@hugeicons/core-free-icons';
+import { PhotoIcon, CameraIcon } from '@heroicons/react/24/outline';
 import {
     Sheet,
     SheetContent,
@@ -134,11 +133,11 @@ export function AgentForm({ open, onOpenChange, agentId, onSuccess }: AgentFormP
                                 <Avatar className="h-24 w-24 border-2 border-neutral-100 dark:border-neutral-800 transition-all group-hover:opacity-80">
                                     <AvatarImage src={previewUrl || ''} />
                                     <AvatarFallback className="bg-neutral-50 dark:bg-neutral-900">
-                                        <HugeiconsIcon icon={ImageAdd01Icon} className="h-8 w-8 text-neutral-400" />
+                                        <PhotoIcon className="h-8 w-8 text-neutral-400" />
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <HugeiconsIcon icon={Camera01Icon} className="h-6 w-6 text-white" />
+                                    <CameraIcon className="h-6 w-6 text-white" />
                                 </div>
                                 <input
                                     type="file"

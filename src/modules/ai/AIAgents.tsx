@@ -11,15 +11,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  Search01Icon,
-  PlusSignIcon,
-  PencilEdit01Icon,
-  Delete01Icon,
-  RobotIcon,
-  AiChat02Icon,
-} from '@hugeicons/core-free-icons';
+  MagnifyingGlassIcon,
+  PlusIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  CpuChipIcon,
+  ChatBubbleLeftRightIcon
+} from '@heroicons/react/24/outline';
 import { toast } from 'sonner';
 import { AgentForm } from './components/AgentForm';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -94,7 +93,7 @@ export function AIAgents() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 m-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">智能体管理</h2>
@@ -103,12 +102,12 @@ export function AIAgents() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate('/ai-playground')} variant="outline">
-            <HugeiconsIcon icon={AiChat02Icon} className="mr-2 h-4 w-4" />
+          <Button onClick={() => navigate('/ai/playground')} variant="outline">
+            <ChatBubbleLeftRightIcon className="mr-2 h-4 w-4" />
             前往对话
           </Button>
           <Button onClick={handleCreate}>
-            <HugeiconsIcon icon={PlusSignIcon} className="mr-2 h-4 w-4" />
+            <PlusIcon className="mr-2 h-4 w-4" />
             新增智能体
           </Button>
         </div>
@@ -118,8 +117,7 @@ export function AIAgents() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <div className="relative flex-1 max-w-sm">
-              <HugeiconsIcon
-                icon={Search01Icon}
+              <MagnifyingGlassIcon
                 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
               />
               <Input
@@ -162,7 +160,7 @@ export function AIAgents() {
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={agent.avatar ? pb.files.getURL(agent, agent.avatar) : ''} />
                           <AvatarFallback>
-                            <HugeiconsIcon icon={RobotIcon} className="h-4 w-4" />
+                            <CpuChipIcon className="h-4 w-4" />
                           </AvatarFallback>
                         </Avatar>
                         <span className="font-medium">{agent.name}</span>
@@ -181,7 +179,7 @@ export function AIAgents() {
                           size="icon"
                           onClick={() => handleEdit(agent.id)}
                         >
-                          <HugeiconsIcon icon={PencilEdit01Icon} className="h-4 w-4" />
+                          <PencilSquareIcon className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -189,7 +187,7 @@ export function AIAgents() {
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           onClick={() => handleDelete(agent.id)}
                         >
-                          <HugeiconsIcon icon={Delete01Icon} className="h-4 w-4" />
+                          <TrashIcon className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
