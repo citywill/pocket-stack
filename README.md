@@ -91,3 +91,8 @@ npm install
 npm run dev
 ```
 
+## 联系和讨论
+
+添加微信好友，加微信入群，备注 pocketstack
+
+<img src="docs/assets/weixin.png" width="200"/>
