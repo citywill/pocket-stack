@@ -8,6 +8,7 @@ export const menu = {
     { title: '空页面', path: '/examples/blank' },
     { title: '表格', path: '/examples/table' },
     { title: '卡片', path: '/examples/card' },
+    { title: 'AI 对话', path: '/examples/chat' },
     { title: '表单', path: '/examples/form' },
     { title: '加载中', path: '/examples/loading' },
     { title: 'CURD 示例', path: '/examples/curd' },
