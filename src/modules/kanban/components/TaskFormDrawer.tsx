@@ -93,9 +93,11 @@ export function TaskFormDrawer({
       const result = await pb.collection('kanban_logs').getFullList<KanbanLog>({
         filter: `task = "${taskId}"`,
         sort: '-created',
+        requestKey: `task_logs_${taskId}`, // 使用 taskId 相关的 requestKey
       });
       setLogs(result);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.isAbort) return;
       console.error('Fetch logs error:', error);
     }
   };

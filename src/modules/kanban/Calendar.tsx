@@ -22,9 +22,14 @@ export default function KanbanCalendar() {
         try {
             const allTags = await pb.collection('kanban_tags').getFullList<KanbanTag>({
                 sort: 'name',
+                requestKey: 'kanban_calendar_tags', // 使用固定 requestKey 避免 autocancel
             });
             setTags(allTags);
         } catch (error) {
+            // 忽略由于组件卸载或新请求导致的取消错误
+            if (error instanceof ClientResponseError && error.isAbort) {
+                return;
+            }
             console.error('Failed to fetch tags:', error);
         }
     }, []);
