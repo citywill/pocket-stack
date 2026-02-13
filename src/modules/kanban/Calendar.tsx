@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { pb } from '@/lib/pocketbase';
-import type { KanbanLog } from './types';
+import type { KanbanLog, KanbanTag } from './types';
 import { ClientResponseError } from 'pocketbase';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,12 +9,25 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CalendarIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
+import { SummaryDialog } from './components/SummaryDialog';
 
 export default function KanbanCalendar() {
     const [date, setDate] = useState<Date | undefined>(new Date());
     const [logs, setLogs] = useState<KanbanLog[]>([]);
+    const [tags, setTags] = useState<KanbanTag[]>([]);
     const [loading, setLoading] = useState(true);
     const [datesWithLogs, setDatesWithLogs] = useState<Date[]>([]);
+
+    const fetchTags = useCallback(async () => {
+        try {
+            const allTags = await pb.collection('kanban_tags').getFullList<KanbanTag>({
+                sort: 'name',
+            });
+            setTags(allTags);
+        } catch (error) {
+            console.error('Failed to fetch tags:', error);
+        }
+    }, []);
 
     const fetchLogs = useCallback(async () => {
         setLoading(true);
@@ -22,7 +35,7 @@ export default function KanbanCalendar() {
             // 获取所有日志以在日历上标记
             const allLogs = await pb.collection('kanban_logs').getFullList<KanbanLog>({
                 sort: '-created',
-                expand: 'task',
+                expand: 'task,task.tags',
                 requestKey: 'kanban_calendar_logs', // 使用固定 requestKey 避免 autocancel
             });
             setLogs(allLogs);
@@ -43,7 +56,8 @@ export default function KanbanCalendar() {
 
     useEffect(() => {
         fetchLogs();
-    }, [fetchLogs]);
+        fetchTags();
+    }, [fetchLogs, fetchTags]);
 
     // 过滤出选中日期的日志
     const selectedDateLogs = logs.filter(log =>
@@ -88,17 +102,26 @@ export default function KanbanCalendar() {
                 {/* 右侧日志列表 - 自适应剩余宽度 */}
                 <div className="flex-1 min-w-0">
                     <Card className="h-full flex flex-col overflow-hidden">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0">
                             <CardTitle className="flex items-center text-lg">
                                 <ClipboardDocumentListIcon className="mr-2 h-5 w-5 text-blue-500" />
                                 {date ? format(date, 'yyyy年MM月dd日', { locale: zhCN }) : '未选择日期'} 的日志
+                                <Badge variant="secondary" className="rounded-full ml-4">
+                                    {selectedDateLogs.length} 条记录
+                                </Badge>
                             </CardTitle>
-                            <Badge variant="secondary" className="rounded-full">
-                                {selectedDateLogs.length} 条记录
-                            </Badge>
+                            <div className="flex items-center">
+                                {date && selectedDateLogs.length > 0 && (
+                                    <SummaryDialog
+                                        logs={selectedDateLogs}
+                                        allTags={tags}
+                                        date={date}
+                                    />
+                                )}
+                            </div>
                         </CardHeader>
                         <CardContent className="flex-1 min-h-0 p-0">
-                            <ScrollArea className="h-full px-6 pb-6">
+                            <ScrollArea className="h-full px-6">
                                 {loading ? (
                                     <div className="flex justify-center py-8 text-muted-foreground">加载中...</div>
                                 ) : selectedDateLogs.length > 0 ? (
