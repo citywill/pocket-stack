@@ -1,4 +1,4 @@
-import { ViewColumnsIcon, CalendarIcon } from '@heroicons/react/24/outline';
+import { ViewColumnsIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 
 export const menu = [
   {
@@ -8,9 +8,9 @@ export const menu = [
     show: true,
   },
   {
-    title: '任务日历',
-    icon: CalendarIcon,
-    path: '/kanban/calendar',
+    title: '任务日志',
+    icon: ClipboardDocumentListIcon,
+    path: '/kanban/logs',
     show: true,
   },
 ];
