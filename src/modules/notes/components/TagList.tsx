@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-    Tag01Icon,
-    MoreHorizontalIcon,
-    PencilEdit01Icon,
-    Delete02Icon,
-} from '@hugeicons/core-free-icons';
+    TagIcon,
+    EllipsisHorizontalIcon,
+    PencilSquareIcon,
+    TrashIcon,
+} from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -162,7 +161,7 @@ export function TagList({ onTagsCountChange, refreshTrigger }: TagListProps) {
         <div className="space-y-3">
             <div className="px-3">
                 <h3 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider flex items-center gap-2">
-                    <HugeiconsIcon icon={Tag01Icon} size={14} />
+                    <TagIcon className="size-3.5" />
                     标签
                 </h3>
             </div>
@@ -200,23 +199,20 @@ export function TagList({ onTagsCountChange, refreshTrigger }: TagListProps) {
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="h-7 w-7 rounded-lg hover:bg-slate-200/50 text-muted-foreground/40 hover:text-foreground"
+                                        className="h-7 w-7 rounded-lg text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:text-foreground"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        <HugeiconsIcon icon={MoreHorizontalIcon} size={14} />
+                                        <EllipsisHorizontalIcon className="size-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-32">
-                                    <DropdownMenuItem onClick={(e) => handleEditClick(e, tag)}>
-                                        <HugeiconsIcon icon={PencilEdit01Icon} size={14} className="mr-2" />
-                                        <span>编辑</span>
+                                <DropdownMenuContent align="end" className="w-32 rounded-xl">
+                                    <DropdownMenuItem onClick={(e) => handleEditClick(e, tag)} className="gap-2 text-xs">
+                                        <PencilSquareIcon className="size-3.5" />
+                                        重命名
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        onClick={(e) => handleDeleteClick(e, tag)}
-                                        className="text-red-600 focus:text-red-600"
-                                    >
-                                        <HugeiconsIcon icon={Delete02Icon} size={14} className="mr-2" />
-                                        <span>删除</span>
+                                    <DropdownMenuItem onClick={(e) => handleDeleteClick(e, tag)} className="gap-2 text-xs text-red-600 focus:text-red-600 focus:bg-red-50">
+                                        <TrashIcon className="size-3.5" />
+                                        删除
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

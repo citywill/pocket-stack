@@ -9,12 +9,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
   UserIcon,
-  Logout01Icon,
-  ArrowDown01Icon,
-} from '@hugeicons/core-free-icons';
+  ArrowRightOnRectangleIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 
 interface UserMenuProps {
@@ -49,11 +48,7 @@ export function UserMenu({ }: UserMenuProps) {
                 {user.email}
               </p>
             </div>
-            <HugeiconsIcon
-              icon={ArrowDown01Icon}
-              size={16}
-              className="text-slate-400 group-hover:text-slate-600 transition-colors"
-            />
+            <ChevronDownIcon className="size-4 text-slate-400 group-hover:text-slate-600 transition-colors" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56 mt-1 rounded-2xl p-2 shadow-xl border-slate-100" align="start">
@@ -62,7 +57,7 @@ export function UserMenu({ }: UserMenuProps) {
           </DropdownMenuLabel>
           <DropdownMenuItem asChild className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer focus:bg-blue-50 focus:text-blue-600">
             <Link to="/profile">
-              <HugeiconsIcon icon={UserIcon} size={18} />
+              <UserIcon className="size-[18px]" />
               <span className="text-sm font-medium">个人资料</span>
             </Link>
           </DropdownMenuItem>
@@ -71,7 +66,7 @@ export function UserMenu({ }: UserMenuProps) {
             className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600"
             onClick={() => logout()}
           >
-            <HugeiconsIcon icon={Logout01Icon} size={18} />
+            <ArrowRightOnRectangleIcon className="size-[18px]" />
             <span className="text-sm font-medium">退出登录</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

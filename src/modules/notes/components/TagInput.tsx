@@ -3,8 +3,11 @@ import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Tag01Icon, Cancel01Icon, Add01Icon } from '@hugeicons/core-free-icons';
+import {
+  TagIcon,
+  XMarkIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 
 export interface Tag {
@@ -129,7 +132,7 @@ export function TagInput({
             onClick={() => toggleTag(tag.id)}
             className="hover:bg-blue-200 rounded-full p-0.5 transition-colors"
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={12} />
+            <XMarkIcon className="size-3" />
           </button>
         </Badge>
       ))}
@@ -138,11 +141,7 @@ export function TagInput({
       {showAddControl && (
         <div className="relative flex-1 min-w-[120px] max-w-[200px]">
           <div className="relative">
-            <HugeiconsIcon
-              icon={Tag01Icon}
-              size={14}
-              className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/50"
-            />
+            <TagIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/50" />
             <Input
               ref={inputRef}
               value={inputValue}
@@ -177,7 +176,7 @@ export function TagInput({
                   className="w-full text-left px-3 py-1.5 text-xs hover:bg-slate-50 flex items-center justify-between group"
                 >
                   <span className="text-foreground/70">{tag.name}</span>
-                  <HugeiconsIcon icon={Add01Icon} size={12} className="text-muted-foreground/0 group-hover:text-muted-foreground/50" />
+                  <PlusIcon className="size-3 text-muted-foreground/0 group-hover:text-muted-foreground/50" />
                 </button>
               ))}
               {inputValue && !allTags.find(t => t.name.toLowerCase() === inputValue.toLowerCase()) && (
@@ -185,7 +184,7 @@ export function TagInput({
                   onClick={handleCreateTag}
                   className="w-full text-left px-3 py-1.5 text-xs hover:bg-blue-50 text-blue-600 flex items-center gap-2"
                 >
-                  <HugeiconsIcon icon={Add01Icon} size={12} />
+                  <PlusIcon className="size-3" />
                   <span>创建标签 "{inputValue}"</span>
                 </button>
               )}

@@ -3,14 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-    ImageAdd01Icon,
-    Cancel01Icon,
-    FileAttachmentIcon,
-    Tag01Icon,
-    Image01Icon
-} from '@hugeicons/core-free-icons';
+    PhotoIcon,
+    XMarkIcon,
+    PaperClipIcon,
+    TagIcon,
+} from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { TagInput } from './TagInput';
 import type { Tag } from './TagInput';
@@ -185,10 +183,10 @@ export function NoteEditor({
                                     />
                                 ) : isImage(filename) ? (
                                     <div className="w-full h-full bg-slate-200 flex items-center justify-center">
-                                        <HugeiconsIcon icon={Image01Icon} className="text-slate-400" />
+                                        <PhotoIcon className="size-6 text-slate-400" />
                                     </div>
                                 ) : (
-                                    <HugeiconsIcon icon={FileAttachmentIcon} className="text-slate-400" />
+                                    <PaperClipIcon className="size-6 text-slate-400" />
                                 )}
                             </div>
                             <button
@@ -201,7 +199,7 @@ export function NoteEditor({
                                 className="absolute -top-1.5 -right-1.5 bg-white rounded-full shadow-md border border-slate-100 p-1 hover:bg-slate-50 transition-colors z-20"
                                 title="删除附件"
                             >
-                                <HugeiconsIcon icon={Cancel01Icon} size={14} className="text-slate-500" />
+                                <XMarkIcon className="size-3.5 text-slate-500" />
                             </button>
                         </div>
                     ))}
@@ -213,7 +211,7 @@ export function NoteEditor({
                                 {file.type.startsWith('image/') ? (
                                     <img src={URL.createObjectURL(file)} alt="" className="h-full w-full object-cover" />
                                 ) : (
-                                    <HugeiconsIcon icon={FileAttachmentIcon} className="text-blue-400" />
+                                    <PaperClipIcon className="size-6 text-blue-400" />
                                 )}
                             </div>
                             <button
@@ -226,7 +224,7 @@ export function NoteEditor({
                                 className="absolute -top-1.5 -right-1.5 bg-white rounded-full shadow-md border border-slate-100 p-1 hover:bg-slate-50 transition-colors z-20"
                                 title="删除附件"
                             >
-                                <HugeiconsIcon icon={Cancel01Icon} size={14} className="text-slate-500" />
+                                <XMarkIcon className="size-3.5 text-slate-500" />
                             </button>
                         </div>
                     ))}
@@ -251,7 +249,7 @@ export function NoteEditor({
                         className="h-9 w-9 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200"
                         onClick={() => fileInputRef.current?.click()}
                     >
-                        <HugeiconsIcon icon={ImageAdd01Icon} size={20} />
+                        <PhotoIcon className="size-5" />
                     </Button>
                     <div className="flex items-center gap-1">
                         <Button
@@ -267,7 +265,7 @@ export function NoteEditor({
                             onClick={() => setShowTagInput(!showTagInput)}
                             title="添加标签"
                         >
-                            <HugeiconsIcon icon={Tag01Icon} size={20} />
+                            <TagIcon className="size-5" />
                         </Button>
                         {showTagInput && (
                             <TagInput

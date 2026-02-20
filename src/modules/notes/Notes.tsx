@@ -5,8 +5,7 @@ import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { Search01Icon, Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
+import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { NoteCreate } from './components/NoteCreate';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
@@ -269,7 +268,7 @@ export default function Notes() {
               <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl bg-white shadow-sm">
-                    <HugeiconsIcon icon={Menu01Icon} size={20} className="text-foreground/70" />
+                    <Bars3Icon className="size-5 text-foreground/70" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="p-0 w-64 border-none bg-[#f7f7f7]">
@@ -292,11 +291,7 @@ export default function Notes() {
               </h1>
             </div>
             <div className="relative w-40 md:w-64">
-              <HugeiconsIcon
-                icon={Search01Icon}
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              />
+              <MagnifyingGlassIcon className="size-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="搜索..."
                 className="pl-10 h-9 rounded-xl bg-white border-none shadow-sm focus-visible:ring-1 focus-visible:ring-blue-500/20"
@@ -328,7 +323,7 @@ export default function Notes() {
                   setSearchParams(searchParams);
                 }}
               >
-                <HugeiconsIcon icon={Cancel01Icon} size={14} />
+                <XMarkIcon className="size-3.5" />
                 清除
               </Button>
             </div>

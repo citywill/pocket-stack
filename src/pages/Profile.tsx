@@ -10,7 +10,8 @@ import {
   PhotoIcon,
   ArrowPathIcon,
   CheckCircleIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
@@ -117,7 +118,7 @@ export function Profile() {
           className="w-fit -ml-2 text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
           onClick={() => navigate(-1)}
         >
-          <HugeiconsIcon icon={ArrowLeft02Icon} className="mr-2 h-4 w-4" />
+          <ArrowLeftIcon className="mr-2 h-4 w-4" />
           返回
         </Button>
         <div>

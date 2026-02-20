@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
-import { HugeiconsIcon } from '@hugeicons/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -19,14 +18,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  Delete02Icon,
-  PencilEdit01Icon,
-  Download01Icon,
-  ViewIcon,
-  Cancel01Icon,
-  ArrowTurnBackwardIcon,
-  FileAttachmentIcon,
-} from '@hugeicons/core-free-icons';
+  TrashIcon,
+  PencilSquareIcon,
+  ArrowDownTrayIcon,
+  EyeIcon,
+  XMarkIcon,
+  ArrowUturnLeftIcon,
+  PaperClipIcon,
+} from '@heroicons/react/24/outline';
 import { format, formatDistanceToNow } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -236,7 +235,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                     onClick={() => onRestore?.(note.id)}
                     title="恢复"
                   >
-                    <HugeiconsIcon icon={ArrowTurnBackwardIcon} size={16} />
+                    <ArrowUturnLeftIcon className="size-4" />
                   </Button>
                   <Button
                     variant="ghost"
@@ -245,7 +244,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                     onClick={() => onDelete(note.id)}
                     title="彻底删除"
                   >
-                    <HugeiconsIcon icon={Delete02Icon} size={16} />
+                    <TrashIcon className="size-4" />
                   </Button>
                 </>
               ) : (
@@ -257,7 +256,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                       className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary"
                       onClick={startEditing}
                     >
-                      <HugeiconsIcon icon={PencilEdit01Icon} size={16} />
+                      <PencilSquareIcon className="size-4" />
                     </Button>
                   )}
                   <Button
@@ -266,7 +265,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                     className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive"
                     onClick={() => onDelete(note.id)}
                   >
-                    <HugeiconsIcon icon={Delete02Icon} size={16} />
+                    <TrashIcon className="size-4" />
                   </Button>
                 </>
               )}
@@ -352,7 +351,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                           className="h-full w-full object-cover transition-transform group-hover:scale-110"
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <HugeiconsIcon icon={ViewIcon} size={20} className="text-white" />
+                          <EyeIcon className="size-5 text-white" />
                         </div>
                       </div>
                     </DialogTrigger>
@@ -363,7 +362,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                       <DialogTitle className="sr-only">图片预览</DialogTitle>
                       {/* 右上角关闭按钮 */}
                       <DialogPrimitive.Close className="absolute top-6 right-6 z-50 rounded-full p-3 bg-black text-white border border-white/30 group/close outline-none">
-                        <HugeiconsIcon icon={Cancel01Icon} size={28} className="drop-shadow-md" />
+                        <XMarkIcon className="size-7 drop-shadow-md" />
                       </DialogPrimitive.Close>
                       <div className="relative w-full h-full flex items-center justify-center p-4">
                         <img
@@ -379,7 +378,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                             asChild
                           >
                             <a href={getFileUrl(filename)} target="_blank" rel="noopener noreferrer">
-                              <HugeiconsIcon icon={Download01Icon} size={20} className="mr-2" />
+                              <ArrowDownTrayIcon className="size-5 mr-2" />
                               下载原图
                             </a>
                           </Button>
@@ -396,11 +395,11 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                     title={filename}
                   >
                     <div className="w-full h-full flex flex-col items-center justify-center p-2">
-                      <HugeiconsIcon icon={FileAttachmentIcon} size={24} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                      <PaperClipIcon className="size-6 text-slate-400 group-hover:text-blue-500 transition-colors" />
                       <span className="text-[10px] text-slate-500 mt-1 w-full truncate text-center px-1">{filename}</span>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <HugeiconsIcon icon={Download01Icon} size={16} className="text-slate-600" />
+                      <ArrowDownTrayIcon className="size-4 text-slate-600" />
                     </div>
                   </a>
                 )}

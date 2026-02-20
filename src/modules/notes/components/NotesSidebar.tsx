@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { HugeiconsIcon } from '@hugeicons/react';
-import {
-  Note01Icon,
-  Delete02Icon,
-} from '@hugeicons/core-free-icons';
+import { DocumentTextIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NoteHeatmap } from './NoteHeatmap';
@@ -39,8 +35,8 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
   };
 
   const menuItems = [
-    { id: 'all', label: '全部', icon: Note01Icon },
-    { id: 'trash', label: '回收站', icon: Delete02Icon },
+    { id: 'all', label: '全部', icon: DocumentTextIcon },
+    { id: 'trash', label: '回收站', icon: TrashIcon },
   ] as const;
 
   return (
@@ -84,7 +80,7 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
               handleClearTag();
             }}
           >
-            <HugeiconsIcon icon={item.icon} size={20} />
+            <item.icon className="size-5" />
             <span className="text-sm">{item.label}</span>
           </Button>
         ))}

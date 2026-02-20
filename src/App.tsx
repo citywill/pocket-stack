@@ -8,7 +8,6 @@ import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
 import { NotFound } from '@/pages/NotFound';
-import Notes from '@/pages/notes/Notes';
 import { Toaster } from 'sonner';
 
 import { ProtectedRoute } from '@/components/protected-route';
@@ -33,7 +32,6 @@ export function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<Notes />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="/" element={<MainLayout />}>
                   {AdminRoutes}
