@@ -1,8 +1,8 @@
-import { Notebook01Icon } from '@hugeicons/core-free-icons';
+import { BookOpenIcon } from '@heroicons/react/24/outline';
 
-export const notebookMenu = {
+export const menu = {
   title: '笔记本',
-  icon: Notebook01Icon,
+  icon: BookOpenIcon,
   children: [
     { title: '笔记列表', path: '/notebook' },
     { title: '生成器管理', path: '/notebook/builder' },

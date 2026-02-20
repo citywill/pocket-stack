@@ -18,15 +18,14 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Add01Icon,
-    PencilEdit01Icon,
-    Delete02Icon,
-    FlowIcon,
-    LegalDocument01Icon,
-    Search01Icon
-} from "@hugeicons/core-free-icons";
+    PlusIcon,
+    PencilSquareIcon,
+    TrashIcon,
+    ShareIcon,
+    DocumentTextIcon,
+    TableCellsIcon
+} from "@heroicons/react/24/outline";
 import { pb } from '@/lib/pocketbase';
 import { toast } from "sonner";
 
@@ -38,9 +37,9 @@ interface NotebookBuilder {
 }
 
 const typeIconMap: Record<string, any> = {
-    mindmap: FlowIcon,
-    text: LegalDocument01Icon,
-    table: Search01Icon,
+    mindmap: ShareIcon,
+    text: DocumentTextIcon,
+    table: TableCellsIcon,
 };
 
 export default function BuilderManager() {
@@ -114,7 +113,7 @@ export default function BuilderManager() {
                     setEditingBuilder({ title: '', prompt: '', type: 'text' });
                     setIsDialogOpen(true);
                 }} className="rounded-xl gap-2 shadow-md">
-                    <HugeiconsIcon icon={Add01Icon} className="w-5 h-5" />
+                    <PlusIcon className="w-5 h-5" />
                     新增生成器
                 </Button>
             </div>
@@ -131,10 +130,10 @@ export default function BuilderManager() {
                                 <div className="p-5 border-b bg-slate-50/50 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center shadow-sm">
-                                            <HugeiconsIcon
-                                                icon={typeIconMap[builder.type] || LegalDocument01Icon}
-                                                className="w-5 h-5 text-blue-600"
-                                            />
+                                            {(() => {
+                                                const Icon = typeIconMap[builder.type] || DocumentTextIcon;
+                                                return <Icon className="w-5 h-5 text-blue-600" />;
+                                            })()}
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-slate-900">{builder.title}</h3>
@@ -153,7 +152,7 @@ export default function BuilderManager() {
                                                 setIsDialogOpen(true);
                                             }}
                                         >
-                                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                                            <PencilSquareIcon className="w-4 h-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -161,7 +160,7 @@ export default function BuilderManager() {
                                             className="h-8 w-8 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50"
                                             onClick={() => handleDelete(builder.id)}
                                         >
-                                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" />
+                                            <TrashIcon className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </div>

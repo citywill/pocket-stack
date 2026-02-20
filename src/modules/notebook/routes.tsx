@@ -5,7 +5,7 @@ import BuilderManager from './BuilderManager';
 import { ProtectedRoute } from '@/components/protected-route';
 import { MainLayout } from '@/components/layout';
 
-export const NotebookRoutes = (
+export const routes = (
   <Route element={<ProtectedRoute />}>
     <Route element={<MainLayout />}>
       <Route path="notebook" element={<NotebookList />} />

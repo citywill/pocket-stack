@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    AiChat02Icon,
-    Delete02Icon,
-    ArtificialIntelligence01Icon,
-    Copy01Icon,
-    Note01Icon,
-    CheckListIcon,
-    Settings02Icon
-} from "@hugeicons/core-free-icons";
+    ChatBubbleLeftRightIcon,
+    TrashIcon,
+    SparklesIcon,
+    ClipboardDocumentIcon,
+    DocumentTextIcon,
+    ClipboardDocumentCheckIcon,
+    Cog6ToothIcon
+} from "@heroicons/react/24/outline";
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -384,7 +383,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
         <section className="flex-[1.2] flex flex-col min-w-[400px] bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="p-4 border-b flex items-center justify-between bg-slate-50/50 shrink-0">
                 <div className="flex items-center gap-2 text-slate-600">
-                    <HugeiconsIcon icon={AiChat02Icon} className="w-5 h-5" />
+                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
                     <h2 className="font-bold">对话记录 ({chatCount})</h2>
                 </div>
                 <div className="flex items-center gap-1">
@@ -395,7 +394,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                         onClick={() => setIsPromptDialogOpen(true)}
                         title="设置系统提示词"
                     >
-                        <HugeiconsIcon icon={Settings02Icon} className="w-5 h-5" />
+                        <Cog6ToothIcon className="w-5 h-5" />
                     </Button>
                     <Button
                         variant="ghost"
@@ -404,7 +403,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                         onClick={handleClear}
                         title="清空对话记录"
                     >
-                        <HugeiconsIcon icon={Delete02Icon} className="w-5 h-5" />
+                        <TrashIcon className="w-5 h-5" />
                     </Button>
                 </div>
             </div>
@@ -444,7 +443,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                         >
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'ai' ? 'bg-blue-600' : 'bg-slate-200'}`}>
                                 {msg.role === 'ai' ? (
-                                    <HugeiconsIcon icon={ArtificialIntelligence01Icon} className="w-5 h-5 text-white" />
+                                    <SparklesIcon className="w-5 h-5 text-white" />
                                 ) : (
                                     <span className="text-xs font-bold text-slate-600">我</span>
                                 )}
@@ -471,10 +470,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                                             className="h-8 px-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg gap-1.5"
                                             onClick={() => handleCopy(msg.content, msg.id)}
                                         >
-                                            <HugeiconsIcon
-                                                icon={copyingId === msg.id ? CheckListIcon : Copy01Icon}
-                                                size={14}
-                                            />
+                                            {copyingId === msg.id ? <ClipboardDocumentCheckIcon className="w-3.5 h-3.5" /> : <ClipboardDocumentIcon className="w-3.5 h-3.5" />}
                                             <span className="text-xs">{copyingId === msg.id ? '已复制' : '复制'}</span>
                                         </Button>
                                         <Button
@@ -483,7 +479,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                                             className="h-8 px-2 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg gap-1.5"
                                             onClick={() => handleConvertToNote(msg.content)}
                                         >
-                                            <HugeiconsIcon icon={Note01Icon} size={14} />
+                                            <DocumentTextIcon className="w-3.5 h-3.5" />
                                             <span className="text-xs">转为笔记</span>
                                         </Button>
                                     </div>
@@ -494,7 +490,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                     {loading && (
                         <div className="flex gap-3 max-w-[85%]">
                             <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-blue-600 animate-pulse">
-                                <HugeiconsIcon icon={ArtificialIntelligence01Icon} className="w-5 h-5 text-white" />
+                                <SparklesIcon className="w-5 h-5 text-white" />
                             </div>
                             <div className="p-3 rounded-2xl shadow-sm text-sm bg-white rounded-tl-none border border-slate-100 text-slate-400 italic">
                                 正在思考...

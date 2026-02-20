@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    ArrowLeft01Icon,
-    Book01Icon,
-    ArtificialIntelligence01Icon,
-    MoreVerticalIcon,
-    Calendar01Icon,
-    Share01Icon,
-    Download01Icon,
-    Add01Icon,
-    ArrowLeft02Icon,
-    SidebarLeftIcon,
-    SidebarRightIcon,
-} from "@hugeicons/core-free-icons";
+    ArrowLeftIcon,
+    BookOpenIcon,
+    SparklesIcon,
+    EllipsisVerticalIcon,
+    CalendarIcon,
+    ShareIcon,
+    ArrowDownTrayIcon,
+    PlusIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+} from "@heroicons/react/24/outline";
 import { pb } from '@/lib/pocketbase';
 import type { NotebookEntry } from './mocks/notebookMocks';
 import { ClientResponseError } from 'pocketbase';
@@ -201,28 +199,28 @@ export default function NotebookDetail() {
                         className="rounded-xl hover:bg-slate-100"
                         onClick={() => navigate('/notebook')}
                     >
-                        <HugeiconsIcon icon={ArrowLeft01Icon} className="w-5 h-5 text-slate-600" />
+                        <ArrowLeftIcon className="w-5 h-5 text-slate-600" />
                     </Button>
                     <div className="h-6 w-px bg-slate-200" />
                     <div>
                         <h1 className="text-lg font-bold text-slate-900">{notebook.title}</h1>
                         <div className="flex items-center gap-2 text-xs text-slate-400">
-                            <HugeiconsIcon icon={Calendar01Icon} className="w-3 h-3" />
+                            <CalendarIcon className="w-3 h-3" />
                             <span>创建于 {notebook.date}</span>
                         </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" className="rounded-xl gap-2 h-9">
-                        <HugeiconsIcon icon={Share01Icon} className="w-4 h-4" />
+                        <ShareIcon className="w-4 h-4" />
                         分享
                     </Button>
                     <Button variant="outline" size="sm" className="rounded-xl gap-2 h-9">
-                        <HugeiconsIcon icon={Download01Icon} className="w-4 h-4" />
+                        <ArrowDownTrayIcon className="w-4 h-4" />
                         导出报告
                     </Button>
                     <Button variant="ghost" size="icon" className="rounded-xl h-9 w-9">
-                        <HugeiconsIcon icon={MoreVerticalIcon} className="w-5 h-5" />
+                        <EllipsisVerticalIcon className="w-5 h-5" />
                     </Button>
                 </div>
             </header>
@@ -241,10 +239,10 @@ export default function NotebookDetail() {
                                         className="h-8 w-8 -ml-1 rounded-lg hover:bg-slate-200"
                                         onClick={() => setSelectedNoteIndex(null)}
                                     >
-                                        <HugeiconsIcon icon={ArrowLeft02Icon} className="w-5 h-5" />
+                                        <ArrowLeftIcon className="w-5 h-5" />
                                     </Button>
                                 ) : (
-                                    <HugeiconsIcon icon={Book01Icon} className="w-5 h-5" />
+                                    <BookOpenIcon className="w-5 h-5" />
                                 )}
                                 <h2 className="font-bold">
                                     {selectedNoteIndex !== null ? '笔记详情' : `相关笔记 (${noteItems.length})`}
@@ -260,7 +258,7 @@ export default function NotebookDetail() {
                                     onClick={() => setIsCreateDialogOpen(true)}
                                     title="添加笔记"
                                 >
-                                    <HugeiconsIcon icon={Add01Icon} className="w-5 h-5" />
+                                    <PlusIcon className="w-5 h-5" />
                                 </Button>
                             )}
                             <Button
@@ -270,7 +268,7 @@ export default function NotebookDetail() {
                                 onClick={() => setIsNotesCollapsed(!isNotesCollapsed)}
                                 title={isNotesCollapsed ? "展开笔记" : "折叠笔记"}
                             >
-                                <HugeiconsIcon icon={isNotesCollapsed ? SidebarRightIcon : SidebarLeftIcon} className="w-5 h-5" />
+                                {isNotesCollapsed ? <ChevronRightIcon className="w-5 h-5" /> : <ChevronLeftIcon className="w-5 h-5" />}
                             </Button>
                         </div>
                     </div>
@@ -328,7 +326,7 @@ export default function NotebookDetail() {
                     <div className={`p-4 border-b flex items-center ${isResultsCollapsed ? 'justify-center px-0' : 'justify-between'} bg-slate-50/50 shrink-0`}>
                         {!isResultsCollapsed && (
                             <div className="flex items-center gap-2 text-slate-600 overflow-hidden whitespace-nowrap">
-                                <HugeiconsIcon icon={ArtificialIntelligence01Icon} className="w-5 h-5" />
+                                <SparklesIcon className="w-5 h-5" />
                                 <h2 className="font-bold">生成作品 ({notebook.generated_count})</h2>
                             </div>
                         )}
@@ -340,7 +338,7 @@ export default function NotebookDetail() {
                                 onClick={() => setIsResultsCollapsed(!isResultsCollapsed)}
                                 title={isResultsCollapsed ? "展开成果" : "折叠成果"}
                             >
-                                <HugeiconsIcon icon={isResultsCollapsed ? SidebarLeftIcon : SidebarRightIcon} className="w-5 h-5" />
+                                {isResultsCollapsed ? <ChevronLeftIcon className="w-5 h-5" /> : <ChevronRightIcon className="w-5 h-5" />}
                             </Button>
                         </div>
                     </div>

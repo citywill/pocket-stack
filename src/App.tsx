@@ -4,7 +4,6 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { AdminRoutes } from '@/pages/admin/routes';
-import { NotebookRoutes } from '@/pages/notebook/routes';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';

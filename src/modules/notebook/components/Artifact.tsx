@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    MoreVerticalIcon,
-    Delete02Icon,
-    Copy01Icon,
-    LegalDocument01Icon,
-} from "@hugeicons/core-free-icons";
+    EllipsisVerticalIcon,
+    TrashIcon,
+    ClipboardDocumentIcon,
+    DocumentTextIcon,
+} from "@heroicons/react/24/outline";
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -142,86 +141,89 @@ export const Artifact = ({
                     {artifacts.length === 0 && !isGenerating ? (
                         <div className="bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center text-center group hover:border-blue-200 transition-colors mt-4">
                             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-300 mb-3 group-hover:text-blue-300 transition-colors">
-                                <HugeiconsIcon icon={LegalDocument01Icon} className="w-6 h-6" />
+                                <DocumentTextIcon className="w-6 h-6" />
                             </div>
                             <p className="text-sm text-slate-400 group-hover:text-slate-500">暂无生成的作品</p>
                             <p className="text-xs text-slate-400/60 mt-1">点击上方生成器开始创作</p>
                         </div>
                     ) : (
-                        artifacts.map((artifact) => (
-                            <div
-                                key={artifact.id}
-                                className={`bg-white border border-slate-100 rounded-2xl p-4 transition-all relative group cursor-pointer hover:border-blue-200 hover:shadow-sm ${artifact.isGenerating ? 'animate-pulse' : ''}`}
-                                onClick={() => !artifact.isGenerating && setSelectedArtifact(artifact)}
-                            >
-                                <div className="flex items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 relative">
-                                            {artifact.isGenerating ? (
-                                                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                                            ) : (
-                                                <HugeiconsIcon icon={typeIconMap[artifact.type] || LegalDocument01Icon} className="w-5 h-5" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h3 className="font-bold text-slate-900 text-sm mb-0.5 truncate">{artifact.title}</h3>
-                                            <div className="flex items-center gap-2 text-xs text-slate-400">
-                                                <span className="bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded-md scale-90 origin-left">
-                                                    {builders.find(b => b.id === artifact.builder)?.title || 'AI 生成器'}
-                                                </span>
-                                                <span className="truncate leading-relaxed">
-                                                    {artifact.isGenerating ? (
-                                                        '正在生成内容...'
-                                                    ) : (
-                                                        new Date(artifact.created).toLocaleString('zh-CN', {
-                                                            year: 'numeric',
-                                                            month: '2-digit',
-                                                            day: '2-digit',
-                                                            hour: '2-digit',
-                                                            minute: '2-digit'
-                                                        })
-                                                    )}
-                                                </span>
+                        artifacts.map((artifact) => {
+                            const Icon = typeIconMap[artifact.type] || DocumentTextIcon;
+                            return (
+                                <div
+                                    key={artifact.id}
+                                    className={`bg-white border border-slate-100 rounded-2xl p-4 transition-all relative group cursor-pointer hover:border-blue-200 hover:shadow-sm ${artifact.isGenerating ? 'animate-pulse' : ''}`}
+                                    onClick={() => !artifact.isGenerating && setSelectedArtifact(artifact)}
+                                >
+                                    <div className="flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 relative">
+                                                {artifact.isGenerating ? (
+                                                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                                ) : (
+                                                    <Icon className="w-5 h-5" />
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold text-slate-900 text-sm mb-0.5 truncate">{artifact.title}</h3>
+                                                <div className="flex items-center gap-2 text-xs text-slate-400">
+                                                    <span className="bg-blue-50 text-blue-500 px-1.5 py-0.5 rounded-md scale-90 origin-left">
+                                                        {builders.find(b => b.id === artifact.builder)?.title || 'AI 生成器'}
+                                                    </span>
+                                                    <span className="truncate leading-relaxed">
+                                                        {artifact.isGenerating ? (
+                                                            '正在生成内容...'
+                                                        ) : (
+                                                            new Date(artifact.created).toLocaleString('zh-CN', {
+                                                                year: 'numeric',
+                                                                month: '2-digit',
+                                                                day: '2-digit',
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            })
+                                                        )}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
+                                        {!artifact.isGenerating && (
+                                            <div onClick={(e) => e.stopPropagation()}>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                                                            <EllipsisVerticalIcon className="w-4 h-4 text-slate-400" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="rounded-xl">
+                                                        <DropdownMenuItem
+                                                            className="gap-2 text-slate-600 cursor-pointer"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                navigator.clipboard.writeText(artifact.content);
+                                                                toast.success("已复制到剪贴板");
+                                                            }}
+                                                        >
+                                                            <ClipboardDocumentIcon className="w-4 h-4" />
+                                                            复制内容
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            className="gap-2 text-red-600 cursor-pointer"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDelete(artifact.id);
+                                                            }}
+                                                        >
+                                                            <TrashIcon className="w-4 h-4" />
+                                                            删除作品
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>
+                                        )}
                                     </div>
-                                    {!artifact.isGenerating && (
-                                        <div onClick={(e) => e.stopPropagation()}>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                                                        <HugeiconsIcon icon={MoreVerticalIcon} className="w-4 h-4 text-slate-400" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="rounded-xl">
-                                                    <DropdownMenuItem
-                                                        className="gap-2 text-slate-600 cursor-pointer"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            navigator.clipboard.writeText(artifact.content);
-                                                            toast.success("已复制到剪贴板");
-                                                        }}
-                                                    >
-                                                        <HugeiconsIcon icon={Copy01Icon} className="w-4 h-4" />
-                                                        复制内容
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        className="gap-2 text-red-600 cursor-pointer"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDelete(artifact.id);
-                                                        }}
-                                                    >
-                                                        <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" />
-                                                        删除作品
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    )}
                                 </div>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
             </div>
@@ -232,10 +234,10 @@ export const Artifact = ({
                     <DialogHeader className="p-6 border-b border-slate-100 flex-shrink-0">
                         <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600">
-                                <HugeiconsIcon
-                                    icon={selectedArtifact ? (typeIconMap[selectedArtifact.type] || LegalDocument01Icon) : LegalDocument01Icon}
-                                    className="w-6 h-6"
-                                />
+                                {(() => {
+                                    const DialogIcon = selectedArtifact ? (typeIconMap[selectedArtifact.type] || DocumentTextIcon) : DocumentTextIcon;
+                                    return <DialogIcon className="w-6 h-6" />;
+                                })()}
                             </div>
                             <div className="flex-1 min-w-0 text-left">
                                 <DialogTitle className="text-xl font-bold text-slate-900 mb-1 truncate">
@@ -268,7 +270,7 @@ export const Artifact = ({
                                         }
                                     }}
                                 >
-                                    <HugeiconsIcon icon={Copy01Icon} className="w-4 h-4" />
+                                    <ClipboardDocumentIcon className="w-4 h-4" />
                                     复制内容
                                 </Button>
                             </div>

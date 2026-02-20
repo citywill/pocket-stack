@@ -18,19 +18,17 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    Search01Icon,
-    Notebook01Icon,
-    Add01Icon,
-    AiChat02Icon,
-    Calendar01Icon,
-    Sorting01Icon,
-    Book01Icon,
-    ArtificialIntelligence01Icon,
-    PencilEdit01Icon,
-    Delete01Icon,
-} from "@hugeicons/core-free-icons";
+    MagnifyingGlassIcon,
+    BookOpenIcon,
+    PlusIcon,
+    ChatBubbleLeftRightIcon,
+    CalendarIcon,
+    ArrowsUpDownIcon,
+    SparklesIcon,
+    PencilSquareIcon,
+    TrashIcon,
+} from "@heroicons/react/24/outline";
 import { pb } from '@/lib/pocketbase';
 import type { NotebookEntry } from './mocks/notebookMocks';
 import { ClientResponseError } from 'pocketbase';
@@ -205,7 +203,7 @@ export default function NotebookList() {
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                     <DialogTrigger asChild>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl gap-2">
-                            <HugeiconsIcon icon={Add01Icon} className="w-5 h-5" />
+                            <PlusIcon className="w-5 h-5" />
                             新建研判笔记
                         </Button>
                     </DialogTrigger>
@@ -298,10 +296,7 @@ export default function NotebookList() {
                 <CardContent className="p-3">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="relative flex-1">
-                            <HugeiconsIcon
-                                icon={Search01Icon}
-                                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-                            />
+                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <Input
                                 placeholder="搜索笔记标题、内容摘要..."
                                 className="pl-10 rounded-xl border-slate-200 focus:ring-blue-500"
@@ -311,7 +306,7 @@ export default function NotebookList() {
                         </div>
                         <div className="flex gap-3">
                             <Button variant="outline" className="rounded-xl border-slate-200 gap-2 text-slate-600">
-                                <HugeiconsIcon icon={Sorting01Icon} className="w-4 h-4" />
+                                <ArrowsUpDownIcon className="w-4 h-4" />
                                 排序
                             </Button>
                         </div>
@@ -337,7 +332,7 @@ export default function NotebookList() {
                             <CardHeader className="pb-3">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-center gap-1.5 text-slate-400">
-                                        <HugeiconsIcon icon={Calendar01Icon} className="w-3.5 h-3.5" />
+                                        <CalendarIcon className="w-3.5 h-3.5" />
                                         <span className="text-[11px]">{nb.date}</span>
                                     </div>
                                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -347,7 +342,7 @@ export default function NotebookList() {
                                             className="w-8 h-8 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50"
                                             onClick={(e) => handleOpenEdit(nb, e)}
                                         >
-                                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                                            <PencilSquareIcon className="w-4 h-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -355,7 +350,7 @@ export default function NotebookList() {
                                             className="w-8 h-8 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50"
                                             onClick={(e) => handleDeleteNotebook(nb.id, e)}
                                         >
-                                            <HugeiconsIcon icon={Delete01Icon} className="w-4 h-4" />
+                                            <TrashIcon className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </div>
@@ -367,21 +362,21 @@ export default function NotebookList() {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-slate-500">
-                                            <HugeiconsIcon icon={Book01Icon} className="w-4 h-4" />
+                                            <BookOpenIcon className="w-4 h-4" />
                                             <span className="text-xs font-medium">笔记数量</span>
                                         </div>
                                         <span className="text-lg font-bold text-slate-500 ml-5.5">{nb.note_count}</span>
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-slate-500">
-                                            <HugeiconsIcon icon={ArtificialIntelligence01Icon} className="w-4 h-4" />
+                                            <SparklesIcon className="w-4 h-4" />
                                             <span className="text-xs font-medium">生成数量</span>
                                         </div>
                                         <span className="text-lg font-bold text-slate-500 ml-5.5">{nb.generated_count}</span>
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         <div className="flex items-center gap-1.5 text-slate-500">
-                                            <HugeiconsIcon icon={AiChat02Icon} className="w-4 h-4" />
+                                            <ChatBubbleLeftRightIcon className="w-4 h-4" />
                                             <span className="text-xs font-medium">对话数量</span>
                                         </div>
                                         <span className="text-lg font-bold text-slate-500 ml-5.5">{nb.chat_count}</span>
@@ -397,7 +392,7 @@ export default function NotebookList() {
             {!loading && currentItems.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border-none">
                     <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                        <HugeiconsIcon icon={Notebook01Icon} className="w-10 h-10 text-slate-200" />
+                        <BookOpenIcon className="w-10 h-10 text-slate-200" />
                     </div>
                     <p className="text-slate-500 font-medium">未找到相关研判笔记</p>
                     <Button variant="link" className="text-blue-600" onClick={() => setSearchTerm("")}>

@@ -1,9 +1,8 @@
-import React from 'react';
 import {
-    FlowIcon,
-    LegalDocument01Icon,
-    Search01Icon,
-} from "@hugeicons/core-free-icons";
+    ShareIcon,
+    DocumentTextIcon,
+    TableCellsIcon,
+} from "@heroicons/react/24/outline";
 
 export interface NotebookBuilder {
     id: string;
@@ -24,7 +23,7 @@ export interface ArtifactItem {
 }
 
 export const typeIconMap: Record<string, any> = {
-    mindmap: FlowIcon,
-    text: LegalDocument01Icon,
-    table: Search01Icon,
+    mindmap: ShareIcon,
+    text: DocumentTextIcon,
+    table: TableCellsIcon,
 };

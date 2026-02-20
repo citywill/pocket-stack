@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    FlowIcon,
-    Add01Icon,
-} from "@hugeicons/core-free-icons";
+    ShareIcon,
+    PlusIcon,
+} from "@heroicons/react/24/outline";
 import { toast } from 'sonner';
 import { pb } from '@/lib/pocketbase';
 import { typeIconMap } from './ArtifactTypes';
@@ -186,35 +185,32 @@ export const ArtifactBuild: React.FC<ArtifactBuildProps> = ({
     return (
         <div className="p-4 border-b border-slate-100">
             <div className="grid grid-cols-2 gap-3">
-                {builders.map((builder) => (
-                    <Button
-                        key={builder.id}
-                        variant="outline"
-                        className={`flex flex-row items-center justify-center rounded-2xl border-slate-100 hover:border-blue-200 bg-white hover:bg-blue-50/30 group transition-all p-6 gap-2 ${generatingBuilderId === builder.id ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        onClick={() => handleGenerate(builder)}
-                        disabled={!!generatingBuilderId}
-                    >
-                        <div className="relative w-5 h-5">
-                            {generatingBuilderId === builder.id ? (
-                                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    <HugeiconsIcon
-                                        icon={typeIconMap[builder.type] || FlowIcon}
-                                        className="w-5 h-5 text-slate-400 group-hover:opacity-0 transition-opacity absolute inset-0"
-                                    />
-                                    <HugeiconsIcon
-                                        icon={Add01Icon}
-                                        className="w-5 h-5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0"
-                                    />
-                                </>
-                            )}
-                        </div>
-                        <span className="text-sm font-medium text-slate-600 group-hover:text-blue-600 truncate px-1">
-                            {builder.title}
-                        </span>
-                    </Button>
-                ))}
+                {builders.map((builder) => {
+                    const Icon = typeIconMap[builder.type] || ShareIcon;
+                    return (
+                        <Button
+                            key={builder.id}
+                            variant="outline"
+                            className={`flex flex-row items-center justify-center rounded-2xl border-slate-100 hover:border-blue-200 bg-white hover:bg-blue-50/30 group transition-all p-6 gap-2 ${generatingBuilderId === builder.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            onClick={() => handleGenerate(builder)}
+                            disabled={!!generatingBuilderId}
+                        >
+                            <div className="relative w-5 h-5">
+                                {generatingBuilderId === builder.id ? (
+                                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                ) : (
+                                    <>
+                                        <Icon className="w-5 h-5 text-slate-400 group-hover:opacity-0 transition-opacity absolute inset-0" />
+                                        <PlusIcon className="w-5 h-5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity absolute inset-0" />
+                                    </>
+                                )}
+                            </div>
+                            <span className="text-sm font-medium text-slate-600 group-hover:text-blue-600 truncate px-1">
+                                {builder.title}
+                            </span>
+                        </Button>
+                    );
+                })}
             </div>
         </div>
     );

@@ -2,15 +2,14 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from "@hugeicons/react";
 import {
-    PinIcon,
-    MoreVerticalIcon,
-    ArrowUp01Icon,
-    ArrowDown01Icon,
-    Delete02Icon,
-    PencilEdit01Icon
-} from "@hugeicons/core-free-icons";
+    MapPinIcon,
+    EllipsisVerticalIcon,
+    ArrowUpIcon,
+    ArrowDownIcon,
+    TrashIcon,
+    PencilSquareIcon
+} from "@heroicons/react/24/outline";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -64,7 +63,7 @@ export const NoteItem: React.FC<NoteItemProps> = ({
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-1.5 flex-1 min-w-0">
                         {item.isPinned && (
-                            <HugeiconsIcon icon={PinIcon} className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                            <MapPinIcon className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                         )}
                         <h3 className="text-sm font-medium text-slate-800 truncate flex-1">{item.title}</h3>
                     </div>
@@ -78,20 +77,20 @@ export const NoteItem: React.FC<NoteItemProps> = ({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
-                            <HugeiconsIcon icon={MoreVerticalIcon} className="w-4 h-4" />
+                            <EllipsisVerticalIcon className="w-4 h-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-32">
                         <DropdownMenuItem className="gap-2" onClick={onEdit}>
-                            <HugeiconsIcon icon={PencilEdit01Icon} className="w-4 h-4" />
+                            <PencilSquareIcon className="w-4 h-4" />
                             <span>编辑</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="gap-2" onClick={onTogglePin}>
-                            <HugeiconsIcon icon={item.isPinned ? ArrowDown01Icon : ArrowUp01Icon} className="w-4 h-4" />
+                            {item.isPinned ? <ArrowDownIcon className="w-4 h-4" /> : <ArrowUpIcon className="w-4 h-4" />}
                             <span>{item.isPinned ? '取消置顶' : '置顶'}</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="gap-2 text-red-600 focus:text-red-600" onClick={onRemove}>
-                            <HugeiconsIcon icon={Delete02Icon} className="w-4 h-4" />
+                            <TrashIcon className="w-4 h-4" />
                             <span>移除</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
