@@ -1,10 +1,10 @@
 [
   {
     "id": "pbc_3806592213",
-    "listRule": "@request.auth.id != \"\"",
-    "viewRule": null,
+    "listRule": "",
+    "viewRule": "",
     "createRule": null,
-    "updateRule": "@request.auth.id != \"\" && @request.auth.type = \"superadmin\"",
+    "updateRule": null,
     "deleteRule": null,
     "name": "system_settings",
     "type": "base",

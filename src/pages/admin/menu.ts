@@ -1,8 +1,8 @@
 import {
-  ChartLineData01Icon,
-  Settings01Icon,
-  UserGroupIcon,
-} from '@hugeicons/core-free-icons';
+  ChartBarIcon,
+  Cog6ToothIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline';
 
 /**
  * Admin 模块菜单配置
@@ -12,18 +12,18 @@ export const adminMenu = [
   {
     title: '仪表盘',
     path: '/admin/dashboard',
-    icon: ChartLineData01Icon,
+    icon: ChartBarIcon,
     adminOnly: true,
   },
   {
     title: '用户管理',
     path: '/admin/users',
-    icon: UserGroupIcon,
+    icon: UsersIcon,
     adminOnly: true,
   },
   {
     title: '系统管理',
-    icon: Settings01Icon,
+    icon: Cog6ToothIcon,
     adminOnly: true,
     children: [
       { title: '全局配置', path: '/admin/settings' },

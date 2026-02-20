@@ -4,16 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
   UserIcon,
-  Mail01Icon,
-  ImageAdd01Icon,
-  Loading01Icon,
-  Tick01Icon,
-  AlertCircleIcon,
-  ArrowLeft02Icon
-} from '@hugeicons/core-free-icons';
+  EnvelopeIcon,
+  PhotoIcon,
+  ArrowPathIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon
+} from '@heroicons/react/24/outline';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
 
@@ -137,7 +135,7 @@ export function Profile() {
           ? 'bg-green-50 border-green-200 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400'
           : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400'
           }`}>
-          <HugeiconsIcon icon={message.type === 'success' ? Tick01Icon : AlertCircleIcon} className="h-5 w-5 shrink-0" />
+          {message.type === 'success' ? <CheckCircleIcon className="h-5 w-5 shrink-0" /> : <ExclamationCircleIcon className="h-5 w-5 shrink-0" />}
           <p className="text-sm font-medium">{message.text}</p>
         </div>
       )}
@@ -152,13 +150,13 @@ export function Profile() {
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Avatar" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
                   ) : (
-                    <HugeiconsIcon icon={UserIcon} className="h-12 w-12 text-neutral-400" />
+                    <UserIcon className="h-12 w-12 text-neutral-400" />
                   )}
                   <label
                     htmlFor="avatar-upload"
                     className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer backdrop-blur-sm"
                   >
-                    <HugeiconsIcon icon={ImageAdd01Icon} className="h-8 w-8" />
+                    <PhotoIcon className="h-8 w-8" />
                   </label>
                 </div>
                 <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
@@ -176,7 +174,7 @@ export function Profile() {
 
               <div className="w-full mt-8 pt-6 border-t border-neutral-100 dark:border-neutral-800 space-y-4">
                 <div className="flex items-center gap-3 text-sm text-neutral-600 dark:text-neutral-400">
-                  <HugeiconsIcon icon={Mail01Icon} className="h-4 w-4 text-neutral-400" />
+                  <EnvelopeIcon className="h-4 w-4 text-neutral-400" />
                   <span className="truncate">{user?.email}</span>
                 </div>
               </div>
@@ -217,7 +215,7 @@ export function Profile() {
                   disabled={loading}
                   className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20"
                 >
-                  {loading && <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
                   保存个人信息
                 </Button>
               </form>
@@ -273,7 +271,7 @@ export function Profile() {
                   disabled={loading}
                   className="mt-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                 >
-                  {loading && <HugeiconsIcon icon={Loading01Icon} className="mr-2 h-4 w-4 animate-spin" />}
+                  {loading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
                   重置登录密码
                 </Button>
               </form>
