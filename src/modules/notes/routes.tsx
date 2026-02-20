@@ -4,6 +4,8 @@ import Notes from './Notes';
 
 export const routes = (
   <Route element={<ProtectedRoute />}>
-    <Route path="notes" element={<Notes />} />
+    <Route path="/">
+      <Route index element={<Notes />} />
+    </Route>
   </Route>
 );
