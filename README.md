@@ -1,6 +1,8 @@
 # Pocket Stack ：AI友好的全栈开发解决方案
 
-采用 AI 友好的技术栈：基于 React 19 + TypeScript + Vite + shadcn/ui + PocketBase 构建的现代化、全栈后台管理系统脚手架，并结合 Shadcn & PocketBase MCP，提供完整、流畅、全栈、98分的 Vibe Coding 开发体验。
+2026年，最好的技术方案就是最“AI友好”的技术方案。这是一套AI友好的前后端技术栈，结合规则提示词和MCP等技术，打造一个非专业人员可用的 Vibe Coding 开发环境。为“就缺一个程序员”的你提供一个阿拉丁神灯般的开发平台。
+
+基于 React + shadcn/ui + PocketBase + MCP 等技术，实现完整、流畅的全栈 Vibe Coding 开发体验。
 
 简体中文 | [English](README_en.md)
 
@@ -26,7 +28,7 @@
 
 ## 🌟 核心特性
 
-- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 [HugeIcons](https://hugeicons.com/) 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
+- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
 - 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
 - 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立配置路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
 - 📋 **业务示例**：内置个人任务管理系统，支持多状态流转、优先级设定及用户数据隔离。
@@ -47,7 +49,7 @@
 | **UI 组件**   | shadcn/ui (@base-ui/react)   |
 | **样式**      | Tailwind CSS v4 (Maia Style) |
 | **路由**      | React Router v7              |
-| **图标**      | HugeIcons React              |
+| **图标**      | HeroIcons React              |
 
 ## 📁 目录结构
 
@@ -89,3 +91,8 @@ npm install
 npm run dev
 ```
 
+## 联系和讨论
+
+添加微信好友，加微信入群，备注 pocketstack
+
+<img src="docs/assets/weixin.png" width="200"/>

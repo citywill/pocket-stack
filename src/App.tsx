@@ -3,7 +3,6 @@ import { MainLayout } from '@/components/layout';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
-import { ExampleRoutes } from '@/pages/examples/routes';
 import { AdminRoutes } from '@/pages/admin/routes';
 import { NotebookRoutes } from '@/pages/notebook/routes';
 import { Profile } from '@/pages/Profile';
@@ -14,6 +13,13 @@ import { Toaster } from 'sonner';
 
 import { ProtectedRoute } from '@/components/protected-route';
 
+// 自动导入 modules 目录下的所有模块路由
+const moduleRoutes = import.meta.glob('./modules/*/routes.tsx', { eager: true });
+const autoRoutes = Object.values(moduleRoutes).map((mod: any) => {
+  // 支持 export const routes = ... 或 export default ...
+  return mod.routes || mod.default;
+});
+
 export function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
@@ -22,10 +28,10 @@ export function App() {
         <SettingsProvider>
           <BrowserRouter>
             <Routes>
+              {/* 渲染自动注册的模块路由 */}
+              {autoRoutes}
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
-              {ExampleRoutes}
-              {NotebookRoutes}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<MainLayout />}>
                   {AdminRoutes}

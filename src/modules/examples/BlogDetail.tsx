@@ -4,19 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft01Icon,
-  Calendar01Icon,
+  ChevronLeftIcon,
+  CalendarIcon,
   UserIcon,
-  ViewIcon,
-  Message01Icon,
-  Share01Icon,
-  ArrowRight01Icon,
-  Bookmark01Icon,
-  Menu01Icon,
-  Navigation03Icon
-} from '@hugeicons/core-free-icons';
+  EyeIcon,
+  ChatBubbleLeftRightIcon,
+  ShareIcon,
+  ChevronRightIcon,
+  BookmarkIcon,
+  Bars3Icon,
+  PaperAirplaneIcon
+} from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import {
   Sheet,
@@ -84,13 +83,13 @@ export function BlogDetail() {
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button size="icon" className="h-12 w-12 rounded-full shadow-lg bg-blue-600 hover:bg-blue-700 text-white border-none">
-                <HugeiconsIcon icon={Navigation03Icon} className="h-6 w-6" />
+                <PaperAirplaneIcon className="h-6 w-6" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px] border-neutral-200 dark:border-neutral-800">
               <SheetHeader className="pb-4 border-b border-neutral-100 dark:border-neutral-800">
                 <SheetTitle className="flex items-center gap-2">
-                  <HugeiconsIcon icon={Menu01Icon} className="h-5 w-5 text-blue-600" />
+                  <Bars3Icon className="h-5 w-5 text-blue-600" />
                   目录导航
                 </SheetTitle>
               </SheetHeader>
@@ -122,16 +121,16 @@ export function BlogDetail() {
           <div className="flex items-center justify-between">
             <Button variant="ghost" asChild className="rounded-xl -ml-2 text-neutral-600 hover:text-blue-600 transition-colors">
               <Link to="/examples/portal/landing">
-                <HugeiconsIcon icon={ArrowLeft01Icon} className="mr-2 h-4 w-4" />
+                <ChevronLeftIcon className="mr-2 h-4 w-4" />
                 返回首页
               </Link>
             </Button>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="icon" className="rounded-xl h-9 w-9">
-                <HugeiconsIcon icon={Bookmark01Icon} className="h-4 w-4" />
+                <BookmarkIcon className="h-4 w-4" />
               </Button>
               <Button variant="outline" size="icon" className="rounded-xl h-9 w-9">
-                <HugeiconsIcon icon={Share01Icon} className="h-4 w-4" />
+                <ShareIcon className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -159,20 +158,20 @@ export function BlogDetail() {
             <div className="flex flex-wrap items-center gap-6 text-sm text-neutral-500 dark:text-neutral-400">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border border-blue-200 dark:border-blue-800">
-                  <HugeiconsIcon icon={UserIcon} className="h-4 w-4 text-blue-600" />
+                  <UserIcon className="h-4 w-4 text-blue-600" />
                 </div>
                 <span className="font-medium text-neutral-900 dark:text-neutral-200">CityWill</span>
               </div>
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Calendar01Icon} className="h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
                 <span>2024年12月25日</span>
               </div>
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={ViewIcon} className="h-4 w-4" />
+                <EyeIcon className="h-4 w-4" />
                 <span>1,234 次阅读</span>
               </div>
               <div className="flex items-center gap-2">
-                <HugeiconsIcon icon={Message01Icon} className="h-4 w-4" />
+                <ChatBubbleLeftRightIcon className="h-4 w-4" />
                 <span>12 条评论</span>
               </div>
             </div>
@@ -254,7 +253,7 @@ export function BlogDetail() {
               <CardContent>
                 <div className="flex flex-col gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 group-hover:text-blue-500 transition-colors flex items-center gap-1">
-                    <HugeiconsIcon icon={ArrowLeft01Icon} className="h-3 w-3" />
+                    <ChevronLeftIcon className="h-3 w-3" />
                     上一篇
                   </span>
                   <p className="font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 transition-colors line-clamp-1">
@@ -269,7 +268,7 @@ export function BlogDetail() {
                 <div className="flex flex-col gap-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 group-hover:text-blue-500 transition-colors flex items-center gap-1 justify-end">
                     下一篇
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="h-3 w-3" />
+                    <ChevronRightIcon className="h-3 w-3" />
                   </span>
                   <p className="font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-blue-600 transition-colors line-clamp-1">
                     Vibe Coding: 开启 AI 驱动的编程新时代
@@ -285,7 +284,7 @@ export function BlogDetail() {
           <div className="sticky top-24 space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-neutral-900 dark:text-neutral-100 font-bold">
-                <HugeiconsIcon icon={Menu01Icon} className="h-4 w-4 text-blue-600" />
+                <Bars3Icon className="h-4 w-4 text-blue-600" />
                 <span>目录导航</span>
               </div>
               <nav className="relative">
