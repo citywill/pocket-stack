@@ -42,7 +42,7 @@ interface Note {
       name: string;
       avatar: string;
     },
-    'note_tag_links(note)'?: {
+    note_tag_links_via_note?: {
       id: string;
       tag: string;
       expand?: {
@@ -118,7 +118,7 @@ export default function Notes() {
       }
       const options: any = {
         sort: '-noted,-created',
-        expand: 'user,note_tag_links(note).tag',
+        expand: 'user,note_tag_links_via_note.tag',
         requestKey: null,
       };
 

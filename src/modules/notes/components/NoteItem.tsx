@@ -54,7 +54,7 @@ interface Note {
       name: string;
       avatar: string;
     },
-    'note_tag_links(note)'?: {
+    note_tag_links_via_note?: {
       id: string;
       tag: string;
       expand?: {
@@ -75,7 +75,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
   const { user } = useAuth();
 
   // 获取当前笔记的标签ID列表
-  const currentTagIds = note.expand?.['note_tag_links(note)']?.map(link => link.tag) || [];
+  const currentTagIds = note.expand?.note_tag_links_via_note?.map(link => link.tag) || [];
 
   const [isEditing, setIsEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -171,7 +171,7 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
         const validTagIds = finalTagIds.filter(id => !id.startsWith('temp_'));
 
         // 2. 获取现有链接
-        const existingLinks = note.expand?.['note_tag_links(note)'] || [];
+        const existingLinks = note.expand?.note_tag_links_via_note || [];
 
         // 2. 找出需要删除的链接
         const linksToDelete = existingLinks.filter(link => !validTagIds.includes(link.tag));
@@ -319,9 +319,9 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
               {note.content}
             </ReactMarkdown>
             {/* 标签显示 */}
-            {note.expand?.['note_tag_links(note)'] && note.expand['note_tag_links(note)'].length > 0 && (
+            {note.expand?.note_tag_links_via_note && note.expand.note_tag_links_via_note.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
-                {note.expand['note_tag_links(note)'].map(link => (
+                {note.expand.note_tag_links_via_note.map(link => (
                   link.expand?.tag && (
                     <Badge
                       key={link.id}
