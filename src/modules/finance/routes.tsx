@@ -4,7 +4,7 @@ import FinanceRecords from './Records';
 import { ProtectedRoute } from '@/components/protected-route';
 import { MainLayout } from '@/components/layout';
 
-export const FinanceRoutes = (
+export const routes = (
   <Route element={<ProtectedRoute />}>
     <Route element={<MainLayout />}>
       <Route path="finance" element={<FinanceDashboard />} />

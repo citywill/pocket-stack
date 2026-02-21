@@ -3,10 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
-import { exampleMenu } from '@/pages/examples/menu';
-import { financeMenu } from '@/pages/finance/menu';
-import { adminMenu } from '@/pages/admin/menu';
 import { useAuth } from '@/components/auth-provider';
+import { menuItems, type MenuItem } from '../menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,28 +13,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-
-interface MenuItem {
-  title: string;
-  path?: string;
-  icon: any;
-  adminOnly?: boolean;
-  userOnly?: boolean;
-  external?: boolean;
-  children?: {
-    title: string;
-    path: string;
-    adminOnly?: boolean;
-    userOnly?: boolean;
-    external?: boolean;
-  }[];
-}
-
-const menuItems: MenuItem[] = [
-  ...adminMenu,
-  financeMenu,
-  exampleMenu,
-];
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -120,7 +96,26 @@ function NavItem({
   const isChildActive = item.children?.some(child => location.pathname === child.path);
   const [isOpen, setIsOpen] = useState(isChildActive);
 
-  const isActive = item.path ? location.pathname === item.path : false;
+  // 检查菜单项是否激活
+  const checkActive = (menuItem: MenuItem) => {
+    const currentPath = location.pathname;
+
+    // 1. 优先使用 activePath 正则匹配
+    if (menuItem.activePath) {
+      try {
+        const regex = new RegExp(menuItem.activePath);
+        if (regex.test(currentPath)) return true;
+      } catch (e) {
+        // 如果不是有效的正则，尝试作为路径前缀匹配
+        if (currentPath.startsWith(menuItem.activePath)) return true;
+      }
+    }
+
+    // 2. 默认路径精确匹配
+    return menuItem.path ? currentPath === menuItem.path : false;
+  };
+
+  const isActive = checkActive(item);
   const Icon = item.icon;
 
   const handleLinkClick = () => {

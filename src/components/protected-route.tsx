@@ -19,7 +19,7 @@ export function ProtectedRoute() {
 
   return <Outlet />;
 }
-export function AdminOnlyRoute({ children }: { children: React.ReactNode }) {
+export function AdminOnlyRoute({ children }: { children?: React.ReactNode }) {
   const { isSuperAdmin, isValid, isLoading } = useAuth();
 
   if (isLoading) {
@@ -34,10 +34,10 @@ export function AdminOnlyRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/" replace />;
   }
 
-  return <>{children}</>;
+  return children ? <>{children}</> : <Outlet />;
 }
 
-export function UserOnlyRoute({ children }: { children: React.ReactNode }) {
+export function UserOnlyRoute({ children }: { children?: React.ReactNode }) {
   const { isSuperAdmin, isValid, isLoading } = useAuth();
 
   if (isLoading) {
@@ -52,7 +52,7 @@ export function UserOnlyRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/admin/dashboard" replace />;
   }
 
-  return <>{children}</>;
+  return children ? <>{children}</> : <Outlet />;
 }
 
 

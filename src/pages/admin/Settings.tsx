@@ -119,9 +119,9 @@ export function Settings() {
         };
 
         if (setting.id) {
-          return pb.collection('system_settings').update(setting.id, data);
+          return pb.collection('system_settings').update(setting.id, data, { requestKey: null });
         } else {
-          return pb.collection('system_settings').create(data);
+          return pb.collection('system_settings').create(data, { requestKey: null });
         }
       });
 

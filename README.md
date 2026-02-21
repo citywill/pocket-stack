@@ -6,7 +6,7 @@
 
 简体中文 | [English](README_en.md)
 
-![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
+![Pocket Stack 示例页面](docs/assets/example-dashboard.png)
 
 ## 📄 更多信息
 
@@ -91,3 +91,8 @@ npm install
 npm run dev
 ```
 
+## 联系和讨论
+
+添加微信好友，加微信入群，备注 pocketstack
+
+<img src="docs/assets/weixin.png" width="200"/>
