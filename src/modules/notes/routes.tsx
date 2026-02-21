@@ -1,6 +1,5 @@
 import { Route } from 'react-router-dom';
 import { ProtectedRoute } from '@/components/protected-route';
-import { MainLayout } from '@/components/layout';
 import { lazy } from 'react';
 
 const Notes = lazy(() => import('./Notes'));

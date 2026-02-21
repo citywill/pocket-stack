@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { TagIcon, PencilSquareIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { TagIcon, PencilSquareIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon, ArrowLeftIcon, StarIcon } from '@heroicons/react/24/outline';
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -38,6 +39,7 @@ interface Tag {
     created: string;
     updated: string;
     count?: number;
+    isPinned?: boolean;
 }
 
 export default function Tags() {
@@ -65,7 +67,7 @@ export default function Tags() {
         try {
             const records = await pb.collection('note_tags').getFullList<Tag>({
                 filter: `user = "${user?.id}"`,
-                sort: '-created',
+                sort: '-isPinned,-created',
                 requestKey: null,
             });
 
@@ -136,7 +138,19 @@ export default function Tags() {
         }
     };
 
-    const filteredTags = tags.filter(tag => 
+    const handleTogglePin = async (tag: Tag) => {
+        try {
+            await pb.collection('note_tags').update(tag.id, {
+                isPinned: !tag.isPinned
+            });
+            toast.success(tag.isPinned ? '取消置顶' : '已置顶');
+            fetchTags();
+        } catch (error) {
+            toast.error('操作失败');
+        }
+    };
+
+    const filteredTags = tags.filter(tag =>
         tag.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -183,6 +197,7 @@ export default function Tags() {
                     <TableHeader>
                         <TableRow>
                             <TableHead>名称</TableHead>
+                            <TableHead>置顶</TableHead>
                             <TableHead>关联笔记数</TableHead>
                             <TableHead>创建时间</TableHead>
                             <TableHead className="text-right">操作</TableHead>
@@ -209,6 +224,20 @@ export default function Tags() {
                                             <TagIcon className="size-4 text-muted-foreground" />
                                             {tag.name}
                                         </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => handleTogglePin(tag)}
+                                            title={tag.isPinned ? "取消置顶" : "置顶"}
+                                        >
+                                            {tag.isPinned ? (
+                                                <StarIconSolid className="size-4 text-yellow-500" />
+                                            ) : (
+                                                <StarIcon className="size-4 text-muted-foreground" />
+                                            )}
+                                        </Button>
                                     </TableCell>
                                     <TableCell>{tag.count || 0}</TableCell>
                                     <TableCell>{new Date(tag.created).toLocaleDateString()}</TableCell>

@@ -126,6 +126,15 @@
       },
       {
         "hidden": false,
+        "id": "bool609218365",
+        "name": "isPinned",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
         "id": "autodate_created",
         "name": "created",
         "onCreate": true,

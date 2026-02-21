@@ -12,6 +12,7 @@ export interface Tag {
     id: string;
     name: string;
     count?: number;
+    isPinned?: boolean;
 }
 
 interface TagListProps {
@@ -35,7 +36,7 @@ export function TagList({ onTagsCountChange, refreshTrigger }: TagListProps) {
         try {
             const records = await pb.collection('note_tags').getFullList<Tag>({
                 filter: `user = "${user?.id}"`,
-                sort: 'name',
+                sort: '-isPinned,name',
                 requestKey: null,
             });
 
@@ -86,7 +87,7 @@ export function TagList({ onTagsCountChange, refreshTrigger }: TagListProps) {
                         )}
                     >
                         <button
-                            className="flex items-center h-full px-1.5 text-xs font-medium cursor-pointer select-none"
+                            className="flex items-center h-full px-1.5 text-xs font-medium cursor-pointer select-none gap-1"
                             onClick={() => handleTagClick(tag.id)}
                         >
                             <span className="truncate max-w-[80px]">{tag.name}</span>
