@@ -51,6 +51,7 @@ export default {
           { text: '口袋笔记', link: '/demos/notes' },
           { text: '口袋看板', link: '/demos/kanban' },
           { text: '口袋记账', link: '/demos/finance' },
+          { text: '口袋OKRs', link: '/demos/okr' },
         ]
       },
     ]
