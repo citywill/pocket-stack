@@ -19,6 +19,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
+import { ClientResponseError } from 'pocketbase';
 import type { FinanceRecord } from './types';
 import { RECORD_TYPE_OPTIONS } from './types';
 import { FinanceFormDrawer } from './components/FinanceFormDrawer';
@@ -79,8 +80,8 @@ export default function FinanceRecords() {
 
       setRecords(result.items as unknown as FinanceRecord[]);
       setTotalItems(result.totalItems);
-    } catch (error: any) {
-      if (error.isAbort) return;
+    } catch (error) {
+      if (error instanceof ClientResponseError && error.isAbort) return;
       console.error('Fetch error:', error);
       toast.error('获取数据失败');
     } finally {
@@ -125,8 +126,12 @@ export default function FinanceRecords() {
     if (!user) return;
     setActionLoading(true);
     try {
+      // 移除可能存在的只读字段
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { expand, created, updated, id, ...restData } = data as any;
+
       const payload = {
-        ...data,
+        ...restData,
         user: user.id,
       };
 
@@ -141,7 +146,12 @@ export default function FinanceRecords() {
       fetchRecords();
     } catch (error) {
       console.error('Save error:', error);
-      toast.error('保存失败');
+      if (error instanceof ClientResponseError) {
+        console.error('Error data:', error.data);
+        toast.error(`保存失败: ${error.message}`);
+      } else {
+        toast.error('保存失败');
+      }
     } finally {
       setActionLoading(false);
     }

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { pb } from '@/lib/pocketbase';
+import { ClientResponseError } from 'pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { startOfMonth, endOfMonth } from 'date-fns';
+import { startOfMonth, endOfMonth, eachDayOfInterval, format, isSameDay } from 'date-fns';
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon, WalletIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 export default function FinanceDashboard() {
   const { user } = useAuth();
@@ -13,6 +15,7 @@ export default function FinanceDashboard() {
     totalExpense: 0,
     balance: 0,
   });
+  const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,22 +23,46 @@ export default function FinanceDashboard() {
       if (!user) return;
       setLoading(true);
       try {
-        const start = startOfMonth(new Date()).toISOString().replace('T', ' ');
-        const end = endOfMonth(new Date()).toISOString().replace('T', ' ');
+        const startDate = startOfMonth(new Date());
+        const endDate = endOfMonth(new Date());
+        const startStr = startDate.toISOString().replace('T', ' ');
+        const endStr = endDate.toISOString().replace('T', ' ');
 
-        const filter = `user = "${user.id}" && date >= "${start}" && date <= "${end}"`;
+        const filter = `user = "${user.id}" && date >= "${startStr}" && date <= "${endStr}"`;
         const records = await pb.collection('finance_records').getFullList({
           filter: filter,
+          sort: 'date',
         });
 
         let income = 0;
         let expense = 0;
 
+        // Generate daily data structure for the current month
+        const days = eachDayOfInterval({ start: startDate, end: endDate });
+        const dailyData = days.map(day => ({
+          date: format(day, 'MM-dd'),
+          fullDate: day,
+          income: 0,
+          expense: 0,
+        }));
+
         records.forEach((r: any) => {
+          // Update totals
           if (r.type === 'income') {
             income += r.amount;
           } else {
             expense += r.amount;
+          }
+
+          // Update daily chart data
+          const recordDate = new Date(r.date);
+          const dayEntry = dailyData.find(d => isSameDay(d.fullDate, recordDate));
+          if (dayEntry) {
+            if (r.type === 'income') {
+              dayEntry.income += r.amount;
+            } else {
+              dayEntry.expense += r.amount;
+            }
           }
         });
 
@@ -44,7 +71,12 @@ export default function FinanceDashboard() {
           totalExpense: expense,
           balance: income - expense,
         });
+        setChartData(dailyData);
       } catch (error) {
+        if (error instanceof ClientResponseError && error.isAbort) {
+          // Ignore auto-cancellation errors
+          return;
+        }
         console.error('Failed to fetch stats:', error);
       } finally {
         setLoading(false);
@@ -106,6 +138,68 @@ export default function FinanceDashboard() {
           </Card>
         ))}
       </div>
+
+      <Card className="border-none shadow-sm">
+        <CardHeader>
+          <CardTitle>收支趋势 (本月)</CardTitle>
+        </CardHeader>
+        <CardContent className="pl-0">
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e5e5" />
+                <XAxis
+                  dataKey="date"
+                  stroke="#737373"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  minTickGap={30}
+                />
+                <YAxis
+                  stroke="#737373"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `¥${value}`}
+                />
+                <Tooltip
+                  contentStyle={{ backgroundColor: 'white', borderRadius: '8px', border: '1px solid #e5e5e5' }}
+                  itemStyle={{ fontSize: '12px' }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="income"
+                  name="收入"
+                  stroke="#16a34a"
+                  fillOpacity={1}
+                  fill="url(#colorIncome)"
+                  strokeWidth={2}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="expense"
+                  name="支出"
+                  stroke="#dc2626"
+                  fillOpacity={1}
+                  fill="url(#colorExpense)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="border-neutral-200 dark:border-neutral-800 shadow-none">
         <CardHeader>

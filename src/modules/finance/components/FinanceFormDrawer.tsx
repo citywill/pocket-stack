@@ -17,7 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { pb } from '@/lib/pocketbase';
+import { ClientResponseError } from 'pocketbase';
 import type { FinanceRecord, FinanceCategory } from '../types';
 import { RECORD_TYPE_OPTIONS } from '../types';
 import { format } from 'date-fns';
@@ -55,6 +57,7 @@ export function FinanceFormDrawer({
         });
         setCategories(result);
       } catch (error) {
+        if (error instanceof ClientResponseError && error.isAbort) return;
         console.error('Failed to fetch categories:', error);
       }
     };
@@ -64,9 +67,11 @@ export function FinanceFormDrawer({
   useEffect(() => {
     if (record) {
       setFormData({
-        ...record,
-        // PocketBase 的日期格式处理
+        amount: record.amount,
+        type: record.type,
+        category: record.category,
         date: record.date ? new Date(record.date).toISOString() : new Date().toISOString(),
+        note: record.note,
       });
     } else {
       setFormData({
@@ -81,9 +86,22 @@ export function FinanceFormDrawer({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const amount = Number(formData.amount);
+    if (isNaN(amount)) {
+      toast.error('请输入有效的金额');
+      return;
+    }
+
+    const date = new Date(formData.date || '');
+    if (isNaN(date.getTime())) {
+      toast.error('请输入有效的日期');
+      return;
+    }
+
     onSave({
       ...formData,
-      amount: Number(formData.amount),
+      amount,
+      date: date.toISOString(),
     });
   };
 
@@ -96,10 +114,10 @@ export function FinanceFormDrawer({
           <SheetTitle>{record ? '编辑记录' : '新增记账'}</SheetTitle>
         </SheetHeader>
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="type">类型</Label>
-              <Select
+              <Label>类型</Label>
+              <RadioGroup
                 value={formData.type}
                 onValueChange={(v) => {
                   const newType = v as 'expense' | 'income';
@@ -109,51 +127,50 @@ export function FinanceFormDrawer({
                     category: categories.find(c => c.type === newType)?.id || ''
                   });
                 }}
+                className="flex gap-4"
               >
-                <SelectTrigger id="type">
-                  <SelectValue placeholder="选择类型" />
-                </SelectTrigger>
-                <SelectContent>
-                  {RECORD_TYPE_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                {RECORD_TYPE_OPTIONS.map((opt) => (
+                  <div key={opt.value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={opt.value} id={`type-${opt.value}`} />
+                    <Label htmlFor={`type-${opt.value}`}>{opt.label}</Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="category">分类</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(v) => setFormData({ ...formData, category: v })}
-              >
-                <SelectTrigger id="category">
-                  <SelectValue placeholder="选择分类" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredCategories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="category">分类</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(v) => setFormData({ ...formData, category: v })}
+                >
+                  <SelectTrigger id="category">
+                    <SelectValue placeholder="选择分类" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredCategories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="amount">金额</Label>
-            <Input
-              id="amount"
-              type="number"
-              step="0.01"
-              value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
-              placeholder="0.00"
-              required
-            />
+              <div className="space-y-2">
+                <Label htmlFor="amount">金额</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">

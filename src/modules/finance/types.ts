@@ -2,7 +2,6 @@ export interface FinanceCategory {
   id: string;
   name: string;
   type: 'expense' | 'income';
-  icon?: string;
   created: string;
   updated: string;
 }
