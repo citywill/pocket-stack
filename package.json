@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "leaflet": "^1.9.4",
+    "medium-zoom": "^1.1.0",
     "pocketbase": "^0.26.5",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",
