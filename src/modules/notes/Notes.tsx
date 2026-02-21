@@ -144,30 +144,8 @@ export default function Notes() {
 
       // 标签筛选：通过关联表反向查询
       if (tag) {
-        // PocketBase 不支持这种深层嵌套的反向查询过滤 (note_tag_links_via_note.tag = "TAG_ID")
-        // 我们需要先找出该标签下的所有笔记 ID，然后再过滤
-        const links = await pb.collection('note_tag_links').getFullList({
-          filter: `tag = "${tag}"`,
-          fields: 'note',
-          requestKey: null,
-        });
-
-        const noteIds = links.map(link => link.note);
-
-        if (noteIds.length === 0) {
-          // 如果该标签下没有笔记，则直接返回空列表，避免无效查询
-          setNotes([]);
-          setHasMore(false);
-          setPage(targetPage);
-          return; // 提前结束
-        }
-
-        // 使用笔记 ID 列表进行过滤
-        // id ?= ["id1", "id2"] 语法可能在某些版本不支持，使用 id = "id1" || id = "id2"
-        if (noteIds.length > 0) {
-          const idFilters = noteIds.map(id => `id = "${id}"`).join(' || ');
-          filters.push(`(${idFilters})`);
-        }
+        // 使用反向查询，避免 ID 列表过长
+        filters.push(`note_tag_links_via_note.tag ?= "${tag}"`);
       }
 
       if (filters.length > 0) {
