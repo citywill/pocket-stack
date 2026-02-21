@@ -13,6 +13,7 @@ import {
   UserIcon,
   ArrowRightOnRectangleIcon,
   ChevronDownIcon,
+  TagIcon,
 } from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 
@@ -59,6 +60,12 @@ export function UserMenu({ }: UserMenuProps) {
             <Link to="/profile">
               <UserIcon className="size-[18px]" />
               <span className="text-sm font-medium">个人资料</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer focus:bg-blue-50 focus:text-blue-600">
+            <Link to="/tags">
+              <TagIcon className="size-[18px]" />
+              <span className="text-sm font-medium">标签管理</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator className="my-1 bg-slate-100" />
