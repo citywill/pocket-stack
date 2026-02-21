@@ -42,7 +42,14 @@ export default {
           { text: '菜单定义', link: '/菜单定义' },
           { text: '权限控制', link: '/权限控制' }
         ]
-      }
+      },
+      {
+        text: 'Demo模块',
+        items: [
+          { text: '演示模块说明', link: '/demos/index' },
+          { text: '口袋笔记', link: '/demos/notes' },
+        ]
+      },
     ]
   }
 }
