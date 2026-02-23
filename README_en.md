@@ -6,7 +6,7 @@ This project adopts an AI-friendly tech stack and combines Shadcn & PocketBase M
 
 English | [简体中文](README.md)
 
-![Pocket Stack Example Page](docs/assets/screenshot-admin.png)
+![Pocket Stack Example Page](docs/assets/example-dashboard.png)
 
 ## 🎶 Vibe Coding Performance
 

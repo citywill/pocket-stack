@@ -6,7 +6,7 @@
 
 简体中文 | [English](README_en.md)
 
-![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
+![Pocket Stack 示例页面](docs/assets/example-dashboard.png)
 
 ## 📄 更多信息
 

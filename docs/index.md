@@ -4,7 +4,7 @@
 
 本项采用 AI 友好的技术栈，并结合 Shadcn & PocketBase MCP，提供完整、流畅、全栈、98分的 Vibe Coding 开发体验。
 
-![Pocket Stack 示例页面](/assets/screenshot-dashboard.png)
+![Pocket Stack 示例页面](assets/example-dashboard.png)
 
 ## 🌟 核心特性
 
