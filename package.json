@@ -26,6 +26,7 @@
     "katex": "^0.16.27",
     "leaflet": "^1.9.4",
     "mermaid": "^11.12.2",
+    "medium-zoom": "^1.1.0",
     "pocketbase": "^0.26.5",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",

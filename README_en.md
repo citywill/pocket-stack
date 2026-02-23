@@ -6,7 +6,7 @@ This project adopts an AI-friendly tech stack and combines Shadcn & PocketBase M
 
 English | [简体中文](README.md)
 
-![Pocket Stack Example Page](docs/assets/screenshot-admin.png)
+![Pocket Stack Example Page](docs/assets/example-dashboard.png)
 
 ## 🎶 Vibe Coding Performance
 
@@ -47,22 +47,32 @@ English | [简体中文](README.md)
 ## 📁 Directory Structure
 
 ```text
-├── pb_schemas/          # PocketBase collection configurations (JSON)
+├── docs/                # Documentation (VitePress)
+├── migrations/          # Database migrations
+├── public/              # Static assets
 └── src/
+    ├── assets/          # Resource files
     ├── components/
-    │   ├── layout/          # Layout components (Sidebar, Header, MainLayout)
-    │   ├── ui/              # shadcn/ui component library
-    │   ├── auth-provider.tsx # Authentication context logic
-    │   └── protected-route.tsx # Route guard component
-    ├── pages/               # Business pages
-    │   ├── {module}/        # Business modules (e.g., task, crm)
-    │   │   ├── components/  # Module-specific components
-    │   │   ├── routes.tsx   # Module route configuration
-    │   │   └── menu.ts      # Module menu configuration
-    │   └── login/           # Basic pages
-    ├── lib/                 # Utilities (pocketbase SDK, tailwind utils)
-    ├── App.tsx              # Router and Provider root configuration
-    └── main.tsx             # Application entry point
+    │   ├── layout/      # Layout components (Sidebar, Header, MainLayout)
+    │   ├── ui/          # shadcn/ui component library
+    │   ├── auth-provider.tsx # Authentication context
+    │   ├── menu.ts      # Global menu configuration
+    │   ├── protected-route.tsx # Route guard
+    │   └── theme-provider.tsx # Theme context
+    ├── lib/             # Utilities (pocketbase, utils)
+    ├── modules/         # Business modules
+    │   └── examples/    # Example modules (CURD, AI Chat, Blog, etc.)
+    │       ├── components/ # Module components
+    │       ├── curd/    # CURD example
+    │       ├── menu.ts  # Module menu
+    │       └── routes.tsx # Module routes
+    ├── pages/           # System pages
+    │   ├── admin/       # Admin dashboard (Dashboard, Settings, Users)
+    │   ├── Login.tsx    # Login page
+    │   ├── Register.tsx # Register page
+    │   └── Profile.tsx  # Profile page
+    ├── App.tsx          # Root component
+    └── main.tsx         # Entry point
 ```
 
 ## 🚀 Quick Start
