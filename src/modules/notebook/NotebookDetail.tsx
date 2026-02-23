@@ -31,7 +31,7 @@ export default function NotebookDetail() {
     const [selectedNoteIndex, setSelectedNoteIndex] = useState<string | null>(null);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [editingNote, setEditingNote] = useState<{ id: string, title: string, type: string, content: string } | null>(null);
+    const [editingNote, setEditingNote] = useState<{ id: string, title: string, content: string } | null>(null);
     const [isNotesCollapsed, setIsNotesCollapsed] = useState(false);
     const [isResultsCollapsed, setIsResultsCollapsed] = useState(false);
 
@@ -74,7 +74,7 @@ export default function NotebookDetail() {
     }, [id]);
 
     // 笔记列表数据
-    const [noteItems, setNoteItems] = useState<{ id: string, title: string, type: string, content: string, isPinned: boolean, isActive: boolean }[]>([]);
+    const [noteItems, setNoteItems] = useState<{ id: string, title: string, content: string, isPinned: boolean, isActive: boolean }[]>([]);
 
     // 获取笔记本关联笔记识点
     const fetchNotes = async () => {
@@ -163,7 +163,6 @@ export default function NotebookDetail() {
             setEditingNote({
                 id: note.id,
                 title: note.title,
-                type: note.type,
                 content: note.content
             });
             setIsEditDialogOpen(true);
@@ -182,7 +181,7 @@ export default function NotebookDetail() {
     if (!notebook) {
         return (
             <div className="h-screen w-screen flex flex-col items-center justify-center bg-slate-50">
-                <p className="text-slate-500 mb-4 text-lg">未找到该研判笔记</p>
+                <p className="text-slate-500 mb-4 text-lg">未找到该笔记</p>
                 <Button onClick={() => navigate('/notebook')}>返回列表</Button>
             </div>
         );

@@ -21,7 +21,6 @@ interface NoteItemProps {
     item: {
         id: string;
         title: string;
-        type: string;
         content: string;
         isPinned: boolean;
     };
@@ -67,7 +66,6 @@ export const NoteItem: React.FC<NoteItemProps> = ({
                         )}
                         <h3 className="text-sm font-medium text-slate-800 truncate flex-1">{item.title}</h3>
                     </div>
-                    <div className="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded shrink-0">{item.type}</div>
                 </div>
                 <p className="text-xs text-slate-500 mt-1.5 truncate">
                     {item.content.replace(/<[^>]*>/g, '')}

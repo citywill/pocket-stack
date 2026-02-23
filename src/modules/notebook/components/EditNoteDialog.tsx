@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { pb } from '@/lib/pocketbase';
@@ -21,7 +20,6 @@ interface EditNoteDialogProps {
     note: {
         id: string;
         title: string;
-        type: string;
         content: string;
     } | null;
     onSuccess: () => void;
@@ -34,7 +32,6 @@ export const EditNoteDialog = ({
     onSuccess
 }: EditNoteDialogProps) => {
     const [title, setTitle] = useState('');
-    const [type, setType] = useState('其它知识');
     const [content, setContent] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -42,7 +39,6 @@ export const EditNoteDialog = ({
     useEffect(() => {
         if (note) {
             setTitle(note.title || '');
-            setType(note.type || '其它知识');
             setContent(note.content || '');
         }
     }, [note, isOpen]);
@@ -77,7 +73,6 @@ export const EditNoteDialog = ({
             await pb.collection('notebook_notes').update(note.id, {
                 title: title,
                 content: content,
-                type: type,
             });
 
             toast.success("笔记更新成功");
@@ -95,7 +90,7 @@ export const EditNoteDialog = ({
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[800px] max-h-[90vh] flex flex-col p-0 overflow-hidden">
                 <DialogHeader className="p-6 pb-0">
-                    <DialogTitle className="text-xl font-bold">编辑研判笔记</DialogTitle>
+                    <DialogTitle className="text-xl font-bold">编辑笔记</DialogTitle>
                 </DialogHeader>
 
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
@@ -108,22 +103,6 @@ export const EditNoteDialog = ({
                             onChange={(e) => setTitle(e.target.value)}
                             className="rounded-xl border-slate-200 focus:ring-blue-500"
                         />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label className="text-sm font-medium">类型</Label>
-                        <Select value={type} onValueChange={setType}>
-                            <SelectTrigger className="rounded-xl border-slate-200">
-                                <SelectValue placeholder="选择类型" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl">
-                                <SelectItem value="法律法规">法律法规</SelectItem>
-                                <SelectItem value="研判分析">研判分析</SelectItem>
-                                <SelectItem value="案源信息">案源信息</SelectItem>
-                                <SelectItem value="巡回记录">巡回记录</SelectItem>
-                                <SelectItem value="其它知识">其它知识</SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
 
                     <div className="space-y-2">

@@ -72,14 +72,13 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
 
             // 提取标题（取第一行或前15个字）
             const firstLine = content.split('\n')[0].replace(/[#*`]/g, '').trim();
-            const title = firstLine.length > 0 ? (firstLine.length > 15 ? firstLine.slice(0, 15) + '...' : firstLine) : 'AI 研判建议';
+            const title = firstLine.length > 0 ? (firstLine.length > 15 ? firstLine.slice(0, 15) + '...' : firstLine) : 'AI 建议';
 
             await pb.collection('notebook_notes').create({
                 notebook_id: notebookId,
                 user_id: authData.id,
                 title: title,
                 content: content,
-                type: 'AI研判',
                 is_active: true,
                 is_pinned: false
             });
@@ -144,7 +143,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                     {
                         id: 'welcome',
                         role: 'ai',
-                        content: `您好！我是您的智能研判助手。关于《${notebookTitle}》，您可以询问我任何相关问题，或者让我为您分析现有的笔记。`
+                        content: `您好！我是您的智能助手。关于《${notebookTitle}》，您可以询问我任何相关问题，或者让我为您分析现有的笔记。`
                     }
                 ]);
             } else {
@@ -220,7 +219,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                 ? `\n\n当前笔记本中已激活的参考笔记内容如下：\n${activeNotesRecords.map(n => `--- 笔记标题：${n.title} ---\n${n.content}`).join('\n\n')}`
                 : '';
 
-            const defaultPrompt = `当前正在处理研判笔记本《${notebookTitle}》。请根据用户的问题以及下面提供的参考笔记内容（如果提供的话）进行专业、准确的分析建议。`;
+            const defaultPrompt = `当前正在处理笔记本《${notebookTitle}》。请根据用户的问题以及下面提供的参考笔记内容（如果提供的话）进行专业、准确的分析建议。`;
             const systemPrompt = `${customPrompt || defaultPrompt}${contextString}`;
             console.log("AI 对话系统提示词 (System Prompt):", systemPrompt);
 
@@ -367,7 +366,7 @@ export const AiChatContainer: React.FC<AiChatContainerProps> = ({
                 {
                     id: 'welcome',
                     role: 'ai',
-                    content: `您好！我是您的智能研判助手。关于《${notebookTitle}》，您可以询问我任何相关问题，或者让我为您分析现有的笔记。`
+                    content: `您好！我是您的智能助手。关于《${notebookTitle}》，您可以询问我任何相关问题，或者让我为您分析现有的笔记。`
                 }
             ]);
 

@@ -84,7 +84,7 @@ export default function NotebookList() {
         fetchNotebooks();
     }, []);
 
-    // 处理新建笔记
+    // 处理新建笔记本
     const handleCreateNotebook = async () => {
         if (!newNotebookTitle.trim()) return;
 
@@ -108,10 +108,10 @@ export default function NotebookList() {
         }
     };
 
-    // 处理删除笔记
+    // 处理删除笔记本
     const handleDeleteNotebook = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (!window.confirm("确定要删除该笔记吗？此操作不可恢复。")) return;
+        if (!window.confirm("确定要删除该笔记本吗？此操作不可恢复。")) return;
 
         try {
             // 1. 删除关联的笔记 (notebook_notes)
@@ -197,29 +197,29 @@ export default function NotebookList() {
             {/* 头部 */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">智能研判笔记</h1>
-                    <p className="text-muted-foreground">记录研判过程，沉淀专业知识，AI 辅助分析深度见解。</p>
+                    <h1 className="text-2xl font-bold tracking-tight">智能笔记本</h1>
+                    <p className="text-muted-foreground">记录思考过程，沉淀专业知识，AI 辅助分析深度见解。</p>
                 </div>
                 <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                     <DialogTrigger asChild>
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl gap-2">
                             <PlusIcon className="w-5 h-5" />
-                            新建研判笔记
+                            新建笔记本
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] rounded-2xl">
                         <DialogHeader>
-                            <DialogTitle>新建研判笔记</DialogTitle>
+                            <DialogTitle>新建笔记本</DialogTitle>
                             <DialogDescription>
-                                为您的新笔记起一个标题，开启智能研判之旅。
+                                为您的新笔记本起一个标题，开启智能之旅。
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="title">笔记标题</Label>
+                                <Label htmlFor="title">笔记本标题</Label>
                                 <Input
                                     id="title"
-                                    placeholder="例如：关于某保护区非法捕捞风险研判"
+                                    placeholder=""
                                     className="rounded-xl"
                                     value={newNotebookTitle}
                                     onChange={(e) => setNewNotebookTitle(e.target.value)}
@@ -248,18 +248,18 @@ export default function NotebookList() {
                     </DialogContent>
                 </Dialog>
 
-                {/* 编辑研判笔记对话框 */}
+                {/* 编辑笔记本对话框 */}
                 <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                     <DialogContent className="sm:max-w-[425px] rounded-2xl">
                         <DialogHeader>
-                            <DialogTitle>编辑研判笔记</DialogTitle>
+                            <DialogTitle>编辑笔记本</DialogTitle>
                             <DialogDescription>
                                 修改笔记本的标题。
                             </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="edit-title">笔记标题</Label>
+                                <Label htmlFor="edit-title">笔记本标题</Label>
                                 <Input
                                     id="edit-title"
                                     className="rounded-xl"
@@ -298,7 +298,7 @@ export default function NotebookList() {
                         <div className="relative flex-1">
                             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <Input
-                                placeholder="搜索笔记标题、内容摘要..."
+                                placeholder="搜索笔记本标题、内容摘要..."
                                 className="pl-10 rounded-xl border-slate-200 focus:ring-blue-500"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -394,7 +394,7 @@ export default function NotebookList() {
                     <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
                         <BookOpenIcon className="w-10 h-10 text-slate-200" />
                     </div>
-                    <p className="text-slate-500 font-medium">未找到相关研判笔记</p>
+                    <p className="text-slate-500 font-medium">未找到相关笔记本</p>
                     <Button variant="link" className="text-blue-600" onClick={() => setSearchTerm("")}>
                         重置搜索条件
                     </Button>

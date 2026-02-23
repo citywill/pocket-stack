@@ -6,7 +6,6 @@ interface NoteContentProps {
     item: {
         id: string;
         title: string;
-        type: string;
         content: string;
     };
     isActive: boolean;
@@ -22,12 +21,6 @@ export const NoteContent = ({
         <div className="h-full flex flex-col bg-white">
             <div className="p-6 space-y-6">
                 <div className="space-y-2 relative">
-                    <div className="flex items-center gap-2">
-                        <span className="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold">
-                            {item.type}
-                        </span>
-                        <span className="text-[10px] text-slate-400">研判笔记关联知识</span>
-                    </div>
                     <div className="flex items-start justify-between gap-4">
                         <h3 className="text-xl font-bold text-slate-900 leading-tight flex-1">
                             {item.title}

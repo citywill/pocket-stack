@@ -35,7 +35,7 @@ export const ArtifactBuild: React.FC<ArtifactBuildProps> = ({
         if (generatingBuilderId) return;
 
         if (activeNotes.length === 0) {
-            toast.error("请先在左侧勾选需要参与研判的笔记");
+            toast.error("请先在左侧勾选需要参与分析的笔记");
             return;
         }
 
