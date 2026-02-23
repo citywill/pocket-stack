@@ -381,20 +381,6 @@
         "type": "editor"
       },
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text2363381545",
-        "max": 0,
-        "min": 0,
-        "name": "type",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
         "hidden": false,
         "id": "bool938778354",
         "name": "is_active",
