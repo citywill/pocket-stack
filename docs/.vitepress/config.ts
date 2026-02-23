@@ -50,6 +50,7 @@ export default {
           { text: '演示模块说明', link: '/demos/index' },
           { text: '口袋笔记', link: '/demos/notes' },
           { text: '口袋 AI 助理', link: '/demos/ai' },
+          { text: '口袋 NotebookLM', link: '/demos/notebooklm' },
           { text: '口袋看板', link: '/demos/kanban' },
           { text: '口袋记账', link: '/demos/finance' },
           { text: '口袋OKRs', link: '/demos/okr' },
