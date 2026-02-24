@@ -32,15 +32,11 @@ export function AiChat() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // 自动滚动到底部
     useEffect(() => {
-        if (scrollRef.current) {
-            const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-            if (scrollContainer) {
-                scrollContainer.scrollTop = scrollContainer.scrollHeight;
-            }
-        }
-    }, [messages, isLoading]); // 增加 isLoading 触发滚动，流式回复时也能滚动
+        const viewport = scrollRef.current;
+        if (!viewport) return;
+        viewport.scrollTop = viewport.scrollHeight;
+    }, [messages, isLoading]);
 
     // 监听 isLoading 变化，当加载结束时自动聚焦
     useEffect(() => {
@@ -148,9 +144,10 @@ export function AiChat() {
                     }
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('LLM API Error:', err);
-            toast.error('AI 调用失败: ' + (err.message || '未知错误'));
+            const message = err instanceof Error ? err.message : String(err ?? '未知错误');
+            toast.error('AI 调用失败: ' + message);
         } finally {
             setIsLoading(false);
             // 每次回复完成后，焦点回到输入框
