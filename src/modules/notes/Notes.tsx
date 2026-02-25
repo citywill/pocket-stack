@@ -272,7 +272,7 @@ export default function Notes() {
               <MagnifyingGlassIcon className="size-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="搜索..."
-                className="pl-10 h-9 rounded-xl bg-white border-none shadow-sm focus-visible:ring-1 focus-visible:ring-blue-500/20"
+                className="pl-10 h-9 rounded-xl bg-white border-none focus-visible:ring-1 focus-visible:ring-blue-500/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />

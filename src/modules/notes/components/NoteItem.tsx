@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import {
   Dialog,
@@ -206,6 +208,34 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
     return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(filename);
   };
 
+  const MermaidBlock = ({ code }: { code: string }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+      let canceled = false;
+      (async () => {
+        try {
+          const mod = await import('mermaid');
+          const mermaid = mod.default;
+          mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+          const id = 'mmd-' + Math.random().toString(36).slice(2);
+          const { svg } = await mermaid.render(id, code);
+          if (!canceled && ref.current) {
+            ref.current.innerHTML = svg;
+          }
+        } catch {
+          if (ref.current) {
+            ref.current.textContent = code;
+          }
+        }
+      })();
+      return () => {
+        canceled = true;
+        if (ref.current) ref.current.innerHTML = '';
+      };
+    }, [code]);
+    return <div ref={ref} className="my-3 overflow-x-auto" />;
+  };
+
   return (
     <div className="p-4 transition-colors bg-white border-1 rounded-2xl mb-4">
       <div className="flex-1 min-w-0">
@@ -296,14 +326,53 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
               remarkPlugins={[remarkGfm]}
               components={{
                 p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                pre: ({ children }: any) => {
+                  const child: any = Array.isArray(children) ? children[0] : children;
+                  if (!child || typeof child !== 'object' || !('props' in child)) {
+                    return <pre className="bg-muted p-3 rounded-xl overflow-x-auto mb-2 font-mono text-sm">{children}</pre>;
+                  }
+
+                  const { className, children: codeText } = child.props;
+                  const txt = String(codeText || '').replace(/\n$/, '');
+                  const match = /language-(\w+)/.exec(className || '');
+                  const isMermaid = className && /language-mermaid/.test(className);
+
+                  if (isMermaid) {
+                    return <MermaidBlock code={txt} />;
+                  }
+
+                  if (match) {
+                    return (
+                      <div className="not-prose mb-2 rounded-xl overflow-hidden">
+                        <SyntaxHighlighter
+                          style={oneDark}
+                          language={match[1]}
+                          PreTag="div"
+                          className="!m-0 !rounded-none text-sm"
+                          showLineNumbers
+                        >
+                          {txt}
+                        </SyntaxHighlighter>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="not-prose overflow-x-auto rounded-xl mb-2 bg-muted p-4 font-mono text-sm whitespace-pre-wrap break-words">
+                      {txt}
+                    </div>
+                  );
+                },
+                code: ({ className, children, ...props }: any) => {
+                  // 由于 blocks 已由 pre 处理，这里仅处理 inline code
+                  return <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground" {...props}>{children}</code>;
+                },
                 ul: ({ node, ...props }) => <ul className="list-disc pl-4 mb-2" {...props} />,
                 ol: ({ node, ...props }) => <ol className="list-decimal pl-4 mb-2" {...props} />,
                 li: ({ node, ...props }) => <li className="mb-1" {...props} />,
                 h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-2" {...props} />,
                 h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-2" {...props} />,
                 h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-1" {...props} />,
-                code: ({ node, ...props }) => <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono" {...props} />,
-                pre: ({ node, ...props }) => <pre className="bg-muted p-3 rounded-xl overflow-x-auto mb-2 font-mono text-sm" {...props} />,
                 blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-muted pl-4 italic mb-2" {...props} />,
                 a: ({ node, ...props }) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
                 table: ({ node, ...props }) => (
