@@ -3,9 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { MagnifyingGlassIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { NoteCreate } from './components/NoteCreate';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
@@ -233,6 +232,8 @@ export default function Notes() {
               activeFilter={activeFilter}
               onFilterChange={setActiveFilter}
               heatmapData={heatmapData}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
               className="w-full p-0"
             />
           </div>
@@ -260,6 +261,8 @@ export default function Notes() {
                       setIsSheetOpen(false);
                     }}
                     heatmapData={heatmapData}
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
                     className="w-full"
                   />
                 </SheetContent>
@@ -267,15 +270,6 @@ export default function Notes() {
               <h1 className="text-xl font-bold text-foreground/80">
                 {activeFilter === 'trash' ? '回收站' : '笔记'}
               </h1>
-            </div>
-            <div className="relative w-40 md:w-64">
-              <MagnifyingGlassIcon className="size-[18px] absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="搜索..."
-                className="pl-10 h-9 rounded-xl bg-white border-none focus-visible:ring-1 focus-visible:ring-blue-500/20"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
             </div>
           </div>
 

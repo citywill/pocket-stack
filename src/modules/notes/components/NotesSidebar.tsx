@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { DocumentTextIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, TrashIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NoteHeatmap } from './NoteHeatmap';
@@ -14,9 +14,18 @@ interface NotesSidebarProps {
   onFilterChange: (filter: NoteFilter) => void;
   heatmapData?: { date: string; count: number }[];
   className?: string;
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
 }
 
-export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], className }: NotesSidebarProps) {
+export function NotesSidebar({ 
+  activeFilter, 
+  onFilterChange, 
+  heatmapData = [], 
+  className,
+  searchQuery = '',
+  onSearchChange
+}: NotesSidebarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [tagsCount, setTagsCount] = useState(0);
   const activeTagId = searchParams.get('tag');
@@ -40,30 +49,33 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
   ] as const;
 
   return (
-    <div className={cn("w-64 flex flex-col gap-6 p-4 h-full bg-transparent overflow-y-auto", className)}>
-      <div className="space-y-4">
-        {/* 用户菜单 */}
-        <UserMenu />
+    <div className={cn("w-64 flex flex-col gap-4 p-4 h-full bg-transparent overflow-y-auto", className)}>
+      {/* 用户菜单 */}
+      <UserMenu />
 
-        {/* 统计概览 */}
-        <div className="flex justify-between gap-2">
-          <div className="text-center">
-            <div className="text-3xl text-gray-400">{stats.notes}</div>
-            <div className="text-xs text-gray-400">笔记</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl text-gray-400">{stats.tags}</div>
-            <div className="text-xs text-gray-400">标签</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl text-gray-400">{stats.days}</div>
-            <div className="text-xs text-gray-400">天数</div>
-          </div>
+      {/* 搜索框 */}
+      {onSearchChange && (
+        <div className="relative">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="搜索笔记..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full h-9 pl-10 pr-10 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/20"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => onSearchChange('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
+            >
+              <XMarkIcon className="h-4 w-4" />
+            </button>
+          )}
         </div>
+      )}
 
-        <NoteHeatmap heatmapData={heatmapData} />
-      </div>
-
+      {/* 全部 / 回收站 */}
       <div className="space-y-1">
         {menuItems.map((item) => (
           <Button
@@ -86,6 +98,10 @@ export function NotesSidebar({ activeFilter, onFilterChange, heatmapData = [], c
         ))}
       </div>
 
+      {/* 日历热力图 */}
+      <NoteHeatmap heatmapData={heatmapData} />
+
+      {/* 标签 */}
       <TagList
         onTagsCountChange={setTagsCount}
         refreshTrigger={heatmapData}
