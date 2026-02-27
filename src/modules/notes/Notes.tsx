@@ -4,10 +4,11 @@ import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { NoteCreate } from './components/NoteCreate';
 import { NoteItem } from './components/NoteItem';
 import { NotesSidebar, type NoteFilter } from './components/NotesSidebar';
+import { NoteAIGenerate } from './components/NoteAIGenerate';
 import {
   Sheet,
   SheetContent,
@@ -64,6 +65,7 @@ export default function Notes() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<NoteFilter>('all');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isAIGenerateOpen, setIsAIGenerateOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
@@ -271,6 +273,15 @@ export default function Notes() {
                 {activeFilter === 'trash' ? '回收站' : '笔记'}
               </h1>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAIGenerateOpen(true)}
+              className="gap-2"
+            >
+              <SparklesIcon className="h-4 w-4" />
+              智能生成
+            </Button>
           </div>
 
           {/* 发布框 */}
@@ -339,6 +350,18 @@ export default function Notes() {
           </div>
         </main>
       </div>
+
+      <NoteAIGenerate
+        open={isAIGenerateOpen}
+        onOpenChange={setIsAIGenerateOpen}
+        notes={notes}
+        filter={{
+          activeFilter,
+          activeFrom,
+          activeTo,
+          activeTag,
+        }}
+      />
     </div>
   );
 }
