@@ -75,6 +75,12 @@ export function UserMenu({ }: UserMenuProps) {
               <span className="text-sm font-medium">智能生成记录</span>
             </Link>
           </DropdownMenuItem>
+          <DropdownMenuItem asChild className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer focus:bg-blue-50 focus:text-blue-600">
+            <Link to="/prompts">
+              <SparklesIcon className="size-[18px]" />
+              <span className="text-sm font-medium">预置提示词管理</span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuSeparator className="my-1 bg-slate-100" />
           <DropdownMenuItem
             className="flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer text-red-500 focus:bg-red-50 focus:text-red-600"

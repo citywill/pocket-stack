@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth-provider';
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
@@ -17,6 +17,14 @@ import remarkGfm from 'remark-gfm';
 interface Tag {
   id: string;
   name: string;
+}
+
+interface Prompt {
+  id: string;
+  user: string;
+  title: string;
+  content: string;
+  created: string;
 }
 
 interface Note {
@@ -59,6 +67,30 @@ export function NoteAIGenerate({ open, onOpenChange, notes, filter }: NoteAIGene
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+  const [prompts, setPrompts] = useState<Prompt[]>([]);
+
+  useEffect(() => {
+    if (user?.id && open) {
+      fetchPrompts();
+    }
+  }, [user?.id, open]);
+
+  const fetchPrompts = async () => {
+    try {
+      const result = await pb.collection('note_prompts').getList<Prompt>(1, 20, {
+        filter: `user = "${user?.id}"`,
+        sort: '-created',
+        requestKey: null,
+      });
+      setPrompts(result.items);
+    } catch (error) {
+      console.error('Failed to fetch prompts:', error);
+    }
+  };
+
+  const handleSelectPrompt = (prompt: Prompt) => {
+    setPrompt(prompt.content);
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim() || !user?.id) return;
@@ -192,6 +224,23 @@ ${filter?.activeTag ? `- 标签ID: ${filter.activeTag}` : ''}
                 className="min-h-[120px] resize-none"
                 disabled={loading}
               />
+              {prompts.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">选择预置提示词：</p>
+                  <div className="flex flex-wrap gap-2">
+                    {prompts.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => handleSelectPrompt(p)}
+                        className="px-3 py-1.5 text-sm bg-slate-100 hover:bg-blue-100 hover:text-blue-700 rounded-full transition-colors"
+                        disabled={loading}
+                      >
+                        {p.title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="flex justify-end">
                 <Button
                   onClick={handleGenerate}
