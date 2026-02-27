@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DocumentTextIcon, TrashIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
@@ -27,15 +26,7 @@ export function NotesSidebar({
   onSearchChange
 }: NotesSidebarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tagsCount, setTagsCount] = useState(0);
   const activeTagId = searchParams.get('tag');
-
-  // 计算统计数据
-  const stats = {
-    notes: heatmapData.reduce((acc, curr) => acc + curr.count, 0),
-    tags: tagsCount,
-    days: heatmapData.length
-  };
 
   const handleClearTag = () => {
     const newParams = new URLSearchParams(searchParams);
@@ -102,10 +93,7 @@ export function NotesSidebar({
       <NoteHeatmap heatmapData={heatmapData} />
 
       {/* 标签 */}
-      <TagList
-        onTagsCountChange={setTagsCount}
-        refreshTrigger={heatmapData}
-      />
+      <TagList refreshTrigger={heatmapData} />
     </div>
   );
 }

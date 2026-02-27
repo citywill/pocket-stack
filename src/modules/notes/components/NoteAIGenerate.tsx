@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { XMarkIcon, SparklesIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline';
-import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { SparklesIcon, ClipboardDocumentIcon } from '@heroicons/react/24/outline';
 import {
   Dialog,
   DialogContent,
