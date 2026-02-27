@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
-import { TagIcon, PencilSquareIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon, ArrowLeftIcon, StarIcon } from '@heroicons/react/24/outline';
+import { TagIcon, PencilSquareIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon, ArrowLeftIcon, StarIcon, ArrowsUpDownIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,8 @@ export default function Tags() {
     const [tags, setTags] = useState<Tag[]>([]);
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortField, setSortField] = useState<'name' | 'count' | 'created' | 'isPinned' | null>('isPinned');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
     // Dialog states
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -150,9 +152,31 @@ export default function Tags() {
         }
     };
 
-    const filteredTags = tags.filter(tag =>
-        tag.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredTags = tags
+        .filter(tag => tag.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        .sort((a, b) => {
+            if (!sortField) return 0;
+            let comparison = 0;
+            if (sortField === 'name') {
+                comparison = a.name.localeCompare(b.name);
+            } else if (sortField === 'count') {
+                comparison = (a.count || 0) - (b.count || 0);
+            } else if (sortField === 'created') {
+                comparison = new Date(a.created).getTime() - new Date(b.created).getTime();
+            } else if (sortField === 'isPinned') {
+                comparison = (a.isPinned ? 1 : 0) - (b.isPinned ? 1 : 0);
+            }
+            return sortDirection === 'desc' ? -comparison : comparison;
+        });
+
+    const handleSort = (field: 'name' | 'count' | 'created' | 'isPinned') => {
+        if (sortField === field) {
+            setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('desc');
+        }
+    };
 
     return (
         <div className="container mx-auto py-8 px-4 max-w-5xl">
@@ -196,10 +220,50 @@ export default function Tags() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>名称</TableHead>
-                            <TableHead>置顶</TableHead>
-                            <TableHead>关联笔记数</TableHead>
-                            <TableHead>创建时间</TableHead>
+                            <TableHead>
+                                <button
+                                    onClick={() => handleSort('name')}
+                                    className="flex items-center gap-1 hover:text-foreground"
+                                >
+                                    名称
+                                    {sortField === 'name' ? (
+                                        sortDirection === 'asc' ? <ArrowUpIcon className="h-3 w-3" /> : <ArrowDownIcon className="h-3 w-3" />
+                                    ) : <ArrowsUpDownIcon className="h-3 w-3 opacity-50" />}
+                                </button>
+                            </TableHead>
+                            <TableHead>
+                                <button
+                                    onClick={() => handleSort('isPinned')}
+                                    className="flex items-center gap-1 hover:text-foreground"
+                                >
+                                    置顶
+                                    {sortField === 'isPinned' ? (
+                                        sortDirection === 'asc' ? <ArrowUpIcon className="h-3 w-3" /> : <ArrowDownIcon className="h-3 w-3" />
+                                    ) : <ArrowsUpDownIcon className="h-3 w-3 opacity-50" />}
+                                </button>
+                            </TableHead>
+                            <TableHead>
+                                <button
+                                    onClick={() => handleSort('count')}
+                                    className="flex items-center gap-1 hover:text-foreground"
+                                >
+                                    关联笔记数
+                                    {sortField === 'count' ? (
+                                        sortDirection === 'asc' ? <ArrowUpIcon className="h-3 w-3" /> : <ArrowDownIcon className="h-3 w-3" />
+                                    ) : <ArrowsUpDownIcon className="h-3 w-3 opacity-50" />}
+                                </button>
+                            </TableHead>
+                            <TableHead>
+                                <button
+                                    onClick={() => handleSort('created')}
+                                    className="flex items-center gap-1 hover:text-foreground"
+                                >
+                                    创建时间
+                                    {sortField === 'created' ? (
+                                        sortDirection === 'asc' ? <ArrowUpIcon className="h-3 w-3" /> : <ArrowDownIcon className="h-3 w-3" />
+                                    ) : <ArrowsUpDownIcon className="h-3 w-3 opacity-50" />}
+                                </button>
+                            </TableHead>
                             <TableHead className="text-right">操作</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -220,10 +284,13 @@ export default function Tags() {
                             filteredTags.map((tag) => (
                                 <TableRow key={tag.id}>
                                     <TableCell className="font-medium">
-                                        <div className="flex items-center gap-2">
+                                        <a
+                                            href={`/?tag=${tag.id}`}
+                                            className="flex items-center gap-2 hover:text-blue-600 transition-colors"
+                                        >
                                             <TagIcon className="size-4 text-muted-foreground" />
                                             {tag.name}
-                                        </div>
+                                        </a>
                                     </TableCell>
                                     <TableCell>
                                         <Button

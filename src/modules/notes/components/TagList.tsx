@@ -70,7 +70,7 @@ export function TagList({ onTagsCountChange, refreshTrigger }: TagListProps) {
                         <TagIcon className="size-3.5" />
                         标签
                     </div>
-                    <Link to="/tags" title="管理标签" className="hover:text-foreground transition-colors opacity-0 group-hover:opacity-100">
+                    <Link to="/tags" title="管理标签" className="">
                         <Cog6ToothIcon className="size-3.5" />
                     </Link>
                 </h3>
