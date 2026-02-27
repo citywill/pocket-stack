@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/auth-provider';
+import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -138,6 +139,20 @@ ${filter?.activeTag ? `- 标签ID: ${filter.activeTag}` : ''}
               console.error('Error parsing stream chunk:', e);
             }
           }
+        }
+      }
+
+      if (accumulatedContent) {
+        try {
+          await pb.collection('note_aigens').create({
+            user: user.id,
+            filter: filter || null,
+            prompt: prompt,
+            result: accumulatedContent,
+            notes_count: notes.length
+          });
+        } catch (saveErr) {
+          console.error('Failed to save AI generation record:', saveErr);
         }
       }
     } catch (err: any) {
