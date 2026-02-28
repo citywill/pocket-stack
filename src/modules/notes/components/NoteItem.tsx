@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -75,6 +76,7 @@ interface NoteItemProps {
 
 export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps) {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // 获取当前笔记的标签ID列表
   const currentTagIds = note.expand?.note_tag_links_via_note?.map(link => link.tag) || [];
@@ -390,17 +392,19 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
             {/* 标签显示 */}
             {note.expand?.note_tag_links_via_note && note.expand.note_tag_links_via_note.length > 0 && (
               <div className="flex flex-wrap gap-1.5 mt-3">
-                {note.expand.note_tag_links_via_note.map(link => (
-                  link.expand?.tag && (
+                {note.expand.note_tag_links_via_note.map(link => {
+                  const tag = link.expand?.tag;
+                  return tag && (
                     <Badge
                       key={link.id}
                       variant="secondary"
-                      className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100 font-normal"
+                      className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100 font-normal cursor-pointer"
+                      onClick={() => navigate(`/?tag=${tag.id}`)}
                     >
-                      #{link.expand.tag.name}
+                      #{tag.name}
                     </Badge>
-                  )
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
