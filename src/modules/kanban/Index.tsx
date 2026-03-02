@@ -318,17 +318,13 @@ export default function KanbanBoard() {
                             );
                           }}
                           className={cn(
-                            "flex items-center gap-1 px-2 py-1 rounded-md text-[10px] border transition-all duration-200",
+                            "px-2 py-1 rounded-md text-[10px] border transition-all duration-200",
                             isSelected
                               ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300 ring-1 ring-blue-100 dark:ring-blue-900/30"
                               : "bg-neutral-50 border-neutral-200 text-neutral-600 dark:bg-neutral-900/50 dark:border-neutral-800 dark:text-neutral-400 hover:border-neutral-300"
                           )}
                         >
-                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
                           <span className="font-medium">{tag.name}</span>
-                          {isSelected && (
-                            <CheckIcon className="w-3 h-3 ml-0.5 animate-in zoom-in duration-200" />
-                          )}
                         </button>
                       );
                     })}

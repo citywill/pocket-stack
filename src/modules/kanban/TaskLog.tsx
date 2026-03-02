@@ -241,11 +241,6 @@ export default function TaskLogPage() {
                                                                     key={tag.id}
                                                                     variant="secondary"
                                                                     className="text-[10px] px-1.5 py-0 h-5"
-                                                                    style={{
-                                                                        backgroundColor: `${tag.color}20`,
-                                                                        color: tag.color,
-                                                                        borderColor: `${tag.color}40`,
-                                                                    }}
                                                                 >
                                                                     {tag.name}
                                                                 </Badge>

@@ -122,15 +122,11 @@ export function TaskLogFilter({
                                 key={tag.id}
                                 variant="outline"
                                 onClick={() => setSelectedTag(tag.id)}
-                                className={`cursor-pointer px-3 py-1 text-xs h-7 flex items-center gap-1.5 ${selectedTag === tag.id
+                                className={`cursor-pointer px-3 py-1 text-xs h-7 ${selectedTag === tag.id
                                     ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
                                     : "hover:bg-gray-100 text-gray-600 border-gray-200"
                                     }`}
                             >
-                                <div
-                                    className="w-2 h-2 rounded-full flex-shrink-0"
-                                    style={{ backgroundColor: tag.color || '#94a3b8' }}
-                                />
                                 {tag.name}
                             </Badge>
                         ))}

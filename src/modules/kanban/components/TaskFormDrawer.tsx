@@ -302,23 +302,13 @@ export function TaskFormDrawer({
                       setFormData({ ...formData, tags: newTags });
                     }}
                     className={cn(
-                      "group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs border transition-all duration-200",
+                      "px-3 py-1.5 rounded-xl text-xs border transition-all duration-200",
                       isSelected
                         ? "bg-blue-50 border-blue-200 text-blue-700 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-300 ring-1 ring-blue-100 dark:ring-blue-900/30"
                         : "bg-white border-neutral-200 text-neutral-600 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400 hover:border-neutral-300 dark:hover:border-neutral-700"
                     )}
                   >
-                    <div
-                      className={cn(
-                        "w-2 h-2 rounded-full transition-transform group-hover:scale-110",
-                        isSelected ? "scale-110" : ""
-                      )}
-                      style={{ backgroundColor: tag.color || '#94a3b8' }}
-                    />
                     <span className="font-medium">{tag.name}</span>
-                    {isSelected && (
-                      <CheckIcon className="w-3.5 h-3.5 ml-0.5 animate-in zoom-in duration-200" />
-                    )}
                   </button>
                 );
               })}

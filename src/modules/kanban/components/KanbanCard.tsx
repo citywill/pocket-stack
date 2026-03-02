@@ -58,12 +58,8 @@ export function KanbanCard({ task, onClick }: KanbanCardProps) {
             {tags.map((tag) => (
               <div
                 key={tag.id}
-                className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
+                className="text-[10px] px-1.5 py-0.5 rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
               >
-                <div
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: tag.color || '#94a3b8' }}
-                />
                 {tag.name}
               </div>
             ))}

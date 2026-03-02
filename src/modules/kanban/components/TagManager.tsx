@@ -20,21 +20,14 @@ interface TagManagerProps {
   onRefresh: () => void;
 }
 
-const PRESET_COLORS = [
-  '#ef4444', '#f97316', '#f59e0b', '#10b981', '#3b82f6',
-  '#6366f1', '#8b5cf6', '#d946ef', '#ec4899', '#64748b'
-];
-
 export function TagManager({ open, onOpenChange, tags, onRefresh }: TagManagerProps) {
   const [editingTag, setEditingTag] = useState<KanbanTag | null>(null);
   const [name, setName] = useState('');
-  const [color, setColor] = useState(PRESET_COLORS[0]);
   const [loading, setLoading] = useState(false);
 
   const resetForm = () => {
     setEditingTag(null);
     setName('');
-    setColor(PRESET_COLORS[0]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,7 +41,6 @@ export function TagManager({ open, onOpenChange, tags, onRefresh }: TagManagerPr
 
       const data = {
         name: name.trim(),
-        color,
         user: authData.id,
       };
 
@@ -71,7 +63,6 @@ export function TagManager({ open, onOpenChange, tags, onRefresh }: TagManagerPr
   const handleEdit = (tag: KanbanTag) => {
     setEditingTag(tag);
     setName(tag.name);
-    setColor(tag.color || PRESET_COLORS[0]);
   };
 
   const handleDelete = async (id: string) => {
@@ -121,20 +112,6 @@ export function TagManager({ open, onOpenChange, tags, onRefresh }: TagManagerPr
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>选择颜色</Label>
-            <div className="flex flex-wrap gap-2">
-              {PRESET_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  className={`w-6 h-6 rounded-full border-2 transition-all ${color === c ? 'border-black scale-110' : 'border-transparent'}`}
-                  style={{ backgroundColor: c }}
-                  onClick={() => setColor(c)}
-                />
-              ))}
-            </div>
-          </div>
         </form>
 
         <div className="border-t pt-4">
@@ -146,7 +123,6 @@ export function TagManager({ open, onOpenChange, tags, onRefresh }: TagManagerPr
             {tags.map((tag) => (
               <div key={tag.id} className="flex items-center justify-between p-2 rounded-lg bg-neutral-50 dark:bg-neutral-900">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: tag.color }} />
                   <span className="text-sm">{tag.name}</span>
                 </div>
                 <div className="flex gap-1">

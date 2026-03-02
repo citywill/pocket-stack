@@ -140,20 +140,6 @@
         "type": "text"
       },
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text1716930793",
-        "max": 0,
-        "min": 0,
-        "name": "color",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
-      },
-      {
         "cascadeDelete": false,
         "collectionId": "_pb_users_auth_",
         "hidden": false,
