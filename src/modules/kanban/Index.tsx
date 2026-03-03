@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import type { DropResult } from '@hello-pangea/dnd';
-import { PlusIcon, FunnelIcon, TagIcon, XMarkIcon, MagnifyingGlassIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, FunnelIcon, TagIcon, XMarkIcon, MagnifyingGlassIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,6 +34,7 @@ const COLUMNS: { id: KanbanTaskStatus; title: string }[] = [
 ];
 
 export default function KanbanBoard() {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState<KanbanTask[]>([]);
   const [tags, setTags] = useState<KanbanTag[]>([]);
   const [loading, setLoading] = useState(true);
@@ -232,18 +234,23 @@ export default function KanbanBoard() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      <div className="flex items-center justify-between p-6">
-        <div>
-          <h1 className="text-2xl font-bold">个人看板</h1>
-          <p className="text-sm text-muted-foreground">管理你的日常任务和进度</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setIsTagManagerOpen(true)}>
-            <TagIcon className="mr-2 h-4 w-4" />
-            标签管理
-          </Button>
+      <div className="max-w-6xl mx-auto w-full">
+        <div className="flex items-center justify-between p-6">
+          <div>
+            <h1 className="text-2xl font-bold">个人看板</h1>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => navigate('/kanban/logs')}>
+              <ClockIcon className="mr-2 h-4 w-4" />
+              任务日志
+            </Button>
 
-          <Popover>
+            <Button variant="outline" size="sm" onClick={() => setIsTagManagerOpen(true)}>
+              <TagIcon className="mr-2 h-4 w-4" />
+              标签管理
+            </Button>
+
+            <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm" className="relative">
                 <FunnelIcon className="mr-2 h-4 w-4" />
@@ -356,10 +363,10 @@ export default function KanbanBoard() {
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex-1 overflow-x-auto p-6 pt-0">
-          <div className="flex gap-6 h-full min-w-max">
+        <div className="flex-1 overflow-x-auto p-6 pt-0 w-full">
+          <div className="flex gap-6 h-full min-w-max w-full">
             {COLUMNS.map((column) => (
-              <div key={column.id} className="flex flex-col w-80 bg-neutral-100/50 dark:bg-neutral-900/50 rounded-2xl p-4">
+              <div key={column.id} className="flex flex-col flex-1 min-w-0 max-w-[400px] bg-neutral-100/50 dark:bg-neutral-900/50 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-4 px-2">
                   <h2 className="font-semibold text-sm flex items-center gap-2">
                     {column.title}
@@ -413,6 +420,7 @@ export default function KanbanBoard() {
           </div>
         </div>
       </DragDropContext>
+      </div>
 
       <TaskFormDrawer
         open={isDrawerOpen}

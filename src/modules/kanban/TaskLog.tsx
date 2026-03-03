@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +18,7 @@ import { AiDialog } from './components/AiDialog';
 const ITEMS_PER_PAGE = 20;
 
 export default function TaskLogPage() {
+    const navigate = useNavigate();
     const [logs, setLogs] = useState<KanbanLog[]>([]);
     const [tags, setTags] = useState<KanbanTag[]>([]);
     const [loading, setLoading] = useState(false);
@@ -95,7 +97,7 @@ export default function TaskLogPage() {
 
             // 关键词过滤 (搜索日志内容或关联的任务标题)
             if (keyword.trim()) {
-                filters.push(`(content ~ "${keyword}" || task.title ~ "${keyword}")`);
+                filters.push(`(content ~ "${keyword}" || remark ~ "${keyword}" || task.title ~ "${keyword}")`);
             }
 
             // 标签过滤 (关联任务的标签)
@@ -153,12 +155,16 @@ export default function TaskLogPage() {
     };
 
     return (
-        <div className="flex flex-col bg-gray-50/50">
+        <div className="flex flex-col bg-gray-50/50 max-w-6xl mx-auto w-full">
             {/* 页面头部 */}
             <div className="p-6 pb-0 flex justify-between items-start">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">任务日志</h1>
-                    <p className="text-sm text-gray-500">查看和筛选任务的操作记录、评论和变更历史</p>
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={() => navigate('/kanban')} className="h-9 w-9">
+                        <ChevronLeftIcon className="h-5 w-5" />
+                    </Button>
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">任务日志</h1>
+                    </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={handleReset} className="text-gray-600">
@@ -253,9 +259,14 @@ export default function TaskLogPage() {
                                             )}
                                         </div>
 
-                                        <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-md whitespace-pre-wrap border border-gray-100">
+                                        <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded-md whitespace-pre-wrap border border-gray-100">
                                             {log.content}
                                         </div>
+                                        {log.remark && (
+                                            <div className="text-sm mt-2">
+                                                {log.remark}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

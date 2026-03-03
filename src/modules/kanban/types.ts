@@ -16,7 +16,8 @@ export interface KanbanTask {
     description?: string;
     status: KanbanTaskStatus;
     priority: KanbanTaskPriority;
-    tags: string[]; // 关联的标签 ID
+    tags: string[];
+    deadline?: string;
     is_archived: boolean;
     expand?: {
         tags?: KanbanTag[];

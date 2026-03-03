@@ -2,9 +2,8 @@ import type { KanbanTask } from '../types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { CalendarIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon, ArchiveBoxIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 
 interface KanbanCardProps {
   task: KanbanTask;
@@ -25,13 +24,14 @@ const PRIORITY_LABELS = {
 
 export function KanbanCard({ task, onClick }: KanbanCardProps) {
   const tags = task.expand?.tags || [];
+  const isOverdue = task.deadline && new Date(task.deadline) < new Date() && task.status !== 'done';
 
   return (
     <Card
       className="cursor-pointer hover:border-blue-500/50 transition-colors shadow-sm group p-0"
       onClick={onClick}
     >
-      <CardContent className="p-4 space-y-3">
+      <CardContent className="p-4 pb-3 space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-medium text-sm leading-tight group-hover:text-blue-600 transition-colors">
             {task.title}
@@ -48,7 +48,7 @@ export function KanbanCard({ task, onClick }: KanbanCardProps) {
         </div>
 
         {task.description && (
-          <p className="text-xs text-muted-foreground line-clamp-2">
+          <p className="text-xs text-muted-foreground line-clamp-1">
             {task.description.replace(/<[^>]*>/g, '')}
           </p>
         )}
@@ -69,12 +69,14 @@ export function KanbanCard({ task, onClick }: KanbanCardProps) {
         <div className="flex items-center justify-between pt-1 border-t border-neutral-100 dark:border-neutral-800 mt-2">
           <div className="flex items-center text-[10px] text-muted-foreground">
             <CalendarIcon className="mr-1 h-3 w-3" />
-            {format(new Date(task.created), 'MM-dd HH:mm', { locale: zhCN })}
+            {format(new Date(task.created), 'MM-dd HH:mm')}
           </div>
-
-          <div className="flex -space-x-1">
-            {/* 这里可以放协作者头像，目前只有自己 */}
-          </div>
+          {task.deadline && (
+            <div className={cn("flex items-center text-[10px]", isOverdue ? "text-red-500 font-medium" : "text-muted-foreground")}>
+              <ClockIcon className="mr-1 h-3 w-3" />
+              {format(new Date(task.deadline), 'MM-dd')}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

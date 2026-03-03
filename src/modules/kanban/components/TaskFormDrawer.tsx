@@ -22,7 +22,7 @@ import { pb } from '@/lib/pocketbase';
 import { cn } from '@/lib/utils';
 import type { KanbanTask, KanbanTaskStatus, KanbanTaskPriority, KanbanTag, KanbanLog } from '../types';
 import { toast } from 'sonner';
-import { TrashIcon, TagIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, TagIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 
@@ -73,6 +73,7 @@ export function TaskFormDrawer({
       setFormData({
         ...task,
         tags: task.tags || [],
+        deadline: task.deadline ? task.deadline.split(' ')[0] : undefined,
       });
       fetchLogs(task.id);
     } else {
@@ -85,7 +86,7 @@ export function TaskFormDrawer({
       });
       setLogs([]);
     }
-    setRemark(''); // 重置备注
+    setRemark('');
   }, [task, open, defaultStatus]);
 
   const fetchLogs = async (taskId: string) => {
@@ -270,6 +271,16 @@ export function TaskFormDrawer({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="deadline">截止日期</Label>
+            <Input
+              id="deadline"
+              type="date"
+              value={formData.deadline || ''}
+              onChange={(e) => setFormData({ ...formData, deadline: e.target.value || undefined })}
+            />
           </div>
 
           <div className="space-y-2">
