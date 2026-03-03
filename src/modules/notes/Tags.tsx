@@ -192,7 +192,6 @@ export default function Tags() {
                     </Button>
                     <div>
                         <h1 className="text-2xl font-bold tracking-tight">标签管理</h1>
-                        <p className="text-muted-foreground mt-1">管理您的笔记标签</p>
                     </div>
                 </div>
                 <Button onClick={() => {

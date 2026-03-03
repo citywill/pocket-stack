@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { pb } from '@/lib/pocketbase';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from '@/components/ui/button';
@@ -76,9 +75,7 @@ interface NoteItemProps {
 
 export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps) {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
-  // 获取当前笔记的标签ID列表
   const currentTagIds = note.expand?.note_tag_links_via_note?.map(link => link.tag) || [];
 
   const [isEditing, setIsEditing] = useState(false);
@@ -399,9 +396,8 @@ export function NoteItem({ note, onDelete, onUpdate, onRestore }: NoteItemProps)
                       key={link.id}
                       variant="secondary"
                       className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border-blue-100 hover:bg-blue-100 font-normal cursor-pointer"
-                      onClick={() => navigate(`/?tag=${tag.id}`)}
                     >
-                      #{tag.name}
+                      <a href={`/notes/?tag=${tag.id}`}>{tag.name}</a>
                     </Badge>
                   );
                 })}
