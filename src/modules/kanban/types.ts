@@ -7,6 +7,13 @@ export interface KanbanTag {
     updated: string;
 }
 
+export interface KanbanTodo {
+    id: string;
+    content: string;
+    completed: boolean;
+    createdAt: string;
+}
+
 export type KanbanTaskStatus = 'todo' | 'in_progress' | 'done';
 export type KanbanTaskPriority = 'low' | 'medium' | 'high';
 
@@ -19,6 +26,7 @@ export interface KanbanTask {
     tags: string[];
     deadline?: string;
     is_archived: boolean;
+    todos: KanbanTodo[];
     expand?: {
         tags?: KanbanTag[];
     };

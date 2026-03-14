@@ -14,9 +14,10 @@ import {
   TrashIcon,
   PencilIcon,
 } from '@heroicons/react/24/outline';
-import type { KanbanTask, KanbanTag, KanbanLog } from './types';
+import type { KanbanTask, KanbanTag, KanbanLog, KanbanTodo } from './types';
 import { TaskFormDrawer } from './components/TaskFormDrawer';
 import { TagManager } from './components/TagManager';
+import { TodoList } from './components/TodoList';
 
 const STATUS_MAP: Record<string, string> = {
   todo: '待处理',
@@ -47,6 +48,7 @@ export default function TaskDetail() {
   const [saving, setSaving] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
+  const [todos, setTodos] = useState<KanbanTodo[]>([]);
 
   const fetchTask = useCallback(async () => {
     if (!id) return;
@@ -55,6 +57,7 @@ export default function TaskDetail() {
         expand: 'tags',
       });
       setTask(taskRecord);
+      setTodos(taskRecord.todos || []);
     } catch (error: any) {
       if (!error.isAbort) {
         console.error('Failed to fetch task:', error);
@@ -219,60 +222,64 @@ export default function TaskDetail() {
 
         <div className="flex-1 overflow-auto p-6 pt-1">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="h-fit">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{task.title}</CardTitle>
-                  <Badge variant="outline" className="text-sm">
-                    {STATUS_MAP[task.status]}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-
-                <div>
-                  <div className="text-sm text-gray-900 whitespace-pre-wrap">
-                    {task.description || '暂无描述'}
+            <div className="space-y-6">
+              <Card className="h-fit">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{task.title}</CardTitle>
+                    <Badge variant="outline" className="text-sm">
+                      {STATUS_MAP[task.status]}
+                    </Badge>
                   </div>
-                </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
 
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">标签</label>
-                    <div className="flex flex-wrap gap-1.5">
-                      {taskTags.length > 0 ? (
-                        taskTags.map((tag: KanbanTag) => (
-                          <Badge key={tag.id} className="text-sm bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
-                            {tag.name}
-                          </Badge>
-                        ))
-                      ) : (
-                        <span className="text-sm text-gray-400 italic">无标签</span>
-                      )}
+                  <div>
+                    <div className="text-sm text-gray-900 whitespace-pre-wrap">
+                      {task.description || '暂无描述'}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">优先级</label>
-                    <Badge className={`text-sm ${PRIORITY_COLOR[task.priority]}`}>
-                      {PRIORITY_MAP[task.priority]}
-                    </Badge>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">标签</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {taskTags.length > 0 ? (
+                          taskTags.map((tag: KanbanTag) => (
+                            <Badge key={tag.id} className="text-sm bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                              {tag.name}
+                            </Badge>
+                          ))
+                        ) : (
+                          <span className="text-sm text-gray-400 italic">无标签</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">优先级</label>
+                      <Badge className={`text-sm ${PRIORITY_COLOR[task.priority]}`}>
+                        {PRIORITY_MAP[task.priority]}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">截止日期</label>
+                      <span className="text-sm text-gray-900">
+                        {task.deadline ? format(new Date(task.deadline), 'yyyy-MM-dd', { locale: zhCN }) : '未设置'}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide w-16">截止日期</label>
-                    <span className="text-sm text-gray-900">
-                      {task.deadline ? format(new Date(task.deadline), 'yyyy-MM-dd', { locale: zhCN }) : '未设置'}
-                    </span>
+                  <div className="pt-4 border-t text-xs text-gray-400 space-y-1">
+                    <div>创建时间：{format(new Date(task.created), 'yyyy-MM-dd HH:mm:ss', { locale: zhCN })}</div>
+                    <div>更新时间：{format(new Date(task.updated), 'yyyy-MM-dd HH:mm:ss', { locale: zhCN })}</div>
                   </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                <div className="pt-4 border-t text-xs text-gray-400 space-y-1">
-                  <div>创建时间：{format(new Date(task.created), 'yyyy-MM-dd HH:mm:ss', { locale: zhCN })}</div>
-                  <div>更新时间：{format(new Date(task.updated), 'yyyy-MM-dd HH:mm:ss', { locale: zhCN })}</div>
-                </div>
-              </CardContent>
-            </Card>
+              <TodoList taskId={task.id} todos={todos} onTodosChange={setTodos} />
+            </div>
 
             <div className="space-y-6">
               <Card>
