@@ -205,8 +205,7 @@ export default function KanbanBoard() {
   };
 
   const handleEditTask = (task: KanbanTask) => {
-    setSelectedTask(task);
-    setIsDrawerOpen(true);
+    navigate(`/kanban/task/${task.id}`);
   };
 
   const handleSaveTask = async () => {
