@@ -23,11 +23,19 @@ export function TodoList({ taskId, todos, onTodosChange }: TodoListProps) {
   const [newTodo, setNewTodo] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const saveTodos = useCallback(async (newTodos: KanbanTodo[]) => {
+  const saveTodos = useCallback(async (newTodos: KanbanTodo[], logContent?: string) => {
     try {
       await pb.collection('kanban_tasks').update(taskId, {
         todos: newTodos,
       });
+      if (logContent) {
+        const authData = pb.authStore.model;
+        await pb.collection('kanban_logs').create({
+          task: taskId,
+          content: logContent,
+          user: authData?.id,
+        });
+      }
       onTodosChange(newTodos);
     } catch (error) {
       console.error('Failed to save todos:', error);
@@ -46,7 +54,7 @@ export function TodoList({ taskId, todos, onTodosChange }: TodoListProps) {
         createdAt: new Date().toISOString(),
       };
       const newTodos = [...todos, todo];
-      await saveTodos(newTodos);
+      await saveTodos(newTodos, `添加了待办事项：${todo.content}`);
       setNewTodo('');
       toast.success('待办事项已添加');
     } catch (error) {
@@ -58,16 +66,23 @@ export function TodoList({ taskId, todos, onTodosChange }: TodoListProps) {
   };
 
   const handleToggleComplete = async (id: string) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    const todo = todos.find((t) => t.id === id);
+    if (!todo) return;
+    const newTodos = todos.map((t) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
     );
-    await saveTodos(newTodos);
+    const logContent = todo.completed 
+      ? `取消完成待办事项：${todo.content}`
+      : `完成待办事项：${todo.content}`;
+    await saveTodos(newTodos, logContent);
     toast.success(newTodos.find((t) => t.id === id)?.completed ? '任务已完成' : '任务已取消完成');
   };
 
   const handleDeleteTodo = async (id: string) => {
+    const todoToDelete = todos.find((todo) => todo.id === id);
+    const logContent = todoToDelete ? `删除了待办事项：${todoToDelete.content}` : '删除了待办事项';
     const newTodos = todos.filter((todo) => todo.id !== id);
-    await saveTodos(newTodos);
+    await saveTodos(newTodos, logContent);
     toast.success('待办事项已删除');
   };
 
