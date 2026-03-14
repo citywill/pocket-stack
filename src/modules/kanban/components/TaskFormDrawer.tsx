@@ -33,7 +33,7 @@ interface TaskFormDrawerProps {
   tags: KanbanTag[];
   defaultStatus: KanbanTaskStatus;
   onSave: () => void;
-  onManageTags?: () => void;
+  onManageTags: () => void;
 }
 
 const STATUS_OPTIONS: { value: KanbanTaskStatus; label: string }[] = [
@@ -286,18 +286,16 @@ export function TaskFormDrawer({
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>标签</Label>
-              {onManageTags && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 text-xs text-blue-600 hover:text-blue-700 p-0 px-2"
-                  onClick={onManageTags}
-                >
-                  <TagIcon className="h-3 w-3 mr-1" />
-                  管理标签
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs text-blue-600 hover:text-blue-700 p-0 px-2"
+                onClick={onManageTags}
+              >
+                <TagIcon className="h-3 w-3 mr-1" />
+                管理标签
+              </Button>
             </div>
             <div className="flex flex-wrap gap-2 pt-1">
               {tags.map((tag) => {

@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import type { KanbanTask, KanbanTag, KanbanLog } from './types';
 import { TaskFormDrawer } from './components/TaskFormDrawer';
+import { TagManager } from './components/TagManager';
 
 const STATUS_MAP: Record<string, string> = {
   todo: '待处理',
@@ -45,6 +46,7 @@ export default function TaskDetail() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
 
   const fetchTask = useCallback(async () => {
     if (!id) return;
@@ -240,7 +242,7 @@ export default function TaskDetail() {
                     <div className="flex flex-wrap gap-1.5">
                       {taskTags.length > 0 ? (
                         taskTags.map((tag: KanbanTag) => (
-                          <Badge className="text-sm bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                          <Badge key={tag.id} className="text-sm bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300">
                             {tag.name}
                           </Badge>
                         ))
@@ -336,6 +338,14 @@ export default function TaskDetail() {
         tags={tags}
         defaultStatus={task?.status || 'todo'}
         onSave={handleSaveTask}
+        onManageTags={() => setIsTagManagerOpen(true)}
+      />
+
+      <TagManager
+        open={isTagManagerOpen}
+        onOpenChange={setIsTagManagerOpen}
+        tags={tags}
+        onRefresh={fetchTags}
       />
     </div>
   );
