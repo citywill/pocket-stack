@@ -278,7 +278,13 @@ export default function TaskDetail() {
                 </CardContent>
               </Card>
 
-              <TodoList taskId={task.id} todos={todos} onTodosChange={setTodos} />
+              <TodoList 
+                taskId={task.id} 
+                taskTitle={task.title} 
+                taskDescription={task.description || ''}
+                todos={todos} 
+                onTodosChange={setTodos} 
+              />
             </div>
 
             <div className="space-y-6">
