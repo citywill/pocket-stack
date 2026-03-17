@@ -1,0 +1,11 @@
+/**
+ * Custom styles for the theme.
+ * Used to override default styles or add new ones.
+ */
+.medium-zoom-overlay {
+  z-index: 2000; /* Ensure it's above the navbar */
+}
+
+.medium-zoom-image--opened {
+  z-index: 2001;
+}

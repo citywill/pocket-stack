@@ -6,7 +6,7 @@
 
 简体中文 | [English](README_en.md)
 
-![Pocket Stack 示例页面](docs/assets/screenshot-admin.png)
+![Pocket Stack 示例页面](docs/assets/example-dashboard.png)
 
 ## 📄 更多信息
 
@@ -23,8 +23,9 @@
 
 | IDE         | 大模型          | 打分 | 说明                                                        |
 | ----------- | --------------- | ---- | ----------------------------------------------------------- |
+| Trae 国内版 | MiniMax-M2.5 | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
 | Trae 国内版 | Doubao-Seed-1.8 | 90分 | 可以实现vibe开发。一半功能一次成型，一半需要补充debug提示词 |
-| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。20%的情况需补充debug提示词                |
+| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
 
 ## 🌟 核心特性
 
@@ -54,22 +55,30 @@
 ## 📁 目录结构
 
 ```text
-├── pb_schemas/          # PocketBase 集合配置 (JSON)
+├── docs/                # 文档目录
+├── migrations/          # 数据库迁移文件
+├── public/              # 静态资源
 └── src/
     ├── components/
-    │   ├── layout/          # 布局组件 (Sidebar, Header, MainLayout)
-    │   ├── ui/              # shadcn/ui 组件库
-    │   ├── auth-provider.tsx # 权限上下文逻辑
-    │   └── protected-route.tsx # 路由守卫组件
-    ├── pages/               # 业务页面
-    │   ├── {module}/        # 业务模块 (如 task, crm)
-    │   │   ├── components/  # 模块私有组件
-    │   │   ├── routes.tsx   # 模块路由配置
-    │   │   └── menu.ts      # 模块菜单配置
-    │   └── login/           # 基础页面
-    ├── lib/                 # 工具类 (pocketbase SDK, tailwind utils)
-    ├── App.tsx              # 路由与 Provider 根配置
-    └── main.tsx             # 应用入口
+    │   ├── layout/      # 布局组件 (Sidebar, Header, MainLayout)
+    │   ├── ui/          # shadcn/ui 组件库
+    │   ├── auth-provider.tsx # 认证上下文
+    │   ├── menu.ts      # 全局菜单配置
+    │   ├── protected-route.tsx # 路由守卫
+    │   └── theme-provider.tsx # 主题上下文
+    ├── lib/             # 工具库 (pocketbase, utils)
+    ├── modules/         # 业务模块
+    │   └── examples/    # 示例模块 (包含 CURD, AI Chat, Blog 等示例)
+    │       ├── components/ # 模块组件
+    │       ├── menu.ts  # 模块菜单
+    │       └── routes.tsx # 模块路由
+    ├── pages/           # 系统页面
+    │   ├── admin/       # 管理后台 (Dashboard, Settings, Users)
+    │   ├── Login.tsx    # 登录页
+    │   ├── Register.tsx # 注册页
+    │   └── Profile.tsx  # 个人资料页
+    ├── App.tsx          # 根组件
+    └── main.tsx         # 入口文件
 ```
 
 ## 🚀 快速开始
@@ -80,6 +89,7 @@
 3. 访问 `http://127.0.0.1:8090/_/` 创建管理员账号并配置集合。
 
 ### 2. 运行前端
+
 ```bash
 # 编辑 .env 文件，配置 PocketBase 后端地址
 cp .env.example .env
