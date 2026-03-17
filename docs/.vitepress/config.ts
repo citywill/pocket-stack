@@ -16,6 +16,10 @@ export default {
     search: {
       provider: 'local'
     },
+    outline: {
+      level: [2, 4],
+      label: '目录'
+    },
     sidebar: [
       {
         text: '概要',
