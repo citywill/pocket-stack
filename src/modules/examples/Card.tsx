@@ -212,19 +212,19 @@ export function ExampleCard() {
     switch (status) {
       case 'published':
         return (
-          <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-100 flex items-center gap-1">
+          <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50 flex items-center gap-1">
             <CheckCircleIcon className="size-3" /> 已发布
           </Badge>
         );
       case 'draft':
         return (
-          <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-100 flex items-center gap-1">
+          <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50 flex items-center gap-1">
             <PencilSquareIcon className="size-3" /> 草稿
           </Badge>
         );
       case 'archived':
         return (
-          <Badge variant="outline" className="bg-neutral-50 text-neutral-500 border-neutral-100 flex items-center gap-1">
+          <Badge variant="outline" className="bg-neutral-50 text-neutral-500 border-neutral-100 dark:bg-neutral-800 dark:text-neutral-400 dark:border-neutral-700/50 flex items-center gap-1">
             <InformationCircleIcon className="size-3" /> 已归档
           </Badge>
         );
@@ -269,7 +269,7 @@ export function ExampleCard() {
                   'rounded-full px-5 h-9 transition-all',
                   selectedCategory === cat
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'text-neutral-600 hover:bg-white dark:hover:bg-neutral-800'
+                    : 'text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800'
                 )}
                 onClick={() => setSelectedCategory(cat)}
               >
@@ -317,14 +317,14 @@ export function ExampleCard() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <CardTitle className="text-base font-semibold line-clamp-2 leading-tight min-h-[2.5rem] group-hover:text-blue-600 transition-colors">
+                  <CardTitle className="text-base font-semibold line-clamp-2 leading-tight min-h-[2.5rem] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {doc.name}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="px-5 py-2">
                   <div className="flex items-center gap-2 mb-3">
                     {getStatusBadge(doc.status)}
-                    <Badge variant="secondary" className="bg-neutral-100 text-neutral-600 border-none font-normal">
+                    <Badge variant="secondary" className="bg-neutral-100 text-neutral-600 border-none font-normal dark:bg-neutral-800 dark:text-neutral-300">
                       {doc.category}
                     </Badge>
                   </div>
@@ -340,8 +340,8 @@ export function ExampleCard() {
                   </div>
                 </CardContent>
                 <CardFooter className="px-5 py-4 bg-neutral-50/50 dark:bg-neutral-800/30 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center mt-2">
-                  <span className="text-xs text-neutral-400">{doc.updatedAt}</span>
-                  <Button variant="link" className="h-auto p-0 text-blue-600 hover:text-blue-700 font-semibold text-sm">
+                  <span className="text-xs text-neutral-400 dark:text-neutral-500">{doc.updatedAt}</span>
+                  <Button variant="link" className="h-auto p-0 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold text-sm">
                     预览文档
                   </Button>
                 </CardFooter>
@@ -399,13 +399,13 @@ export function ExampleCard() {
       ) : (
         <div className="flex flex-col items-center justify-center py-24 bg-neutral-50 dark:bg-neutral-900/50 rounded-3xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
           <div className="p-6 bg-white dark:bg-neutral-900 rounded-full shadow-sm mb-4">
-            <MagnifyingGlassIcon className="h-10 w-10 text-neutral-300" />
+            <MagnifyingGlassIcon className="h-10 w-10 text-neutral-300 dark:text-neutral-600" />
           </div>
           <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">未找到相关文档</h3>
           <p className="text-neutral-500 mt-1">尝试调整搜索关键词或筛选条件</p>
           <Button
             variant="outline"
-            className="mt-6 rounded-xl"
+            className="mt-6 rounded-xl dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
             onClick={() => {
               setSearchQuery('');
               setSelectedCategory('全部');
