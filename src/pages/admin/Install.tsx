@@ -123,8 +123,8 @@ export function Install() {
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)] p-6">
       <Card className="w-full max-w-2xl rounded-2xl border-none shadow-lg bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-4">
-            <DatabaseIcon className="w-8 h-8 text-blue-600" />
+          <div className="mx-auto w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-2xl flex items-center justify-center mb-4">
+            <DatabaseIcon className="w-8 h-8 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold">系统安装与初始化</CardTitle>
           <CardDescription>
@@ -144,10 +144,10 @@ export function Install() {
             </div>
           )}
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-100 dark:border-blue-800">
-            <div className="flex gap-3">
-              <ExclamationTriangleIcon className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-              <div className="text-sm text-blue-800 dark:text-blue-300">
+          <div className="bg-primary/5 dark:bg-primary/10 p-4 rounded-xl border border-primary/20 dark:border-primary/30">
+              <div className="flex gap-3">
+                <ExclamationTriangleIcon className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <div className="text-sm text-primary/80 dark:text-primary/70">
                 <p className="font-semibold mb-1">注意事项</p>
                 <ul className="list-disc list-inside space-y-1 opacity-80">
                   <li>导入操作可能会覆盖现有的集合设置。</li>
@@ -167,7 +167,7 @@ export function Install() {
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center",
                       step.status === 'success' ? "bg-green-100 text-green-600" :
-                        step.status === 'loading' ? "bg-blue-100 text-blue-600 animate-pulse" :
+                        step.status === 'loading' ? "bg-primary/10 text-primary animate-pulse" :
                           step.status === 'error' ? "bg-red-100 text-red-600" :
                             "bg-neutral-100 text-neutral-400"
                     )}>
@@ -185,7 +185,7 @@ export function Install() {
                     </div>
                   </div>
                   {step.status === 'loading' && (
-                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   )}
                 </div>
               ))}
@@ -194,7 +194,7 @@ export function Install() {
         </CardContent>
         <CardFooter className="flex flex-col gap-3">
           <Button
-            className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 h-12 text-base font-semibold"
+            className="w-full rounded-2xl bg-primary hover:bg-primary/90 h-12 text-base font-semibold text-primary-foreground"
             onClick={handleInstall}
             disabled={checking || installing || (isInstalled && !installing && steps.every(s => s.status === 'success'))}
           >

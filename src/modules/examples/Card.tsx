@@ -241,7 +241,7 @@ export function ExampleCard() {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 rounded-2xl dark:shadow-none transition-all hover:scale-[1.02] active:scale-[0.98]">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2 rounded-2xl dark:shadow-none transition-all hover:scale-[1.02] active:scale-[0.98]">
             <PlusIcon className="size-5" /> 上传文档
           </Button>
         </div>
@@ -254,7 +254,7 @@ export function ExampleCard() {
             <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 h-4 w-4" />
             <Input
               placeholder="搜索文档名称..."
-              className="pl-11 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 rounded-2xl focus:ring-2 focus:ring-blue-500/20 transition-all"
+              className="pl-11 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -268,7 +268,7 @@ export function ExampleCard() {
                 className={cn(
                   'rounded-full px-5 h-9 transition-all',
                   selectedCategory === cat
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    ? 'bg-primary text-primary-foreground hover:bg-primary/90'
                     : 'text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800'
                 )}
                 onClick={() => setSelectedCategory(cat)}
@@ -287,7 +287,7 @@ export function ExampleCard() {
             {paginatedDocs.map((doc) => (
               <Card
                 key={doc.id}
-                className="group border-neutral-200/60 dark:border-neutral-800 hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900 py-0 gap-0"
+                className="group border-neutral-200/60 dark:border-neutral-800 hover:border-primary/30 dark:hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900 py-0 gap-0"
               >
                 <CardHeader className="p-5 pb-2">
                   <div className="flex items-start justify-between">
@@ -307,7 +307,7 @@ export function ExampleCard() {
                         <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer">
                           <ShareIcon className="size-4" /> 分享
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer text-blue-600">
+                        <DropdownMenuItem className="flex items-center gap-2 rounded-lg cursor-pointer text-primary">
                           <ArrowDownTrayIcon className="size-4" /> 下载
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -317,7 +317,7 @@ export function ExampleCard() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  <CardTitle className="text-base font-semibold line-clamp-2 leading-tight min-h-[2.5rem] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  <CardTitle className="text-base font-semibold line-clamp-2 leading-tight min-h-[2.5rem] group-hover:text-primary dark:group-hover:text-primary transition-colors">
                     {doc.name}
                   </CardTitle>
                 </CardHeader>
@@ -341,7 +341,7 @@ export function ExampleCard() {
                 </CardContent>
                 <CardFooter className="px-5 py-4 bg-neutral-50/50 dark:bg-neutral-800/30 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center mt-2">
                   <span className="text-xs text-neutral-400 dark:text-neutral-500">{doc.updatedAt}</span>
-                  <Button variant="link" className="h-auto p-0 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold text-sm">
+                  <Button variant="link" className="h-auto p-0 text-primary hover:text-primary/70 dark:hover:text-primary font-semibold text-sm">
                     预览文档
                   </Button>
                 </CardFooter>
@@ -374,7 +374,7 @@ export function ExampleCard() {
                       size="icon"
                       className={cn(
                         "h-9 w-9 rounded-xl transition-all",
-                        currentPage === page ? "bg-blue-600 text-white shadow-md shadow-blue-100 dark:shadow-none" : "text-neutral-600"
+                        currentPage === page ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 dark:shadow-none" : "text-neutral-600"
                       )}
                       onClick={() => setCurrentPage(page)}
                     >

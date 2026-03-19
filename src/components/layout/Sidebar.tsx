@@ -133,7 +133,7 @@ function NavItem({
         className={cn(
           'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
           isActive
-            ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
+            ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
             : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900',
           isCollapsed && "justify-center px-0"
         )}
@@ -142,7 +142,7 @@ function NavItem({
           className={cn(
             'h-5 w-5 shrink-0',
             isActive
-              ? 'text-blue-600 dark:text-blue-400'
+              ? 'text-primary dark:text-primary'
               : 'text-neutral-500 dark:text-neutral-400'
           )}
         />
@@ -160,7 +160,7 @@ function NavItem({
             className={cn(
               'flex w-full items-center justify-center rounded-lg py-2.5 text-sm font-medium transition-all duration-200 outline-none',
               isChildActive
-                ? 'text-blue-600 dark:text-blue-400'
+                ? 'text-primary dark:text-primary'
                 : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
             )}
           >
@@ -168,7 +168,7 @@ function NavItem({
               className={cn(
                 'h-5 w-5 shrink-0',
                 isChildActive
-                  ? 'text-blue-600 dark:text-blue-400'
+                  ? 'text-primary dark:text-primary'
                   : 'text-neutral-500 dark:text-neutral-400'
               )}
             />
@@ -187,7 +187,7 @@ function NavItem({
                   {...childLinkProps}
                   className={cn(
                     "w-full",
-                    location.pathname === child.path && "text-blue-600 font-medium"
+                    location.pathname === child.path && "text-primary font-medium"
                   )}
                 >
                   {child.title}
@@ -207,7 +207,7 @@ function NavItem({
         className={cn(
           'flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 outline-none',
           isChildActive
-            ? 'text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
+            ? 'text-primary dark:bg-primary/10 dark:text-primary'
             : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
         )}
       >
@@ -216,7 +216,7 @@ function NavItem({
             className={cn(
               'h-5 w-5 shrink-0',
               isChildActive
-                ? 'text-blue-600 dark:text-blue-400'
+                ? 'text-primary dark:text-primary'
                 : 'text-neutral-500 dark:text-neutral-400'
             )}
           />
@@ -244,7 +244,7 @@ function NavItem({
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
                   isChildActive
-                    ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400'
+                    ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary'
                     : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-900'
                 )}
               >
