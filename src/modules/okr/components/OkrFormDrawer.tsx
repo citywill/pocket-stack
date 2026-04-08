@@ -37,6 +37,7 @@ export function OkrFormDrawer({ open, onOpenChange, okr, onSuccess }: OkrFormDra
     defaultValues: {
       name: '',
       description: '',
+      period: '',
       start_date: '',
       end_date: '',
       status: '未开始' as OkrStatus,
@@ -50,6 +51,7 @@ export function OkrFormDrawer({ open, onOpenChange, okr, onSuccess }: OkrFormDra
       reset({
         name: okr.name,
         description: okr.description,
+        period: okr.period,
         start_date: okr.start_date ? new Date(okr.start_date).toISOString().split('T')[0] : '',
         end_date: okr.end_date ? new Date(okr.end_date).toISOString().split('T')[0] : '',
         status: okr.status,
@@ -58,6 +60,7 @@ export function OkrFormDrawer({ open, onOpenChange, okr, onSuccess }: OkrFormDra
       reset({
         name: '',
         description: '',
+        period: '',
         start_date: '',
         end_date: '',
         status: '未开始' as OkrStatus,
@@ -101,6 +104,15 @@ export function OkrFormDrawer({ open, onOpenChange, okr, onSuccess }: OkrFormDra
               id="name"
               placeholder="例如：提升产品市场份额"
               {...register('name', { required: true })}
+              className="rounded-xl"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="period">周期</Label>
+            <Input
+              id="period"
+              placeholder="例如：2024年Q1"
+              {...register('period', { required: true })}
               className="rounded-xl"
             />
           </div>

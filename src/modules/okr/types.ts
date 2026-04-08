@@ -6,6 +6,7 @@ export interface Okr {
   id: string;
   name: string;
   description: string;
+  period: string;
   start_date: string;
   end_date: string;
   status: OkrStatus;
