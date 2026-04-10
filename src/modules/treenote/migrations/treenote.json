@@ -1,0 +1,176 @@
+[
+    {
+        "id": "pbc_2389916502",
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "@request.auth.id != \"\"",
+        "deleteRule": "@request.auth.id != \"\"",
+        "name": "treenote_categories",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1579384326",
+                "max": 0,
+                "min": 0,
+                "name": "name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "autodate_created",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate_updated",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_2389916502",
+                "hidden": false,
+                "id": "relation1032740943",
+                "maxSelect": 0,
+                "minSelect": 0,
+                "name": "parent",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            }
+        ],
+        "indexes": [],
+        "system": false
+    },
+    {
+        "id": "pbc_3385374094",
+        "listRule": "@request.auth.id != \"\"",
+        "viewRule": "user = @request.auth.id",
+        "createRule": "@request.auth.id != \"\"",
+        "updateRule": "user = @request.auth.id",
+        "deleteRule": "user = @request.auth.id",
+        "name": "treenote_notes",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text724990059",
+                "max": 0,
+                "min": 0,
+                "name": "title",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": true,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "convertURLs": false,
+                "hidden": false,
+                "id": "editor4274335913",
+                "maxSize": 0,
+                "name": "content",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "editor"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_2389916502",
+                "hidden": false,
+                "id": "relation105650625",
+                "maxSelect": 0,
+                "minSelect": 0,
+                "name": "category",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "_pb_users_auth_",
+                "hidden": false,
+                "id": "relation2375276105",
+                "maxSelect": 0,
+                "minSelect": 0,
+                "name": "user",
+                "presentable": false,
+                "required": true,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "autodate_created",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate_updated",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [],
+        "system": false
+    }
+]
