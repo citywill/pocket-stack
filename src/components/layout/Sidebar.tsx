@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { useAuth } from '@/components/auth-provider';
-import { menuItems, type MenuItem } from '../menu';
+import { getMenuItems, type MenuItem } from '../menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,11 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    getMenuItems().then(setMenuItems);
+  }, []);
 
   // 过滤菜单项
   const filteredMenuItems = menuItems.filter(item => {

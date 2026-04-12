@@ -1,5 +1,9 @@
 import { adminMenu } from '@/pages/admin/menu';
 
+// 使用 import.meta.glob 动态导入 systemMenu，支持失败时忽略
+const systemMenuModules = import.meta.glob(['../modules/menu/systemMenu.ts'], { eager: true });
+const systemMenuModule = Object.values(systemMenuModules)[0];
+const getSystemMenu = systemMenuModule?.getSystemMenu as (() => Promise<MenuItem[]>) | undefined;
 /**
  * 菜单项接口定义
  */
@@ -45,10 +49,15 @@ const autoMenus: MenuItem[] = Object.values(moduleMenus).flatMap((mod: any) => {
  * 全局侧边栏菜单配置
  * 组合了各个模块的菜单，并应用全局显示过滤逻辑
  */
+const systemMenu: MenuItem[] = [];
+
 const allMenus: MenuItem[] = [
     ...adminMenu,
     ...autoMenus,
+    ...systemMenu,
 ];
+
+export { systemMenu };
 
 export const menuItems: MenuItem[] = allMenus.filter(item => item && item.show !== false).map(item => {
     if (item.children) {
@@ -59,3 +68,21 @@ export const menuItems: MenuItem[] = allMenus.filter(item => item && item.show !
     }
     return item;
 });
+
+export async function getMenuItems(): Promise<MenuItem[]> {
+    const systemMenu = getSystemMenu ? await getSystemMenu().catch(() => []) : [];
+
+    return [
+        ...adminMenu,
+        ...autoMenus,
+        ...systemMenu,
+    ].filter(item => item && item.show !== false).map(item => {
+        if (item.children) {
+            return {
+                ...item,
+                children: item.children.filter(child => child.show !== false)
+            };
+        }
+        return item;
+    });
+}
