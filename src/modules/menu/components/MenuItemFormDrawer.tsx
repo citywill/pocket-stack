@@ -14,7 +14,7 @@ import { Switch } from '@/components/ui/switch';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
-import type { MenuItem, MenuTreeNode, MenuType, TargetType } from '../types';
+import type { MenuItem, MenuTreeNode } from '../types';
 
 const COLLECTION_NAME = 'system_menu';
 
@@ -70,33 +70,30 @@ export function MenuItemFormDrawer({
 }: MenuItemFormDrawerProps) {
   const [title, setTitle] = useState('');
   const [parent, setParent] = useState<string>('');
-  const [type, setType] = useState<MenuType>('route');
   const [path, setPath] = useState('');
   const [icon, setIcon] = useState('');
   const [sort, setSort] = useState(0);
-  const [target, setTarget] = useState<TargetType>('_self');
-  const [enabled, setEnabled] = useState(true);
+  const [external, setExternal] = useState(false);
+  const [show, setShow] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (menuItem) {
       setTitle(menuItem.title);
       setParent(menuItem.parent || '');
-      setType(menuItem.type);
       setPath(menuItem.path || '');
       setIcon(menuItem.icon || '');
       setSort(menuItem.sort);
-      setTarget(menuItem.target);
-      setEnabled(menuItem.enabled);
+      setExternal(menuItem.external);
+      setShow(menuItem.show);
     } else {
       setTitle('');
       setParent('');
-      setType('route');
       setPath('');
       setIcon('');
       setSort(0);
-      setTarget('_self');
-      setEnabled(true);
+      setExternal(false);
+      setShow(true);
     }
   }, [menuItem, open]);
 
@@ -109,12 +106,11 @@ export function MenuItemFormDrawer({
     try {
       const payload: Record<string, unknown> = {
         title: title.trim(),
-        type,
         path: path.trim(),
         icon: icon.trim(),
         sort,
-        target,
-        enabled,
+        external,
+        show,
       };
       if (parent) {
         payload.parent = parent;
@@ -181,29 +177,12 @@ export function MenuItemFormDrawer({
             </EditorSelect>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="type">菜单类型 *</Label>
-            <EditorSelect value={type} onValueChange={(v) => setType(v as MenuType)}>
-              <EditorSelectTrigger className="rounded-xl">
-                <EditorSelectValue />
-              </EditorSelectTrigger>
-              <EditorSelectContent>
-                <EditorSelectItem value="route">路由</EditorSelectItem>
-                <EditorSelectItem value="iframe">iframe</EditorSelectItem>
-                <EditorSelectItem value="url">外部URL</EditorSelectItem>
-              </EditorSelectContent>
-            </EditorSelect>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="path">
-              {type === 'route' ? '路由路径' : type === 'iframe' ? 'iframe路径' : '外部URL'}
-            </Label>
+            <Label htmlFor="path">路径</Label>
             <Input
               id="path"
               value={path}
               onChange={(e) => setPath(e.target.value)}
-              placeholder={
-                type === 'route' ? '/example/path' : type === 'iframe' ? '/iframe/path' : 'https://example.com'
-              }
+              placeholder="/example/path"
               className="rounded-xl"
             />
           </div>
@@ -223,23 +202,13 @@ export function MenuItemFormDrawer({
             />
             <p className="text-xs text-gray-500">数字越小越靠前</p>
           </div>
-          {(type === 'route' || type === 'url') && (
-            <div className="space-y-2">
-              <Label htmlFor="target">跳转方式</Label>
-              <EditorSelect value={target} onValueChange={(v) => setTarget(v as TargetType)}>
-                <EditorSelectTrigger className="rounded-xl">
-                  <EditorSelectValue />
-                </EditorSelectTrigger>
-                <EditorSelectContent>
-                  <EditorSelectItem value="_self">当前窗口</EditorSelectItem>
-                  <EditorSelectItem value="_blank">新窗口</EditorSelectItem>
-                </EditorSelectContent>
-              </EditorSelect>
-            </div>
-          )}
           <div className="flex items-center gap-3">
-            <Switch checked={enabled} onCheckedChange={setEnabled} />
-            <Label>启用菜单</Label>
+            <Switch checked={external} onCheckedChange={setExternal} />
+            <Label>弹出窗口</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch checked={show} onCheckedChange={setShow} />
+            <Label>显示菜单</Label>
           </div>
         </div>
         <SheetFooter className="mt-8 flex gap-3 sm:justify-end">

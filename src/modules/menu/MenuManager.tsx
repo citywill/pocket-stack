@@ -98,17 +98,9 @@ function MenuItemRow({
               return IconComponent ? <IconComponent className="w-4 h-4 text-gray-500" /> : null;
             })()}
             <span className="font-medium truncate">{node.title}</span>
-            <span className={cn(
-              'px-2 py-0.5 rounded text-xs',
-              node.type === 'route' && 'bg-blue-100 text-blue-700',
-              node.type === 'iframe' && 'bg-red-100 text-red-700',
-              node.type === 'url' && 'bg-green-100 text-green-700'
-            )}>
-              {node.type === 'route' ? '路由' : node.type === 'iframe' ? 'iframe' : 'URL'}
-            </span>
-            {!node.enabled && (
+            {!node.show && (
               <span className="px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-500">
-                已禁用
+                已隐藏
               </span>
             )}
           </div>
