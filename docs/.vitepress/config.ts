@@ -1,5 +1,3 @@
-import { escape } from "querystring";
-
 export default {
   // 站点级选项
   base: '/pocket-stack/',
@@ -28,13 +26,13 @@ export default {
           { text: '项目说明', link: '/index' },
           { text: '快速开始', link: '/快速开始' },
           { text: '安装部署', link: '/安装部署' },
+          { text: '模块说明', link: '/模块说明' },
         ]
       },
       {
         text: '预置模块',
         collapsed: false,
         items: [
-          { text: '模块说明', link: '/modules/index' },
           { text: '初始化和模块管理', link: '/初始化和模块管理' },
           { text: '示例模块', link: '/示例模块' },
           { text: '系统设置模块', link: '/modules/settings' },
