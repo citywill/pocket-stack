@@ -32,15 +32,11 @@ export function AiChat() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // 自动滚动到底部
     useEffect(() => {
-        if (scrollRef.current) {
-            const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-            if (scrollContainer) {
-                scrollContainer.scrollTop = scrollContainer.scrollHeight;
-            }
-        }
-    }, [messages, isLoading]); // 增加 isLoading 触发滚动，流式回复时也能滚动
+        const viewport = scrollRef.current;
+        if (!viewport) return;
+        viewport.scrollTop = viewport.scrollHeight;
+    }, [messages, isLoading]);
 
     // 监听 isLoading 变化，当加载结束时自动聚焦
     useEffect(() => {
@@ -148,9 +144,10 @@ export function AiChat() {
                     }
                 }
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('LLM API Error:', err);
-            toast.error('AI 调用失败: ' + (err.message || '未知错误'));
+            const message = err instanceof Error ? err.message : String(err ?? '未知错误');
+            toast.error('AI 调用失败: ' + message);
         } finally {
             setIsLoading(false);
             // 每次回复完成后，焦点回到输入框
@@ -175,7 +172,7 @@ export function AiChat() {
                 <CardHeader className="border-b bg-neutral-50/50 py-3 px-6 dark:bg-neutral-800/50">
                     <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                            <CpuChipIcon className="size-5 text-blue-500" />
+                            <CpuChipIcon className="size-5 text-primary" />
                             AI 助手 (流式回复)
                         </CardTitle>
                         <Button
@@ -205,7 +202,7 @@ export function AiChat() {
                                         <Avatar className="size-9 border-2 border-white dark:border-neutral-800 shadow-sm">
                                             {msg.role === 'user' ? (
                                                 <>
-                                                    <AvatarFallback className="bg-blue-600 text-white">
+                                                    <AvatarFallback className="bg-primary text-primary-foreground">
                                                         <UserIcon className="size-5" />
                                                     </AvatarFallback>
                                                 </>
@@ -219,12 +216,12 @@ export function AiChat() {
                                         </Avatar>
                                         <div
                                             className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${msg.role === 'user'
-                                                ? 'bg-blue-600 text-white'
+                                                ? 'bg-primary text-primary-foreground'
                                                 : 'bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100'
                                                 }`}
                                         >
                                             {msg.role === 'assistant' ? (
-                                                <div className="prose prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-blue-600 dark:prose-code:text-blue-400">
+                                                <div className="prose prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-pre:bg-neutral-900 prose-pre:text-neutral-100 prose-code:text-primary dark:prose-code:text-primary">
                                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                         {msg.content}
                                                     </ReactMarkdown>
@@ -270,12 +267,12 @@ export function AiChat() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             disabled={isLoading}
-                            className="flex-1 rounded-xl border-neutral-200 bg-white px-4 py-6 focus-visible:ring-blue-500 dark:border-neutral-700 dark:bg-neutral-900"
+                            className="flex-1 rounded-xl border-neutral-200 bg-white px-4 py-6 focus-visible:ring-primary dark:border-neutral-700 dark:bg-neutral-900"
                         />
                         <Button
                             type="submit"
                             disabled={isLoading || !input.trim()}
-                            className="h-12 w-12 rounded-xl bg-blue-600 text-white shadow-md transition-all hover:bg-blue-700 hover:shadow-lg disabled:opacity-50"
+                            className="h-12 w-12 rounded-xl bg-primary text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-lg disabled:opacity-50"
                         >
                             <PaperAirplaneIcon className="size-6" />
                         </Button>

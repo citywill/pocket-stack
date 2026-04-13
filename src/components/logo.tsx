@@ -11,11 +11,11 @@ export function Logo({ className, showText = true }: LogoProps) {
 
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <img src="/logo.svg" alt="Logo" className="h-9 w-9 drop-shadow-lg drop-shadow-blue-500/20" />
+      <img src="/logo.svg" alt="Logo" className="h-9 w-9 drop-shadow-lg drop-shadow-primary/20" />
       {showText && (
         <span
           className="text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50"
-          dangerouslySetInnerHTML={{ __html: siteName || 'Pocket <span class="text-blue-600">Stack</span>' }}
+          dangerouslySetInnerHTML={{ __html: siteName || 'Pocket <span class="text-primary">Stack</span>' }}
         />
       )}
     </div>
