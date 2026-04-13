@@ -206,7 +206,7 @@ export function Form() {
 
       <div className="flex justify-end gap-4">
         <Button variant="outline">重置</Button>
-        <Button className="bg-blue-600 hover:bg-blue-700">保存所有设置</Button>
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">保存所有设置</Button>
       </div>
     </div>
   );

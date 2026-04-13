@@ -29,7 +29,7 @@
 
 ## 🌟 核心特性
 
-- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
+- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，支持 Blue、Green、Red、Gray 四种主题颜色切换，内置亮色、深色、跟随系统模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
 - 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
 - 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立配置路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
 - 📋 **业务示例**：内置个人任务管理系统，支持多状态流转、优先级设定及用户数据隔离。

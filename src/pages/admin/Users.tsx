@@ -237,7 +237,7 @@ export function Users() {
           <Button variant="outline" onClick={() => fetchUsers()} disabled={loading} className="bg-white dark:bg-neutral-950">
             <ArrowPathIcon className={cn("h-4 w-4", loading && "animate-spin")} />
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => handleOpenDialog()}>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => handleOpenDialog()}>
             <PlusIcon className="mr-2 h-4 w-4" />
             添加用户
           </Button>
@@ -249,7 +249,7 @@ export function Users() {
         <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
         <Input
           placeholder="搜索用户名或邮箱..."
-          className="pl-9 bg-white dark:bg-neutral-950 h-11 ring-offset-white focus-visible:ring-blue-500"
+          className="pl-9 bg-white dark:bg-neutral-950 h-11 ring-offset-white focus-visible:ring-primary"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -304,7 +304,7 @@ export function Users() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400 overflow-hidden ring-2 ring-white dark:ring-neutral-800 shadow-sm">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary overflow-hidden ring-2 ring-white dark:ring-neutral-800 shadow-sm">
                       {user.avatar ? (
                         <img
                           src={`${pb.baseUrl}/api/files/users/${user.id}/${user.avatar}`}
@@ -350,7 +350,7 @@ export function Users() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="flex-1 h-8 text-[11px] text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+                    className="flex-1 h-8 text-[11px] text-primary hover:bg-primary/10 dark:hover:bg-primary/20"
                     onClick={() => handleOpenDialog(user)}
                   >
                     <PencilSquareIcon className="mr-1.5 h-3.5 w-3.5" />
@@ -423,7 +423,7 @@ export function Users() {
             {/* Avatar Upload */}
             <div className="flex flex-col items-center justify-center gap-4 pb-4">
               <div className="relative group">
-                <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800 overflow-hidden border-2 border-dashed border-neutral-300 dark:border-neutral-700 transition-colors group-hover:border-blue-500 shadow-inner">
+                <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800 overflow-hidden border-2 border-dashed border-neutral-300 dark:border-neutral-700 transition-colors group-hover:border-primary shadow-inner">
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Preview" className="h-full w-full object-cover" />
                   ) : (
@@ -519,7 +519,7 @@ export function Users() {
 
             <DialogFooter className="pt-4 gap-2">
               <Button type="button" variant="ghost" className="flex-1" onClick={() => setIsDialogOpen(false)}>取消</Button>
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">确认保存</Button>
+              <Button type="submit" className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">确认保存</Button>
             </DialogFooter>
           </form>
         </DialogContent>
