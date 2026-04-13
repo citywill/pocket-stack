@@ -42,6 +42,10 @@ function hello() {
 export function MarkdownEditor() {
   const [content, setContent] = useState(DEFAULT_CONTENT);
 
+  const handleChange = (value: string | undefined) => {
+    setContent(value || '');
+  };
+
   return (
     <div className="h-full flex flex-col gap-4 p-6">
       <div>
@@ -53,11 +57,10 @@ export function MarkdownEditor() {
         <CardContent className="flex-1 p-0 overflow-hidden" data-color-mode="light">
           <MdEditor
             value={content}
-            onChange={setContent}
+            onChange={handleChange}
             height="100%"
             preview="live"
             hideToolbar={false}
-            showCopy={true}
             style={{ height: '100%' }}
           />
         </CardContent>
