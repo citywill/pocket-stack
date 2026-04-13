@@ -1,0 +1,15 @@
+{
+  "name": "@pocketstack/examples",
+  "version": "1.0.0",
+  "title": "示例页面",
+  "description": "包含各种示例页面，展示系统功能和组件使用方法",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@uiw/react-md-editor": "^4.0.4"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
