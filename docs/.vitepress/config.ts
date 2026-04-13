@@ -1,3 +1,5 @@
+import { escape } from "querystring";
+
 export default {
   // 站点级选项
   base: '/pocket-stack/',
@@ -14,9 +16,14 @@ export default {
     search: {
       provider: 'local'
     },
+    outline: {
+      level: [2, 4],
+      label: '目录'
+    },
     sidebar: [
       {
         text: '概要',
+        collapsed: false,
         items: [
           { text: '项目说明', link: '/index' },
           { text: '快速开始', link: '/快速开始' },
@@ -27,6 +34,7 @@ export default {
       },
       {
         text: '开发教程',
+        collapsed: false,
         items: [
           { text: '开发环境配置', link: '/教程：开发环境配置' },
           { text: '开发流程', link: '/教程：开发流程' },
@@ -38,6 +46,7 @@ export default {
       },
       {
         text: '专题',
+        collapsed: false,
         items: [
           { text: '前端特性', link: '/前端特性' },
           { text: '菜单定义', link: '/菜单定义' },
@@ -45,14 +54,31 @@ export default {
         ]
       },
       {
-        text: 'Demo模块',
+        text: '模块',
+        collapsed: true,
         items: [
-          { text: '演示模块说明', link: '/demos/index' },
-          { text: '口袋笔记', link: '/demos/notes' },
-          { text: '口袋 AI 助理', link: '/demos/ai' },
-          { text: '口袋看板', link: '/demos/kanban' },
-          { text: '口袋记账', link: '/demos/finance' },
-          { text: '口袋OKRs', link: '/demos/okr' },
+          { text: '模块说明', link: '/modules/index' },
+          {
+            text: '系统模块', 
+            collapsed: false,
+            items: 
+            [
+              { text: '菜单', link: '/modules/menu' },
+            ] 
+          },
+          {
+            text: '应用模块', 
+            collapsed: false,
+            items: 
+            [
+              { text: '口袋笔记', link: '/modules/notes' },
+              { text: '口袋 AI 助理', link: '/modules/ai' },
+              { text: '口袋 NotebookLM', link: '/modules/notebooklm' },
+              { text: '口袋看板', link: '/modules/kanban' },
+              { text: '口袋记账', link: '/modules/finance' },
+              { text: '口袋OKRs', link: '/modules/okr' },
+            ] 
+          },
         ]
       },
     ]

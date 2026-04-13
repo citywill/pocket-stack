@@ -24,8 +24,8 @@ const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
       <div className="px-4 py-3 bg-white dark:bg-neutral-800 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
         <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 mb-1">{label}</p>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-          <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <p className="text-sm font-medium text-primary dark:text-neutral-400">
             {payload[0].value} <span className="text-xs text-neutral-400">{unit}</span>
           </p>
         </div>
