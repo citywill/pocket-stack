@@ -28,8 +28,17 @@ export default {
           { text: '项目说明', link: '/index' },
           { text: '快速开始', link: '/快速开始' },
           { text: '安装部署', link: '/安装部署' },
-          { text: '后台管理', link: '/后台管理功能' },
+        ]
+      },
+      {
+        text: '预置模块',
+        collapsed: false,
+        items: [
+          { text: '模块说明', link: '/modules/index' },
+          { text: '初始化和模块管理', link: '/初始化和模块管理' },
           { text: '示例模块', link: '/示例模块' },
+          { text: '系统设置模块', link: '/modules/settings' },
+          { text: '用户管理模块', link: '/modules/user' },
         ]
       },
       {
@@ -51,34 +60,17 @@ export default {
         ]
       },
       {
-        text: '模块',
+        text: '扩展模块',
         collapsed: false,
-        items: [
-          { text: '模块说明', link: '/modules/index' },
-          {
-            text: '系统模块', 
-            collapsed: true,
-            items: 
-            [
-              { text: '系统设置', link: '/modules/settings' },
-              { text: '用户管理', link: '/modules/user' },
-              { text: '菜单管理', link: '/modules/menu' },
-            ] 
-          },
-          {
-            text: '应用模块', 
-            collapsed: true,
-            items: 
-            [
-              { text: '口袋笔记', link: '/modules/notes' },
-              { text: '口袋 AI 助理', link: '/modules/ai' },
-              { text: '口袋 NotebookLM', link: '/modules/notebooklm' },
-              { text: '口袋看板', link: '/modules/kanban' },
-              { text: '口袋记账', link: '/modules/finance' },
-              { text: '口袋OKRs', link: '/modules/okr' },
-            ] 
-          },
-        ]
+        items: 
+        [
+          { text: '口袋笔记', link: '/modules/notes' },
+          { text: '口袋 AI 助理', link: '/modules/ai' },
+          { text: '口袋 NotebookLM', link: '/modules/notebooklm' },
+          { text: '口袋看板', link: '/modules/kanban' },
+          { text: '口袋记账', link: '/modules/finance' },
+          { text: '口袋OKRs', link: '/modules/okr' },
+        ] 
       },
     ]
   }

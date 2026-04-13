@@ -229,10 +229,10 @@ export function Modules() {
           <CardContent className="flex flex-col items-center justify-center py-16">
             <ExclamationCircleIcon className="h-16 w-16 text-amber-500 mb-4" />
             <h2 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
-              系统模块集合未初始化
+              模块管理功能未初始化
             </h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-center max-w-md mb-6">
-              在使用模块管理功能之前，需要先初始化系统模块集合。
+              在使用模块管理功能之前，需要先初始化模块系统集合。
               这将创建一个用于存储模块状态的基础集合。
             </p>
             {systemModulesCollectionError && (
@@ -251,7 +251,7 @@ export function Modules() {
               ) : (
                 <>
                   <ArrowPathIcon className="h-4 w-4 mr-2" />
-                  初始化系统模块
+                  初始化模块管理功能
                 </>
               )}
             </Button>
