@@ -5,6 +5,7 @@ import { ExampleCard } from './Card';
 import { Form } from './Form';
 import { Blank } from './Blank';
 import { Loading } from './Loading';
+import { AiChat } from './AiChat';
 import CurdExample from './curd/Index';
 import { ProtectedRoute } from '@/components/protected-route';
 import { MainLayout } from '@/components/layout';
@@ -24,6 +25,7 @@ export const routes = (
         <Route path="examples/curd" element={<CurdExample />} />
         <Route path="examples/card" element={<ExampleCard />} />
         <Route path="examples/form" element={<Form />} />
+        <Route path="examples/chat" element={<AiChat />} />
         <Route path="examples/loading" element={<Loading />} />
         <Route path="blog-detail" element={<BlogDetail />} />
         <Route path="examples/iframe" element={<IframePage />} />

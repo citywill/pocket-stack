@@ -34,7 +34,7 @@ export function Footer({ className }: FooterProps) {
         </div>
         <span className="hidden md:inline-block text-neutral-300 dark:text-neutral-700">|</span>
         <div className="flex items-center gap-4">
-          <a href="https://citywill.github.io/pocket-stack/" className="hover:text-blue-600 transition-colors">说明文档</a>
+          <a href="https://citywill.github.io/pocket-stack/" className="hover:text-primary transition-colors">说明文档</a>
         </div>
       </div>
     </footer>

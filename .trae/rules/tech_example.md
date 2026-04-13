@@ -4,6 +4,7 @@
 
 - 仪表盘：`src/modules/examples/dashboard.tsx`
 - 卡片：`src/modules/examples/Card.tsx`
+- AI 对话示例：`src/modules/examples/AiChat.tsx`
 - Loading：`src/modules/examples/Loading.tsx`
 - 表格：`src/modules/examples/Table.tsx`
 - CURD：`src/modules/examples/Curd/`

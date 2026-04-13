@@ -195,7 +195,7 @@ export default function CurdExample() {
             这是一个完整的 CRUD 示例，包含表格展示、抽屉表单、抽屉详情、分页、过滤和排序功能。
           </p>
         </div>
-        <Button onClick={handleCreate} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handleCreate} className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <PlusIcon className="mr-2 h-4 w-4" />
           创建文章
         </Button>
@@ -352,7 +352,7 @@ export default function CurdExample() {
                             variant="ghost"
                             size="icon"
                             onClick={() => handleEdit(post)}
-                            className="h-8 w-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                            className="h-8 w-8 text-primary hover:bg-primary/10 dark:hover:bg-primary/20"
                           >
                             <PencilSquareIcon className="h-4 w-4" />
                           </Button>
