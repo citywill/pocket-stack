@@ -37,11 +37,8 @@ export default {
         collapsed: false,
         items: [
           { text: '开发环境配置', link: '/教程：开发环境配置' },
-          { text: '开发流程', link: '/教程：开发流程' },
-          { text: '前端开发', link: '/教程：前端开发' },
-          { text: '后端开发', link: '/教程：后端开发' },
-          { text: '前后端联调', link: '/教程：前后端联调' },
-          { text: '开发技巧', link: '/教程：开发技巧' }
+          { text: '模块开发教程', link: '/教程：模块开发教程' },
+          { text: '开发技巧', link: '/教程：开发技巧' },
         ]
       },
       {
