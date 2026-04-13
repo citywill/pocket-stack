@@ -101,14 +101,14 @@ export function Header({ onMenuClick, isCollapsed, isMobileOpen, onToggleSidebar
             <DropdownMenuTrigger asChild>
               <button className="ml-2 flex items-center gap-3 outline-none group">
                 <div className="hidden text-right md:block">
-                  <p className="text-sm font-medium text-neutral-900 dark:text-neutral-50 group-hover:text-blue-600 transition-colors">
+                  <p className="text-sm font-medium text-neutral-900 dark:text-neutral-50 group-hover:text-primary transition-colors">
                     {user?.name || (isSuperAdmin ? '超级管理员' : '普通用户')}
                   </p>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {user?.email} {isSuperAdmin && <span className="text-[10px] bg-blue-100 text-blue-600 px-1 rounded dark:bg-blue-900/40 dark:text-blue-400 ml-1">Admin</span>}
+                    {user?.email} {isSuperAdmin && <span className="text-[10px] bg-primary/10 text-primary px-1 rounded dark:bg-primary/20 dark:text-primary ml-1">Admin</span>}
                   </p>
                 </div>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white group-hover:bg-blue-700 transition-colors overflow-hidden">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground group-hover:bg-primary/90 transition-colors overflow-hidden">
                   {avatarUrl ? (
                     <img src={avatarUrl} alt={user?.name || 'User'} className="h-full w-full object-cover" />
                   ) : (

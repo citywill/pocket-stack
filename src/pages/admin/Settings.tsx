@@ -150,7 +150,7 @@ export function Settings() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
-            <Cog6ToothIcon className="h-8 w-8 text-blue-600" />
+            <Cog6ToothIcon className="h-8 w-8 text-primary" />
             系统设置
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">

@@ -107,7 +107,7 @@ export function Profile() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 p-4 max-w-4xl mx-auto">
       <div>
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 text-maia">
           个人中心
@@ -133,7 +133,7 @@ export function Profile() {
           <Card className="overflow-hidden border-neutral-200 dark:border-neutral-800 shadow-sm">
             <CardContent className="pt-8 flex flex-col items-center">
               <div className="relative group">
-                <div className="h-32 w-32 rounded-3xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden border-4 border-white dark:border-neutral-900 shadow-xl group-hover:shadow-blue-500/10 transition-all duration-300">
+                <div className="h-32 w-32 rounded-3xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden border-4 border-white dark:border-neutral-900 shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
                   {avatarPreview ? (
                     <img src={avatarPreview} alt="Avatar" className="h-full w-full object-cover transition-transform group-hover:scale-110" />
                   ) : (
@@ -152,7 +152,7 @@ export function Profile() {
               <div className="mt-6 text-center">
                 <h2 className="text-xl font-bold text-neutral-900 dark:text-neutral-50">{user?.name || '管理员'}</h2>
                 <div className="flex items-center justify-center gap-1.5 mt-1">
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${isSuperAdmin ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400' : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${isSuperAdmin ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary' : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400'
                     }`}>
                     {isSuperAdmin ? 'Super Admin' : 'Regular User'}
                   </span>
@@ -200,7 +200,7 @@ export function Profile() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20"
+                  className="bg-primary hover:bg-primary/90 shadow-md shadow-primary/20"
                 >
                   {loading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
                   保存个人信息
@@ -256,7 +256,7 @@ export function Profile() {
                   type="submit"
                   variant="outline"
                   disabled={loading}
-                  className="mt-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+                  className="mt-2 border-primary text-primary hover:bg-primary/10 dark:hover:bg-primary/20"
                 >
                   {loading && <ArrowPathIcon className="mr-2 h-4 w-4 animate-spin" />}
                   重置登录密码

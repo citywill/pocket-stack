@@ -204,7 +204,7 @@ export function ExampleTable() {
             这是一个包含过滤、排序、分页和 CRUD 操作的通用表格示例。
           </p>
         </div>
-        <Button onClick={() => handleOpenDialog()} className="bg-blue-600 hover:bg-blue-700">
+        <Button onClick={() => handleOpenDialog()} className="bg-primary hover:bg-primary/90 text-primary-foreground">
           <PlusIcon className="mr-2 h-4 w-4" />
           创建订单
         </Button>
@@ -371,7 +371,7 @@ export function ExampleTable() {
                         className={cn(
                           order.status === 'completed' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
                           order.status === 'pending' && 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                          order.status === 'processing' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                          order.status === 'processing' && 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary',
                           order.status === 'cancelled' && 'bg-neutral-100 text-neutral-700 dark:bg-neutral-900/30 dark:text-neutral-400'
                         )}
                         variant="secondary"
@@ -388,7 +388,7 @@ export function ExampleTable() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleOpenDialog(order)}
-                          className="h-8 w-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                          className="h-8 w-8 text-primary hover:bg-primary/10 dark:hover:bg-primary/20"
                         >
                           <PencilSquareIcon className="h-4 w-4" />
                         </Button>
@@ -539,7 +539,7 @@ export function ExampleTable() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>取消</Button>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">保存</Button>
+            <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 text-primary-foreground">保存</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
