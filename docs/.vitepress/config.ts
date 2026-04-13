@@ -38,7 +38,6 @@ export default {
         items: [
           { text: '开发环境配置', link: '/教程：开发环境配置' },
           { text: '模块开发教程', link: '/教程：模块开发教程' },
-          { text: '开发技巧', link: '/教程：开发技巧' },
         ]
       },
       {
@@ -47,25 +46,28 @@ export default {
         items: [
           { text: '前端特性', link: '/前端特性' },
           { text: '菜单定义', link: '/菜单定义' },
-          { text: '权限控制', link: '/权限控制' }
+          { text: '权限控制', link: '/权限控制' },
+          { text: '后端技巧', link: '/后端技巧' },
         ]
       },
       {
         text: '模块',
-        collapsed: true,
+        collapsed: false,
         items: [
           { text: '模块说明', link: '/modules/index' },
           {
             text: '系统模块', 
-            collapsed: false,
+            collapsed: true,
             items: 
             [
-              { text: '菜单', link: '/modules/menu' },
+              { text: '系统设置', link: '/modules/settings' },
+              { text: '用户管理', link: '/modules/user' },
+              { text: '菜单管理', link: '/modules/menu' },
             ] 
           },
           {
             text: '应用模块', 
-            collapsed: false,
+            collapsed: true,
             items: 
             [
               { text: '口袋笔记', link: '/modules/notes' },
