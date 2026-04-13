@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -38,7 +37,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
@@ -57,18 +55,16 @@ interface UserRecord {
   verified: boolean;
 }
 
-export function Users() {
+export function UserList() {
   const [users, setUsers] = useState<UserRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(12);
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Dialog state
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<UserRecord | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -98,7 +94,6 @@ export function Users() {
       setUsers(result.items);
       setTotalItems(result.totalItems);
       setTotalPages(result.totalPages);
-      // 如果当前页超过了总页数，重置到第一页
       if (result.totalPages > 0 && page > result.totalPages) {
         setCurrentPage(1);
       }
@@ -111,15 +106,13 @@ export function Users() {
     }
   };
 
-  // 监听分页和每页数量变化
   useEffect(() => {
     fetchUsers(currentPage, perPage, searchTerm);
   }, [currentPage, perPage]);
 
-  // 搜索防抖
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentPage(1); // 搜索时重置到第一页
+      setCurrentPage(1);
       fetchUsers(1, perPage, searchTerm);
     }, 500);
     return () => clearTimeout(timer);
@@ -223,11 +216,10 @@ export function Users() {
 
   return (
     <div className="space-y-6 p-6">
-      {/* Page Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 text-maia">
-            用户管理
+            用户列表
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
             连接 PocketBase 后端管理系统用户
@@ -244,7 +236,6 @@ export function Users() {
         </div>
       </div>
 
-      {/* Filter & Search */}
       <div className="relative">
         <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
         <Input
@@ -255,7 +246,6 @@ export function Users() {
         />
       </div>
 
-      {/* Users List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between px-1">
           <h2 className="text-sm font-medium text-neutral-500">
@@ -371,7 +361,6 @@ export function Users() {
           )}
         </div>
 
-        {/* Pagination UI */}
         {totalPages > 1 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 border-t border-neutral-200 dark:border-neutral-800">
             <p className="text-xs text-neutral-500">
@@ -410,7 +399,6 @@ export function Users() {
         )}
       </div>
 
-      {/* Add/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -420,7 +408,6 @@ export function Users() {
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-4 py-4">
-            {/* Avatar Upload */}
             <div className="flex flex-col items-center justify-center gap-4 pb-4">
               <div className="relative group">
                 <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800 overflow-hidden border-2 border-dashed border-neutral-300 dark:border-neutral-700 transition-colors group-hover:border-primary shadow-inner">
@@ -544,6 +531,3 @@ export function Users() {
     </div>
   );
 }
-
-
-
