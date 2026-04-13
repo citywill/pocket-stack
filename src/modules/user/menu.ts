@@ -1,4 +1,4 @@
-import { UsersIcon, ListBulletIcon } from '@heroicons/react/24/outline';
+import { UsersIcon } from '@heroicons/react/24/outline';
 
 export const menu = {
   title: '用户管理',
