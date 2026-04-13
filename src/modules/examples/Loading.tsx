@@ -36,7 +36,7 @@ export function Loading() {
           onClick={fetchData}
           disabled={isLoading}
           variant="outline"
-          className="rounded-2xl border-blue-200 text-blue-600 hover:bg-blue-50"
+          className="rounded-2xl border-primary/20 dark:border-primary/40 text-primary dark:text-primary hover:bg-primary/10 dark:hover:bg-primary/20"
         >
           <ArrowPathIcon className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           重新请求数据
@@ -46,27 +46,26 @@ export function Loading() {
       <div className="flex-1 p-6">
         {isLoading ? (
           <div className="flex h-full min-h-[400px] flex-col items-center justify-center space-y-4">
-            {/* 简化的旋转加载图标 */}
-            <div className="h-10 w-10 rounded-full border-4 border-neutral-100 border-t-blue-600 animate-spin"></div>
-            <p className="text-neutral-500 animate-pulse">正在加载数据...</p>
+            <div className="h-10 w-10 rounded-full border-4 border-neutral-200 dark:border-neutral-700 border-t-primary animate-spin"></div>
+            <p className="text-neutral-500 dark:text-neutral-400 animate-pulse">正在加载数据...</p>
           </div>
         ) : (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <Card className="rounded-2xl border-none shadow-sm overflow-hidden gap-0 !p-0">
-              <CardHeader className="bg-white/50 backdrop-blur-sm border-b border-neutral-100 !p-4">
-                <CardTitle className="text-lg font-semibold text-blue-600">数据获取成功</CardTitle>
+            <Card className="rounded-2xl border-none shadow-sm overflow-hidden gap-0 !p-0 dark:bg-neutral-900">
+              <CardHeader className="bg-white/50 dark:bg-neutral-800/50 backdrop-blur-sm border-b border-neutral-100 dark:border-neutral-800 !p-4">
+                <CardTitle className="text-lg font-semibold text-primary">数据获取成功</CardTitle>
               </CardHeader>
-              <CardContent className="p-12 text-center bg-blue-50/20">
+              <CardContent className="p-12 text-center bg-primary/5 dark:bg-primary/10">
                 <div className="max-w-2xl mx-auto space-y-4">
-                  <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-2">
+                  <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 mb-2">
                     <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <p className="text-2xl font-bold text-neutral-900 leading-relaxed">
+                  <p className="text-2xl font-bold text-neutral-900 dark:text-neutral-100 leading-relaxed">
                     {data}
                   </p>
-                  <p className="text-neutral-500">
+                  <p className="text-neutral-500 dark:text-neutral-400">
                     页面整体内容已从远程服务器加载完毕，现在可以进行后续操作。
                   </p>
                 </div>
@@ -75,14 +74,14 @@ export function Loading() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
-                <Card key={i} className="rounded-2xl border-none shadow-sm hover:shadow-md transition-shadow !p-0">
+                <Card key={i} className="rounded-2xl border-none shadow-sm hover:shadow-md transition-shadow !p-0 dark:bg-neutral-900 dark:hover:shadow-neutral-800/50">
                   <CardContent className="p-6">
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-neutral-900 flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-blue-500"></span>
+                      <h3 className="font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-primary dark:bg-primary"></span>
                         统计项 {i}
                       </h3>
-                      <p className="text-sm text-neutral-500">
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
                         该模块的数据已随整体请求一同返回并完成渲染。
                       </p>
                     </div>

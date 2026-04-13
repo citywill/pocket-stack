@@ -1,3 +1,4 @@
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,8 +26,7 @@ import {
   Cell,
 } from 'recharts';
 import { cn } from '@/lib/utils';
-
-// --- Mock Data ---
+import { useTheme } from '@/components/theme-provider';
 
 const REVENUE_DATA = [
   { name: 'Jan', value: 4500 },
@@ -44,10 +44,10 @@ const REVENUE_DATA = [
 ];
 
 const SALES_BY_CATEGORY = [
-  { name: '电子产品', value: 400, color: '#3b82f6' },
-  { name: '服装鞋帽', value: 300, color: '#10b981' },
-  { name: '食品饮料', value: 300, color: '#f59e0b' },
-  { name: '日用百货', value: 200, color: '#ef4444' },
+  { name: '电子产品', value: 400 },
+  { name: '服装鞋帽', value: 300 },
+  { name: '食品饮料', value: 300 },
+  { name: '日用百货', value: 200 },
 ];
 
 const RECENT_ORDERS = [
@@ -57,8 +57,6 @@ const RECENT_ORDERS = [
   { id: 'ORD-1237', customer: '赵六', amount: '¥450.00', status: 'completed', date: '2024-12-21' },
   { id: 'ORD-1238', customer: '钱七', amount: '¥3,200.00', status: 'cancelled', date: '2024-12-20' },
 ];
-
-// --- Components ---
 
 function MetricCard({
   title,
@@ -78,19 +76,19 @@ function MetricCard({
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+        <div className="rounded-lg bg-primary/10 p-2 text-primary">
           <Icon className="h-5 w-5" />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-50">{value}</div>
+        <div className="text-2xl font-bold text-card-foreground">{value}</div>
         <div className="mt-1 flex items-center gap-1">
           <span className={cn(
             "flex items-center text-xs font-medium",
-            trend === 'up' ? "text-green-600" : "text-red-600"
+            trend === 'up' ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
           )}>
             {trend === 'up' ? (
               <ArrowUpIcon className="mr-0.5 h-3 w-3" />
@@ -99,23 +97,54 @@ function MetricCard({
             )}
             {change}
           </span>
-          <span className="text-xs text-neutral-500">{description}</span>
+          <span className="text-xs text-muted-foreground">{description}</span>
         </div>
       </CardContent>
     </Card>
   );
 }
 
+function getComputedColorVar(variable: string): string {
+  if (typeof window === 'undefined') return '#3b82f6';
+  return getComputedStyle(document.documentElement).getPropertyValue(variable).trim() || '#3b82f6';
+}
+
+function getComputedChartColors() {
+  return {
+    primary: getComputedColorVar('--primary'),
+    chart1: getComputedColorVar('--chart-1'),
+    chart2: getComputedColorVar('--chart-2'),
+    chart3: getComputedColorVar('--chart-3'),
+    chart4: getComputedColorVar('--chart-4'),
+    border: getComputedColorVar('--border'),
+    mutedForeground: getComputedColorVar('--muted-foreground'),
+    card: getComputedColorVar('--card'),
+    cardForeground: getComputedColorVar('--card-foreground'),
+  };
+}
+
 export function ExampleDashboard() {
+  const { colorTheme } = useTheme();
+  const [chartColors, setChartColors] = useState(getComputedChartColors);
+
+  const updateChartColors = useCallback(() => {
+    requestAnimationFrame(() => {
+      setChartColors(getComputedChartColors());
+    });
+  }, []);
+
+  useEffect(() => {
+    updateChartColors();
+  }, [colorTheme, updateChartColors]);
+
   return (
     <div className="space-y-6 p-6">
-      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
+          <h1 className="text-3xl font-bold text-card-foreground">
             电商概览
           </h1>
-          <p className="mt-1 text-neutral-600 dark:text-neutral-400">
+          <p className="mt-1 text-muted-foreground">
             欢迎回来，这是您今天的店铺运营数据。
           </p>
         </div>
@@ -124,14 +153,13 @@ export function ExampleDashboard() {
             <CalendarIcon className="mr-2 h-4 w-4" />
             2024年12月
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          <Button>
             <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
             导出报表
           </Button>
         </div>
       </div>
 
-      {/* Metrics Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="总销售额"
@@ -168,7 +196,6 @@ export function ExampleDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-7">
-        {/* Main Chart */}
         <Card className="lg:col-span-4">
           <CardHeader>
             <CardTitle>销售趋势</CardTitle>
@@ -180,34 +207,36 @@ export function ExampleDashboard() {
                 <AreaChart data={REVENUE_DATA} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                      <stop offset="5%" stopColor={chartColors.primary} stopOpacity={0.1} />
+                      <stop offset="95%" stopColor={chartColors.primary} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={chartColors.border} />
                   <XAxis
                     dataKey="name"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fontSize: 12, fill: '#888' }}
+                    tick={{ fontSize: 12, fill: chartColors.mutedForeground }}
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fontSize: 12, fill: '#888' }}
+                    tick={{ fontSize: 12, fill: chartColors.mutedForeground }}
                     tickFormatter={(value) => `¥${value}`}
                   />
                   <Tooltip
                     contentStyle={{
                       borderRadius: '12px',
                       border: 'none',
-                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                      backgroundColor: chartColors.card,
+                      color: chartColors.cardForeground
                     }}
                   />
                   <Area
                     type="monotone"
                     dataKey="value"
-                    stroke="#3b82f6"
+                    stroke={chartColors.primary}
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorValue)"
@@ -218,7 +247,6 @@ export function ExampleDashboard() {
           </CardContent>
         </Card>
 
-        {/* Pie Chart */}
         <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>分类占比</CardTitle>
@@ -237,20 +265,32 @@ export function ExampleDashboard() {
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {SALES_BY_CATEGORY.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
+                    <Cell fill={chartColors.chart1} />
+                    <Cell fill={chartColors.chart2} />
+                    <Cell fill={chartColors.chart3} />
+                    <Cell fill={chartColors.chart4} />
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: '12px',
+                      border: 'none',
+                      boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                      backgroundColor: chartColors.card,
+                      color: chartColors.cardForeground
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-4">
-              {SALES_BY_CATEGORY.map((item) => (
+              {SALES_BY_CATEGORY.map((item, index) => (
                 <div key={item.name} className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-sm text-neutral-600 dark:text-neutral-400">{item.name}</span>
-                  <span className="ml-auto text-sm font-medium">{item.value}</span>
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: chartColors[`chart${index + 1}` as keyof typeof chartColors] }}
+                  />
+                  <span className="text-sm text-muted-foreground">{item.name}</span>
+                  <span className="ml-auto text-sm font-medium text-card-foreground">{item.value}</span>
                 </div>
               ))}
             </div>
@@ -259,7 +299,6 @@ export function ExampleDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Orders */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -271,25 +310,25 @@ export function ExampleDashboard() {
           <CardContent>
             <div className="space-y-4">
               {RECENT_ORDERS.map((order) => (
-                <div key={order.id} className="flex items-center justify-between border-b border-neutral-100 pb-4 last:border-0 last:pb-0 dark:border-neutral-800">
+                <div key={order.id} className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                      <ShoppingCartIcon className="h-5 w-5 text-neutral-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+                      <ShoppingCartIcon className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-neutral-900 dark:text-neutral-50">{order.customer}</p>
-                      <p className="text-xs text-neutral-500">{order.id} • {order.date}</p>
+                      <p className="text-sm font-medium text-card-foreground">{order.customer}</p>
+                      <p className="text-xs text-muted-foreground">{order.id} • {order.date}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-neutral-900 dark:text-neutral-50">{order.amount}</p>
+                    <p className="text-sm font-bold text-card-foreground">{order.amount}</p>
                     <Badge
                       variant="secondary"
                       className={cn(
                         "mt-1 text-[10px]",
                         order.status === 'completed' && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
                         order.status === 'pending' && "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-                        order.status === 'processing' && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+                        order.status === 'processing' && "bg-primary/10 text-primary",
                         order.status === 'cancelled' && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
                       )}
                     >
@@ -304,7 +343,6 @@ export function ExampleDashboard() {
           </CardContent>
         </Card>
 
-        {/* Top Products/Activity */}
         <Card>
           <CardHeader>
             <CardTitle>热销商品</CardTitle>
@@ -320,14 +358,14 @@ export function ExampleDashboard() {
                 { name: '人体工学椅 Pro Office', sales: 38, growth: '+9%', image: '🪑' },
               ].map((product, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-neutral-100 text-2xl dark:bg-neutral-800">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-2xl">
                     {product.image}
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-50">{product.name}</p>
+                    <p className="text-sm font-medium text-card-foreground">{product.name}</p>
                     <div className="mt-1 flex items-center gap-2">
-                      <span className="text-xs text-neutral-500">{product.sales} 销量</span>
-                      <span className="text-[10px] font-bold text-green-600">{product.growth}</span>
+                      <span className="text-xs text-muted-foreground">{product.sales} 销量</span>
+                      <span className="text-[10px] font-bold text-green-600 dark:text-green-400">{product.growth}</span>
                     </div>
                   </div>
                   <Button variant="ghost" size="icon" className="h-8 w-8">

@@ -46,7 +46,7 @@ export function GeneralSettingsForm({
         <Card className="rounded-2xl border-none shadow-sm bg-white/50 backdrop-blur-sm dark:bg-neutral-900/50">
             <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                    <GlobeAltIcon className="h-5 w-5 text-blue-500" />
+                    <GlobeAltIcon className="h-5 w-5 text-primary" />
                     全局基本配置
                 </CardTitle>
                 <CardDescription>管理系统的基本信息，如名称、联系方式和版权信息。</CardDescription>
@@ -99,7 +99,7 @@ export function GeneralSettingsForm({
                         <Button
                             onClick={onSave}
                             disabled={loading}
-                            className="bg-blue-600 hover:bg-blue-700 rounded-2xl"
+                            className="bg-primary hover:bg-primary/90 rounded-2xl text-primary-foreground"
                         >
                             <DocumentCheckIcon className="mr-2 h-4 w-4" />
                             {loading ? '保存中...' : '保存全局配置'}

@@ -10,7 +10,7 @@ import { BeakerIcon } from '@heroicons/react/24/outline'
 function MyComponent() {
   return (
     <div>
-      <BeakerIcon className="size-6 text-blue-500" />
+      <BeakerIcon className="size-6 text-primary" />
       <p>...</p>
     </div>
   )
