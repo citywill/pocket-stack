@@ -1,11 +1,18 @@
 {
   "name": "@pocketstack/notebook",
   "version": "1.0.0",
-  "title": "笔记本",
+  "title": "口袋笔记本",
   "description": "笔记本模块，包含笔记本构建器、笔记本详情等管理功能",
   "private": true,
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "easymde": "^2.20.0",
+    "katex": "^0.16.27",
+    "mermaid": "^11.12.2",
+    "react-simplemde-editor": "^5.2.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  },
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
