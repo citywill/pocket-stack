@@ -23,6 +23,7 @@ import {
 
 interface ModuleInfo {
   name: string;
+  moduleName: string;
   version: string;
   title: string;
   description: string;
@@ -86,6 +87,7 @@ export function Modules() {
 
         return {
           name: pkg.name || moduleName,
+          moduleName,
           version: pkg.version || '1.0.0',
           title: pkg.title || moduleName,
           description: pkg.description || '',
@@ -165,7 +167,7 @@ export function Modules() {
   const confirmInitialize = async () => {
     if (!selectedModule) return;
 
-    const moduleName = selectedModule.name;
+    const moduleName = selectedModule.moduleName;
     setInitializingModules((prev) => new Set(prev).add(moduleName));
     setInitConfirmOpen(false);
 
@@ -185,7 +187,7 @@ export function Modules() {
       }
 
       await pb.collection('system_modules').create({
-        name: moduleName,
+        name: selectedModule.name,
         initialized: true,
       });
 
@@ -304,7 +306,7 @@ export function Modules() {
               </thead>
               <tbody>
                 {modules.map((module) => {
-                  const isInitializing = initializingModules.has(module.name);
+                  const isInitializing = initializingModules.has(module.moduleName);
                   return (
                     <tr
                       key={module.name}
@@ -386,16 +388,18 @@ export function Modules() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>确认初始化模块</AlertDialogTitle>
-            <AlertDialogDescription>
-              确定要初始化模块「{selectedModule?.title}」吗？这将把以下迁移文件导入到 PocketBase：
-              <ul className="mt-2 list-disc list-inside text-sm">
-                {selectedModule?.migrations.map((file) => (
-                  <li key={file}>{file}</li>
-                ))}
-              </ul>
-              <p className="mt-2 text-amber-600 dark:text-amber-400">
-                此操作不可逆，请确保 PocketBase 服务正在运行。
-              </p>
+            <AlertDialogDescription asChild>
+              <div className="text-muted-foreground text-sm">
+                确定要初始化模块「{selectedModule?.title}」吗？这将把以下迁移文件导入到 PocketBase：
+                <ul className="mt-2 list-disc list-inside text-sm">
+                  {selectedModule?.migrations.map((file) => (
+                    <li key={file}>{file}</li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-amber-600 dark:text-amber-400">
+                  此操作不可逆，请确保 PocketBase 服务正在运行。
+                </p>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
