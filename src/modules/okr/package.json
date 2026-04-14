@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/okr",
+  "version": "1.0.0",
+  "title": "口袋OKR",
+  "description": "OKR 模块，包含目标与关键结果、任务看板等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
