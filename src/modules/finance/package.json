@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/finance",
+  "version": "1.0.0",
+  "title": "财务管理",
+  "description": "财务管理模块，包含收支分类、收支记录等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
