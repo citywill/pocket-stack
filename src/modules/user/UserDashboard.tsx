@@ -17,7 +17,6 @@ interface User {
   updated: string;
 }
 
-// Custom tooltip style
 const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -35,7 +34,7 @@ const CustomTooltip = ({ active, payload, label, unit = "个用户" }: any) => {
   return null;
 };
 
-export function AdminDashboard() {
+export function UserDashboard() {
   const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +43,6 @@ export function AdminDashboard() {
     { title: '总用户数', value: '0', icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
   ]);
 
-  // Chart data
   const [userTrendData, setUserTrendData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -52,14 +50,12 @@ export function AdminDashboard() {
 
     const fetchData = async () => {
       try {
-        // Fetch all users
         const usersResult = await pb.collection('users').getFullList<User>({
           sort: '-created',
           signal: undefined,
         });
         setUsers(usersResult);
 
-        // Update stats
         const activeUsers = usersResult.length;
         const totalUsers = usersResult.length;
 
@@ -68,7 +64,6 @@ export function AdminDashboard() {
           { title: '总用户数', value: totalUsers.toString(), icon: UserIcon, color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-50 dark:bg-indigo-950/50' },
         ]);
 
-        // Prepare user trend data (group by day)
         const userTrendMap: { [key: string]: number } = {};
         usersResult.forEach(user => {
           if (user.created) {
@@ -78,7 +73,6 @@ export function AdminDashboard() {
           }
         });
 
-        // Convert to array and sort by date
         const userTrendArray = Object.entries(userTrendMap).map(([date, count]) => ({
           date,
           count
@@ -99,17 +93,15 @@ export function AdminDashboard() {
 
   return (
     <div className="space-y-6 p-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50">
-          管理员仪表盘
+          用户数据
         </h1>
         <p className="mt-2 text-neutral-600 dark:text-neutral-400">
           全局数据概览
         </p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
         {stats.map((stat) => {
           return (
@@ -134,7 +126,6 @@ export function AdminDashboard() {
         })}
       </div>
 
-      {/* User Chart Section */}
       <div className="grid gap-6">
         <Card className="hover:shadow-lg transition-all duration-300">
           <CardHeader>
@@ -198,7 +189,6 @@ export function AdminDashboard() {
         </Card>
       </div>
 
-      {/* Recent Users Section */}
       <div className="grid gap-6">
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader>

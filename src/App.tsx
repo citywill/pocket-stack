@@ -3,7 +3,6 @@ import { MainLayout } from '@/components/layout';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
 import { SettingsProvider } from '@/lib/use-settings';
-import { AdminRoutes } from '@/pages/admin/routes';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
@@ -34,7 +33,6 @@ export function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="profile" element={<Profile />} />
                 <Route path="/" element={<MainLayout />}>
-                  {AdminRoutes}
                   <Route path="profile" element={<Profile />} />
                 </Route >
               </Route >

@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/notes",
+  "version": "1.0.0",
+  "title": "口袋笔记",
+  "description": "笔记管理模块，包含笔记、标签、AI 生成等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

@@ -12,7 +12,6 @@ interface SystemSetting {
   description: string;
 }
 
-// 动态加载所有设置表单组件
 const formModules = import.meta.glob('./components/SettingForms/*.tsx', { eager: true });
 
 interface SettingFormModule {
@@ -27,8 +26,6 @@ interface SettingFormModule {
 
 const FORMS = Object.entries(formModules).map(([path, module]) => {
   const m = module as SettingFormModule;
-  // 获取组件名（通常是文件名，或者是 metadata.id 对应的组件）
-  // 假设组件是以文件名命名的命名导出，例如 GeneralSettingsForm.tsx 导出 GeneralSettingsForm
   const fileName = path.split('/').pop()?.replace('.tsx', '');
   const Component = m[fileName || ''] || Object.values(m).find(v => typeof v === 'function');
 
@@ -39,7 +36,6 @@ const FORMS = Object.entries(formModules).map(([path, module]) => {
 })
   .filter(f => f.Component && f.id)
   .sort((a, b) => {
-    // 确保 id 为 'general' 的表单排在第一位
     if (a.id === 'general') return -1;
     if (b.id === 'general') return 1;
     return 0;
@@ -57,12 +53,11 @@ export function Settings() {
     try {
       setFetching(true);
       const records = await pb.collection('system_settings').getFullList<SystemSetting>({
-        requestKey: null // Disable auto-cancellation
+        requestKey: null
       });
 
       const settingsMap: Record<string, SystemSetting> = {};
 
-      // Initialize with presets (empty values)
       ALL_PRESET_SETTINGS.forEach(preset => {
         settingsMap[preset.key] = {
           id: '',
@@ -72,7 +67,6 @@ export function Settings() {
         };
       });
 
-      // Overlay with database records
       records.forEach(record => {
         settingsMap[record.key] = record;
       });
@@ -102,7 +96,6 @@ export function Settings() {
   const saveSettings = async () => {
     try {
       setLoading(true);
-      // Process all settings, allowing empty values for both new and existing records.
       const settingsToSave = Object.values(settings);
 
       if (settingsToSave.length === 0) {
@@ -111,7 +104,6 @@ export function Settings() {
       }
 
       const promises = settingsToSave.map(async (setting) => {
-        // PocketBase JSON field requires a valid JSON value.
         const data = {
           key: setting.key,
           value: setting.value || "",
@@ -127,7 +119,7 @@ export function Settings() {
 
       await Promise.all(promises);
       await refresh();
-      await fetchSettings(); // Refresh local state to get new IDs
+      await fetchSettings();
       toast.success('系统设置已保存');
     } catch (error: any) {
       console.error('Save settings error:', error);
