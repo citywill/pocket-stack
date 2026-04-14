@@ -4,8 +4,6 @@
 
 基于 React + shadcn/ui + PocketBase + MCP 等技术，实现完整、流畅的全栈 Vibe Coding 开发体验。
 
-简体中文 | [English](../README_en.md)
-
 ![Pocket Stack 示例页面](assets/example-dashboard.png)
 
 ## 基于 PockeStack 的 Vibe Coding 图示
