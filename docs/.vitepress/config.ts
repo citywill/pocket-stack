@@ -14,47 +14,61 @@ export default {
     search: {
       provider: 'local'
     },
+    outline: {
+      level: [2, 4],
+      label: '目录'
+    },
     sidebar: [
       {
         text: '概要',
+        collapsed: false,
         items: [
           { text: '项目说明', link: '/index' },
           { text: '快速开始', link: '/快速开始' },
           { text: '安装部署', link: '/安装部署' },
-          { text: '后台管理', link: '/后台管理功能' },
+          { text: '模块说明', link: '/模块说明' },
+        ]
+      },
+      {
+        text: '预置模块',
+        collapsed: false,
+        items: [
+          { text: '初始化和模块管理', link: '/初始化和模块管理' },
           { text: '示例模块', link: '/示例模块' },
+          { text: '系统设置模块', link: '/modules/settings' },
+          { text: '用户管理模块', link: '/modules/user' },
         ]
       },
       {
         text: '开发教程',
+        collapsed: false,
         items: [
           { text: '开发环境配置', link: '/教程：开发环境配置' },
-          { text: '开发流程', link: '/教程：开发流程' },
-          { text: '前端开发', link: '/教程：前端开发' },
-          { text: '后端开发', link: '/教程：后端开发' },
-          { text: '前后端联调', link: '/教程：前后端联调' },
-          { text: '开发技巧', link: '/教程：开发技巧' }
+          { text: '模块开发教程', link: '/教程：模块开发教程' },
         ]
       },
       {
         text: '专题',
+        collapsed: false,
         items: [
           { text: '前端特性', link: '/前端特性' },
           { text: '菜单定义', link: '/菜单定义' },
-          { text: '权限控制', link: '/权限控制' }
+          { text: '权限控制', link: '/权限控制' },
+          { text: '后端技巧', link: '/后端技巧' },
         ]
       },
       {
-        text: 'Demo模块',
-        items: [
-          { text: '演示模块说明', link: '/demos/index' },
-          { text: '口袋笔记', link: '/demos/notes' },
-          { text: '口袋 AI 助理', link: '/demos/ai' },
-          { text: '口袋 NotebookLM', link: '/demos/notebooklm' },
-          { text: '口袋看板', link: '/demos/kanban' },
-          { text: '口袋记账', link: '/demos/finance' },
-          { text: '口袋OKRs', link: '/demos/okr' },
-        ]
+        text: '扩展模块',
+        collapsed: false,
+        items: 
+        [
+          { text: '口袋笔记', link: '/modules/notes' },
+          { text: '口袋 AI 助理', link: '/modules/ai' },
+          { text: '口袋 NotebookLM', link: '/modules/notebooklm' },
+          { text: '口袋看板', link: '/modules/kanban' },
+          { text: '口袋记账', link: '/modules/finance' },
+          { text: '口袋OKRs', link: '/modules/okr' },
+        ] 
       },
     ]
   }

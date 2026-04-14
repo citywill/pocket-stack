@@ -5,7 +5,11 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { cn } from '@/lib/utils';
 
-export function MainLayout() {
+interface MainLayoutProps {
+  showFooter?: boolean;
+}
+
+export function MainLayout({ showFooter = true }: MainLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -51,7 +55,7 @@ export function MainLayout() {
         <div className="flex-1">
           <Outlet />
         </div>
-        <Footer />
+        {showFooter && <Footer />}
       </main>
     </div>
   );

@@ -4,13 +4,10 @@
 
 基于 React + shadcn/ui + PocketBase + MCP 等技术，实现完整、流畅的全栈 Vibe Coding 开发体验。
 
-简体中文 | [English](README_en.md)
-
 ![Pocket Stack 示例页面](docs/assets/example-dashboard.png)
 
 ## 📄 更多信息
 
-- [演示](https://pocket-stack.zeabur.app/)
 - [文档](https://citywill.github.io/pocket-stack/)
 
 ## 基于 PockeStack 的 Vibe Coding 图示
@@ -23,14 +20,15 @@
 
 | IDE         | 大模型          | 打分 | 说明                                                        |
 | ----------- | --------------- | ---- | ----------------------------------------------------------- |
+| Trae 国内版 | MiniMax-M2.7 | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
 | Trae 国内版 | Doubao-Seed-1.8 | 90分 | 可以实现vibe开发。一半功能一次成型，一半需要补充debug提示词 |
-| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。20%的情况需补充debug提示词                |
+| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
 
 ## 🌟 核心特性
 
-- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，内置深色模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
+- 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，支持 Blue、Green、Red、Gray 四种主题颜色切换，内置亮色、深色、跟随系统模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
 - 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
-- 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立配置路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
+- 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立定义组件（`components/`）、迁移文件（`migrations/`）、包定义（`package.json`）、路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
 - 📋 **业务示例**：内置个人任务管理系统，支持多状态流转、优先级设定及用户数据隔离。
 - 🎪 **身份认证**：支持“超级管理员”与“普通管理员”登录模式。
 - 🛡️ **权限控制**：
@@ -55,7 +53,6 @@
 
 ```text
 ├── docs/                # 文档目录
-├── migrations/          # 数据库迁移文件
 ├── public/              # 静态资源
 └── src/
     ├── components/
@@ -66,11 +63,13 @@
     │   ├── protected-route.tsx # 路由守卫
     │   └── theme-provider.tsx # 主题上下文
     ├── lib/             # 工具库 (pocketbase, utils)
-    ├── modules/         # 业务模块
+    ├── modules/         # 模块
     │   └── examples/    # 示例模块 (包含 CURD, AI Chat, Blog 等示例)
     │       ├── components/ # 模块组件
+    │       ├── migrations/ # 模块数据库迁移文件
+    │       ├── routes.tsx # 模块路由
     │       ├── menu.ts  # 模块菜单
-    │       └── routes.tsx # 模块路由
+    │       └── package.json # 模块包定义文件
     ├── pages/           # 系统页面
     │   ├── admin/       # 管理后台 (Dashboard, Settings, Users)
     │   ├── Login.tsx    # 登录页

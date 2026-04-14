@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/notebook",
+  "version": "1.0.0",
+  "title": "笔记本",
+  "description": "笔记本模块，包含笔记本构建器、笔记本详情等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

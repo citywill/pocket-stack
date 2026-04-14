@@ -27,7 +27,7 @@ export function LoginPage() {
     try {
       await login(email, password, isSuperAdmin);
       // 登录成功后跳转到对应仪表盘
-      navigate(isSuperAdmin ? '/admin/dashboard' : '/');
+      navigate('/');
     } catch (err: any) {
       console.error('Login error:', err);
       setError('登录失败，请检查账号和密码是否正确');
