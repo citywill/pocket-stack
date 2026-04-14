@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/menu",
+  "version": "1.0.0",
+  "title": "菜单管理",
+  "description": "菜单管理模块，包含菜单项管理、系统菜单等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

@@ -1,5 +1,3 @@
-import { adminMenu } from '@/pages/admin/menu';
-
 // 使用 import.meta.glob 动态导入 systemMenu，支持失败时忽略
 const systemMenuModules = import.meta.glob(['../modules/menu/systemMenu.ts'], { eager: true });
 const systemMenuModule = Object.values(systemMenuModules)[0];
@@ -52,7 +50,6 @@ const autoMenus: MenuItem[] = Object.values(moduleMenus).flatMap((mod: any) => {
 const systemMenu: MenuItem[] = [];
 
 const allMenus: MenuItem[] = [
-    ...adminMenu,
     ...autoMenus,
     ...systemMenu,
 ];
@@ -73,7 +70,6 @@ export async function getMenuItems(): Promise<MenuItem[]> {
     const systemMenu = getSystemMenu ? await getSystemMenu().catch(() => []) : [];
 
     return [
-        ...adminMenu,
         ...autoMenus,
         ...systemMenu,
     ].filter(item => item && item.show !== false).map(item => {
