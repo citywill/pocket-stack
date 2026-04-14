@@ -81,4 +81,4 @@
 
 添加微信好友，加微信入群，备注 pocketstack
 
-<img src="assets/weixin.png" width="200"/>
+<img src="./assets/weixin.png" width="200"/>
