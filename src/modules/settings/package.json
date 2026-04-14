@@ -1,0 +1,12 @@
+{
+  "name": "@pocketstack/settings",
+  "version": "1.0.0",
+  "title": "系统设置",
+  "description": "系统设置模块，用于配置系统全局参数",
+  "private": true,
+  "type": "module",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

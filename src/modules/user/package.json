@@ -1,0 +1,12 @@
+{
+  "name": "@pocketstack/user",
+  "version": "1.0.0",
+  "title": "用户管理",
+  "description": "用户管理模块，包含用户仪表盘和用户列表",
+  "private": true,
+  "type": "module",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

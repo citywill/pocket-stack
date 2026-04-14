@@ -1,5 +1,3 @@
-import { adminMenu } from '@/pages/admin/menu';
-
 /**
  * 菜单项接口定义
  */
@@ -46,7 +44,6 @@ const autoMenus: MenuItem[] = Object.values(moduleMenus).flatMap((mod: any) => {
  * 组合了各个模块的菜单，并应用全局显示过滤逻辑
  */
 const allMenus: MenuItem[] = [
-    ...adminMenu,
     ...autoMenus,
 ];
 

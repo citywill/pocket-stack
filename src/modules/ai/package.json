@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/ai",
+  "version": "1.0.0",
+  "title": "AI 管理",
+  "description": "AI 管理模块，包含 AI Agent、Playground 等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

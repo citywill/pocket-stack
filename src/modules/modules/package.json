@@ -1,0 +1,12 @@
+{
+  "name": "@pocketstack/modules",
+  "version": "1.0.0",
+  "title": "模块管理",
+  "description": "模块管理模块，用于查看和管理系统中所有模块的状态",
+  "private": true,
+  "type": "module",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
