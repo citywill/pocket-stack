@@ -1,0 +1,13 @@
+{
+  "name": "@pocketstack/kanban",
+  "version": "1.0.0",
+  "title": "口袋看板",
+  "description": "看板模块，包含任务看板、任务详情、任务日志等管理功能",
+  "private": true,
+  "type": "module",
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

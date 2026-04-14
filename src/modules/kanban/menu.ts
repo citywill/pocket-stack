@@ -7,5 +7,6 @@ export const menu = [
     path: '/kanban',
     show: true,
     activePath: '/kanban',
+    userOnly: true,
   }
 ];

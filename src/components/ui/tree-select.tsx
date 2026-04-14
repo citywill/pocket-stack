@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
-import { ChevronRightIcon, ChevronDownIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, FolderIcon, FolderOpenIcon } from '@heroicons/react/24/outline';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import type { Category } from '@/modules/treenote/types';
+
+interface Category {
+  id: string;
+  name: string;
+  parent: string | null;
+}
 
 interface CategoryTreeNode {
   id: string;

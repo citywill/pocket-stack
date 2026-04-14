@@ -110,6 +110,3 @@ export function GeneralSettingsForm({
         </Card>
     );
 }
-
-// 辅助组件处理 Textarea 类型，这里由于之前代码中是直接使用 Textarea，我们保持一致
-// 移除未使用的变量
