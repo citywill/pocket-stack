@@ -18,11 +18,9 @@
 import { Route } from 'react-router-dom';
 import { MainLayout } from '@/components/layout';
 import { ProtectedRoute, AdminOnlyRoute } from '@/components/protected-route';
-import { lazy } from 'react';
-
-const ListPage = lazy(() => import('./ListPage'));
-const AdminPage = lazy(() => import('./AdminPage'));
-const LandingPage = lazy(() => import('./LandingPage'));
+import { ListPage } from './ListPage';
+import { AdminPage } from './AdminPage';
+import { LandingPage } from './LandingPage';
 
 export const routes = (
   <>
@@ -30,7 +28,6 @@ export const routes = (
     <Route element={<ProtectedRoute />}>
       <Route path="/" element={<MainLayout />}>
         <Route path="module/list" element={<ListPage />} />
-        
         {/* 仅限超级管理员访问的模块内页面 */}
         <Route element={<AdminOnlyRoute />}>
            <Route path="module/admin" element={<AdminPage />} />
