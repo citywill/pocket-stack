@@ -5,7 +5,10 @@
   "description": "笔记管理模块，包含笔记、标签、AI 生成等管理功能",
   "private": true,
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "react-calendar-heatmap": "^1.9.0",
+    "react-syntax-highlighter": "^15.6.1"
+  },
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
