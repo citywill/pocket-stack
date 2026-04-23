@@ -363,9 +363,9 @@ export default function KanbanBoard() {
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex-1 overflow-x-auto p-6 pt-0 w-full">
-          <div className="flex gap-6 h-full min-w-max w-full">
+          <div className="flex gap-6 h-full w-full">
             {COLUMNS.map((column) => (
-              <div key={column.id} className="flex flex-col flex-1 min-w-0 max-w-[400px] bg-neutral-100/50 dark:bg-neutral-900/50 rounded-2xl p-4">
+              <div key={column.id} className="flex flex-col flex-1 min-w-0 bg-neutral-100/50 dark:bg-neutral-900/50 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-4 px-2">
                   <h2 className="font-semibold text-sm flex items-center gap-2">
                     {column.title}
