@@ -13,6 +13,11 @@ import { pb } from '@/lib/pocketbase';
 // 默认: http://127.0.0.1:8090
 ```
 
+## 操作 PocketBase 数据库
+
+- 请使用pocketbase mcp或开发python脚本操作 pocketbase
+- 默认管理员账号密码是：admin@example.com/admin12345
+
 ## Collection 操作
 
 ### 命名规范

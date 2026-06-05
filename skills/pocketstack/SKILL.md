@@ -32,6 +32,7 @@ PocketStack 是基于 PocketBase 后端和 React 前端的全栈模块化开发�
 - **路由与菜单**: 见 [routing.md](references/routing.md)
 - **后端开发**: 见 [backend.md](references/backend.md)
 - **测试流程**: 见 [testing.md](references/testing.md)
+- **开发示例**: 见 [example.md](references/example.md)
 
 ## 关键文件位置
 
