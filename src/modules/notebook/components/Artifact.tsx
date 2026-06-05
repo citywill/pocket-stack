@@ -14,7 +14,7 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { pb } from '@/lib/pocketbase';
-import Mermaid from '@/components/Mermaid';
+import Mermaid from '@/modules/notebook/components/Mermaid';
 import {
     DropdownMenu,
     DropdownMenuContent,
