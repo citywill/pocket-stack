@@ -10,6 +10,4 @@
 
 ## skills
 
-skills存放在 `.skills`目录下：
-
 - `pocketstack`： PocketStack 全栈开发框架，基于 React + shadcn/ui + PocketBase
