@@ -4,7 +4,7 @@ import path from "path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
-const pocketbase = path.join(root, ".private", "pocketbase", "pocketbase.exe");
+const pocketbase = path.join(root, ".pocketbase", "pocketbase.exe");
 
 // 启动 PocketBase
 const pb = spawn(pocketbase, ["serve"], {
