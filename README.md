@@ -52,6 +52,7 @@
 ## 📁 目录结构
 
 ```text
+├── .pocketbase/         # PocketBase 数据库目录
 ├── docs/                # 文档目录
 ├── public/              # 静态资源
 └── src/
@@ -81,10 +82,15 @@
 
 ## 🚀 快速开始
 
+建议使用`pocketstack skill`创建新的PocketStack项目。
+
+例如，在agent中输入提示词：`在{指定目录下}初始化一个PocketStack项目，并运行开发环境`
+
+也按以下步骤手动开始：
+
 ### 1. 启动后端 (PocketBase)
-1. 下载 [PocketBase](https://pocketbase.io/docs/) 二进制文件。
-2. 运行 `./pocketbase serve`。
-3. 访问 `http://127.0.0.1:8090/_/` 创建管理员账号并配置集合。
+
+下载 [PocketBase](https://pocketbase.io/docs/) 二进制文件（建议存放在项目`.pocketbase/`目录下）。
 
 ### 2. 运行前端
 
@@ -98,6 +104,14 @@ npm install
 # 启动开发服务器
 npm run dev
 ```
+
+### 3. 配置PocketBase
+
+在浏览器中访问 `http://127.0.0.1:8090/_/` 创建管理员账号并配置集合（开发环境建议使用默认账号密码 `admin@example.com/admin12345`）。
+
+### 4. 初始化模块
+
+在浏览器访问 `http://localhost:5173`，使用superuser账号登录，访问模块管理功能，即可初始化模块。
 
 ## 联系和讨论
 
