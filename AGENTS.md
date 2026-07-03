@@ -36,7 +36,7 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 ## 3. 关键目录结构
 
 ```
-.
+├── .pocketbase/              # PocketBase 数据库目录
 ├── docs/                     # 项目文档（VitePress 站点）
 │   ├── .vitepress/           # 站点配置
 │   ├── assets/               # 文档图片
@@ -85,7 +85,8 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 | -------------- | --------------------------------------------------------------------------------------------------------------- |
 | `pocketstack`  | PocketStack 全栈开发框架。创建模块、CRUD 页面、路由/菜单/权限、PocketBase collection、shadcn 组件、编译与浏览器测试 |
 
-`.trae/skills/pocketstack/SKILL.md` 是主入口，references/ 下还有：
+skill 的 references 下有：
+- `initialization.md`（初始化项目开发环境）
 - `module.md`（模块结构）
 - `frontend.md`（前端风格）
 - `routing.md`（路由与菜单）
@@ -113,7 +114,7 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 
 ```bash
 pnpm install                  # 安装依赖
-pnpm dev                      # 本地开发
+pnpm dev                      # 启动本地，包括运行前端开发环境和pocketbase的启动
 pnpm build                    # 类型检查 + 生产构建
 pnpm lint                     # ESLint
 pnpm docs:dev                 # 启动 VitePress 文档
