@@ -26,4 +26,5 @@ cache
 .env
 
 .private/
+.pocketbase/
 __pycache__/
