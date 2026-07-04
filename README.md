@@ -14,18 +14,9 @@
 
 ![Pocket Stack Vibe Coding 图示](docs/assets/diagram.png)
 
-## 🎶 Vibe Coding 效果
-
-经过在多个开发 Agent 测试，Pocket Stack 可以使用免费的 Trae 表现出几乎完美的 Vibe Coding。
-
-| IDE         | 大模型          | 打分 | 说明                                                        |
-| ----------- | --------------- | ---- | ----------------------------------------------------------- |
-| Trae 国内版 | MiniMax-M2.7 | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
-| Trae 国内版 | Doubao-Seed-1.8 | 90分 | 可以实现vibe开发。一半功能一次成型，一半需要补充debug提示词 |
-| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
-
 ## 🌟 核心特性
 
+- 🤖 **AI 友好**：结合项目中的`AGENTS.md`和[pocketstack skill](https://github.com/citywill/pocketstack-skill)，实现使用AI IDE（例如TRAE）或通用智能体（例如Codex等），完成项目的代码部署、环境配置、模块开发。
 - 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，支持 Blue、Green、Red、Gray 四种主题颜色切换，内置亮色、深色、跟随系统模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
 - 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
 - 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立定义组件（`components/`）、迁移文件（`migrations/`）、包定义（`package.json`）、路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
@@ -88,28 +79,49 @@
 
 也按以下步骤手动开始：
 
-### 1. 启动后端 (PocketBase)
-
-下载 [PocketBase](https://pocketbase.io/docs/) 二进制文件（建议存放在项目`.pocketbase/`目录下）。
-
-### 2. 运行前端
+### 1. 克隆项目并初始化环境变量配置文件
 
 ```bash
-# 编辑 .env 文件，配置 PocketBase 后端地址
+git clone https://github.com/citywill/pocket-stack <项目目录名>
+cd <项目目录名>
 cp .env.example .env
-
-# 安装依赖
-npm install
-
-# 启动开发服务器
-npm run dev
 ```
 
-### 3. 配置PocketBase
+> 项目目录名由用户指定，若用户未提供则默认为 `pocket-stack`。
+
+### 2. 安装后端 (PocketBase)
+
+将 PocketBase 可执行文件下载到项目根目录：
+
+- 前往 [PocketBase Releases](https://github.com/pocketbase/pocketbase/releases) 下载对应平台的可执行文件
+- Windows: `pocketbase.exe`
+- macOS/Linux: `pocketbase`
+
+将下载的文件放置在项目根目录 `.pocketbase/` 下。
+
+### 3. 安装依赖
+
+```bash
+npm install
+# 或使用 pnpm
+pnpm install
+```
+
+### 4. 启动开发环境
+
+```bash
+npm run dev
+# 或使用 pnpm
+pnpm dev
+```
+
+该命令会同时启动 PocketBase 后端和 Vite 前端开发服务器。
+
+### 5. 配置PocketBase
 
 在浏览器中访问 `http://127.0.0.1:8090/_/` 创建管理员账号并配置集合（开发环境建议使用默认账号密码 `admin@example.com/admin12345`）。
 
-### 4. 初始化模块
+### 6. 初始化模块
 
 在浏览器访问 `http://localhost:5173`，使用superuser账号登录，访问模块管理功能，即可初始化模块。
 
