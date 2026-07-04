@@ -10,18 +10,9 @@
 
 ![Pocket Stack Vibe Coding 图示](assets/diagram.png)
 
-## 🎶 Vibe Coding 效果
-
-经过在多个开发 Agent 测试，Pocket Stack 可以使用免费的 Trae 表现出几乎完美的 Vibe Coding。
-
-| IDE         | 大模型          | 打分 | 说明                                                        |
-| ----------- | --------------- | ---- | ----------------------------------------------------------- |
-| Trae 国内版 | MiniMax-M2.7 | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
-| Trae 国内版 | Doubao-Seed-1.8 | 90分 | 可以实现vibe开发。一半功能一次成型，一半需要补充debug提示词 |
-| Trae 国际版 | Ginimi-3-flash  | 95分 | 可以实现vibe开发。几乎不需要补充debug提示词 |
-
 ## 🌟 核心特性
 
+- 🤖 **AI 友好**：结合项目中的`AGENTS.md`和[pocketstack skill](https://github.com/citywill/pocketstack-skill)，实现使用AI IDE（例如TRAE）或通用智能体（例如Codex等），完成项目的代码部署、环境配置、模块开发。
 - 🎨 **前端特性**：基于 shadcn/ui (Maia 风格) 与 Tailwind CSS v4，支持 Blue、Green、Red、Gray 四种主题颜色切换，内置亮色、深色、跟随系统模式。全站采用 Heroicons 图标库。自适应 Desktop、Tablet 及 Mobile 布局。
 - 🚀 **后端特性**：原生集成 [PocketBase](https://pocketbase.io/)，覆盖身份验证及数据存储。
 - 🧩 **模块化架构**：支持业务模块解耦开发，每个模块独立定义组件（`components/`）、迁移文件（`migrations/`）、包定义（`package.json`）、路由 (`routes.tsx`) 与菜单 (`menu.ts`)，实现即插即用。
@@ -48,6 +39,7 @@
 ## 📁 目录结构
 
 ```text
+├── .pocketbase/         # PocketBase 数据库目录
 ├── docs/                # 文档目录
 ├── public/              # 静态资源
 └── src/

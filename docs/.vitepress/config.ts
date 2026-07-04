@@ -30,16 +30,6 @@ export default {
         ]
       },
       {
-        text: '预置模块',
-        collapsed: false,
-        items: [
-          { text: '初始化和模块管理', link: '/初始化和模块管理' },
-          { text: '示例模块', link: '/示例模块' },
-          { text: '系统设置模块', link: '/modules/settings' },
-          { text: '用户管理模块', link: '/modules/user' },
-        ]
-      },
-      {
         text: '开发教程',
         collapsed: false,
         items: [
@@ -55,6 +45,16 @@ export default {
           { text: '菜单定义', link: '/菜单定义' },
           { text: '权限控制', link: '/权限控制' },
           { text: '后端技巧', link: '/后端技巧' },
+        ]
+      },
+      {
+        text: '预置模块',
+        collapsed: false,
+        items: [
+          { text: '初始化和模块管理', link: '/初始化和模块管理' },
+          { text: '示例模块', link: '/示例模块' },
+          { text: '系统设置模块', link: '/modules/settings' },
+          { text: '用户管理模块', link: '/modules/user' },
         ]
       },
       {
