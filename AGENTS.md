@@ -69,7 +69,21 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 
 ## 4. 模块（Module）开发约定
 
-每个业务模块放在 `src/modules/<module>/`，包含 `Index.tsx` / `routes.tsx` / `menu.ts` / `package.json` / `types.ts`，**新增模块后路由和菜单会自动注册**，无需手动改主入口。
+每个业务模块放在 `src/modules/<module>/`，经典目录结构如下：
+
+```
+src/modules/{module}/
+├── migrations/            # PocketBase collection schema
+├── components/            # 模块专用组件
+├── Index.tsx              # 主页面入口
+├── routes.tsx             # 路由配置（自动注册）
+├── menu.ts                # 菜单配置（自动注册）
+├── package.json           # 模块元数据
+├── types.ts               # 类型定义
+└── README.md              # 模块说明文档
+```
+
+**新增模块后路由和菜单会自动注册**，无需手动改主入口。
 
 - **目录命名**：kebab-case（`finance`、`notebooklm`）
 - **页面文件**：大驼峰 PascalCase
