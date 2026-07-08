@@ -72,10 +72,7 @@ export default {
       },
       {
         text: '版本发布',
-        collapsed: false,
-        items: [
-          { text: '版本发布', link: '/release/index' },
-        ]
+        link: '/release/index',
       },
     ]
   }
