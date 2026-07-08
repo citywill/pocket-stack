@@ -12,7 +12,8 @@
 - **表单**：表单组件使用示例
 - **卡片**：卡片布局展示示例
 - **AI 对话**：AI 聊天对话界面示例
-- **Markdown 编辑器**：Markdown 编辑与预览
+- **Markdown 编辑器**：Markdown 编辑与实时预览
+- **Markdown 渲染**：Markdown 内容渲染展示
 - **落地页**：无需登录的公开落地页（游客可访问）
 - **博客详情**：博客文章详情展示
 - **Iframe**：内嵌 iframe 页面示例
@@ -30,7 +31,8 @@
 | 表单 | `/examples/form` | 表单组件示例 |
 | AI 对话 | `/examples/chat` | AI 聊天界面 |
 | 加载中 | `/examples/loading` | 加载状态示例 |
-| Markdown 编辑器 | `/examples/markdown` | Markdown 编辑与预览 |
+| Markdown 编辑器 | `/examples/markdown` | Markdown 编辑与实时预览 |
+| Markdown 渲染 | `/examples/markdown-render` | Markdown 内容渲染展示 |
 | Iframe 示例 | `/examples/iframe` | 内嵌 iframe 页面 |
 | 落地页 | `/examples/portal/landing` | 公开落地页（无需登录） |
 | 博客详情 | `/examples/portal/blog-detail` | 博客详情页 |

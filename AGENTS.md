@@ -110,6 +110,39 @@ skill 的 references 下有：
 
 ---
 
+## 6. 示例模块功能列表
+
+示例模块（`src/modules/examples/`）包含以下页面，供开发时参考：
+
+### 管理后台页面（需登录，嵌套 MainLayout）
+
+| 页面 | 文件位置 | 说明 |
+|------|---------|------|
+| 仪表盘 | `src/modules/examples/Dashboard.tsx` | 数据可视化仪表盘，含统计卡片、趋势图表、饼图 |
+| 空页面 | `src/modules/examples/Blank.tsx` | 空白起始页面参考 |
+| 表格 | `src/modules/examples/Table.tsx` | 通用表格组件示例 |
+| CURD 示例 | `src/modules/examples/curd/Index.tsx` | 完整 CRUD 操作（表格列表 + 抽屉表单 + 抽屉详情 + 删除确认） |
+| 卡片 | `src/modules/examples/Card.tsx` | 卡片布局展示 |
+| 表单 | `src/modules/examples/Form.tsx` | 表单组件使用示例 |
+| AI 对话 | `src/modules/examples/AiChat.tsx` | AI 聊天对话界面 |
+| 加载中 | `src/modules/examples/Loading.tsx` | 加载状态示例 |
+| Markdown 编辑器 | `src/modules/examples/MarkdownEditor.tsx` | Markdown 编辑与实时预览 |
+| Markdown 渲染 | `src/modules/examples/MarkdownPreview.tsx` | Markdown 内容渲染展示 |
+| Iframe 示例 | `src/modules/examples/IframePage.tsx` | 内嵌 iframe 页面 |
+
+### 独立页面
+
+| 页面 | 文件位置 | 说明 |
+|------|---------|------|
+| 落地页 | `src/modules/examples/LandingPage.tsx` | 公开落地页，无需登录（游客可访问） |
+| 博客详情 | `src/modules/examples/BlogDetail.tsx` | 博客文章详情页（需登录） |
+
+### CURD 示例数据模型
+
+- Collection：`examples_posts`（迁移文件：`curd/migrations/examples_posts.json`）
+
+---
+
 ## 7. 关键约定（必须遵守）
 
 - **UI 组件**：使用 `shadcn/ui`，通过 `shadcn-ui MCP` 添加，禁止手写新组件

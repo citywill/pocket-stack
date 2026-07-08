@@ -13,6 +13,7 @@ export const menu = {
     { title: '加载中', path: '/examples/loading' },
     { title: 'CURD 示例', path: '/examples/curd' },
     { title: 'Markdown 编辑器', path: '/examples/markdown' },
+    { title: 'Markdown 渲染', path: '/examples/markdown-render' },
     { title: 'Iframe 示例', path: '/examples/iframe' },
     { title: '跳出到外部', path: 'https://citywill.github.io/pocket-stack', external: true },
     { title: '隐藏菜单', path: 'https://citywill.github.io/pocket-stack/login', show: false },

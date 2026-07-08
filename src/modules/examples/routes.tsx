@@ -13,6 +13,7 @@ import { BlogDetail } from './BlogDetail';
 import { LandingPage } from './LandingPage';
 import IframePage from './IframePage';
 import { MarkdownEditor } from './MarkdownEditor';
+import { MarkdownPreview } from './MarkdownPreview';
 
 export const routes = (
   <>
@@ -31,6 +32,7 @@ export const routes = (
         <Route path="blog-detail" element={<BlogDetail />} />
         <Route path="examples/iframe" element={<IframePage />} />
         <Route path="examples/markdown" element={<MarkdownEditor />} />
+        <Route path="examples/markdown-render" element={<MarkdownPreview />} />
       </Route>
     </Route>
     {/* 无需后台框架布局的页面 */}
