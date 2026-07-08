@@ -5,6 +5,7 @@ export interface MenuItem {
     title: string;
     path?: string;
     icon: any;
+    order?: number; // 排序权重，越小越靠前，默认为 999
     adminOnly?: boolean;
     userOnly?: boolean;
     external?: boolean;
@@ -13,6 +14,7 @@ export interface MenuItem {
     children?: {
         title: string;
         path: string;
+        order?: number; // 子菜单排序权重
         adminOnly?: boolean;
         userOnly?: boolean;
         external?: boolean;
@@ -27,17 +29,21 @@ const autoMenus: MenuItem[] = Object.values(moduleMenus).flatMap((mod: any) => {
     const menu = mod.menu || mod.default;
     const items = Array.isArray(menu) ? menu : [menu];
 
-    // 过滤掉 show === false 的菜单项及其子菜单
+    // 过滤掉 show === false 的菜单项，按 order 排序子菜单
     return items.filter(item => item && item.show !== false).map(item => {
         if (item.children) {
             return {
                 ...item,
-                children: item.children.filter((child: any) => child.show !== false)
+                children: item.children
+                    .filter((child: any) => child.show !== false)
+                    .sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999))
             };
         }
         return item;
     });
-}).filter(Boolean);
+})
+.filter(Boolean)
+.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
 
 /**
  * 全局侧边栏菜单配置
@@ -51,7 +57,9 @@ export const menuItems: MenuItem[] = allMenus.filter(item => item && item.show !
     if (item.children) {
         return {
             ...item,
-            children: item.children.filter(child => child.show !== false)
+            children: item.children
+                .filter(child => child.show !== false)
+                .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
         };
     }
     return item;
