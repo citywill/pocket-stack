@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -7,6 +8,7 @@ import {
   CheckCircleIcon,
   ArrowPathIcon,
   ExclamationCircleIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
@@ -40,10 +42,12 @@ interface SystemModuleRecord {
 
 interface ModuleInfoWithStatus extends ModuleInfo {
   initialized: boolean;
+  hasReadme: boolean;
 }
 
 const modulePackages = import.meta.glob('/src/modules/*/package.json', { eager: true }) as Record<string, any>;
 const moduleMigrations = import.meta.glob('/src/modules/*/migrations/*.json', { eager: true }) as Record<string, any>;
+const moduleReadmes = import.meta.glob('/src/modules/*/README.md', { query: '?raw', eager: true }) as Record<string, { default: string }>;
 
 function extractModuleName(path: string): string {
   const match = path.match(/modules\/([^/]+)\//);
@@ -51,6 +55,7 @@ function extractModuleName(path: string): string {
 }
 
 export function Modules() {
+  const navigate = useNavigate();
   const [modules, setModules] = useState<ModuleInfoWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [initializingModules, setInitializingModules] = useState<Set<string>>(new Set());
@@ -77,6 +82,7 @@ export function Modules() {
           const moduleName = extractModuleName(path);
         const migrationPathPrefix = `/src/modules/${moduleName}/migrations/`;
         const moduleMigrationFiles: string[] = [];
+        const readmePath = `/src/modules/${moduleName}/README.md`;
 
         Object.keys(moduleMigrations).forEach((mPath) => {
           if (mPath.startsWith(migrationPathPrefix)) {
@@ -95,6 +101,7 @@ export function Modules() {
           hasMigrations: moduleMigrationFiles.length > 0,
           migrations: moduleMigrationFiles,
           initialized: initializedMap.get(pkg.name || moduleName) || false,
+          hasReadme: readmePath in moduleReadmes,
         };
       });
 
@@ -162,6 +169,10 @@ export function Modules() {
   const handleInitializeClick = (module: ModuleInfoWithStatus) => {
     setSelectedModule(module);
     setInitConfirmOpen(true);
+  };
+
+  const handleReadmeClick = (module: ModuleInfoWithStatus) => {
+    navigate(`/modules/${module.moduleName}/readme`);
   };
 
   const confirmInitialize = async () => {
@@ -299,6 +310,9 @@ export function Modules() {
                   <th className="text-left py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
                     状态
                   </th>
+                  <th className="text-center py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                    说明
+                  </th>
                   <th className="text-right py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
                     操作
                   </th>
@@ -344,6 +358,21 @@ export function Modules() {
                             <ExclamationCircleIcon className="h-3 w-3" />
                             未初始化
                           </Badge>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        {module.hasReadme ? (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleReadmeClick(module)}
+                            className="rounded-xl text-primary hover:text-primary"
+                          >
+                            <DocumentTextIcon className="h-4 w-4 mr-1" />
+                            查看说明
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-neutral-400">-</span>
                         )}
                       </td>
                       <td className="py-3 px-4 text-right">
