@@ -4,6 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeftIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
+import 'github-markdown-css/github-markdown-light.css';
+import '@/markdown.css';
 
 const moduleReadmes = import.meta.glob('/src/modules/*/README.md', { query: '?raw', eager: true }) as Record<string, { default: string }>;
 const modulePackages = import.meta.glob('/src/modules/*/package.json', { eager: true }) as Record<string, any>;
@@ -64,8 +68,11 @@ export function ModuleReadme() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="prose prose-neutral dark:prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <div className="markdown-body">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw, rehypeSlug]}
+            >
               {readmeContent}
             </ReactMarkdown>
           </div>
