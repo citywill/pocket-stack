@@ -60,8 +60,9 @@
     │       ├── components/ # 模块组件
     │       ├── migrations/ # 模块数据库迁移文件
     │       ├── routes.tsx # 模块路由
-    │       ├── menu.ts  # 模块菜单
-    │       └── package.json # 模块包定义文件
+    │       ├── menu.ts  # 模块菜单配置文件
+    │       ├── package.json # 模块包定义文件
+    │       └── README.md    # 模块说明文件
     ├── pages/           # 系统页面
     │   ├── admin/       # 管理后台 (Dashboard, Settings, Users)
     │   ├── Login.tsx    # 登录页
