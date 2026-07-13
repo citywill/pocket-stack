@@ -13,8 +13,8 @@ RUN npm install
 COPY . .
 
 # Set build argument for PocketBase URL
-ARG VITE_POCKETBASE_URL
-ENV VITE_POCKETBASE_URL=$VITE_POCKETBASE_URL
+ARG POCKETBASE_URL
+ENV POCKETBASE_URL=$POCKETBASE_URL
 
 # Build the application
 RUN npm run build
@@ -31,5 +31,5 @@ COPY nginx.conf /etc/nginx/nginx.conf.template
 EXPOSE 80
 
 # Use envsubst to replace specific environment variables in the nginx configuration
-# We only replace VITE_ALI_LLM_URL and VITE_ALI_LLM_API_KEY to avoid breaking nginx's own variables like $uri
-CMD ["/bin/sh", "-c", "envsubst '${VITE_ALI_LLM_URL} ${VITE_ALI_LLM_API_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]
+# We only replace VITE_LLM_URL and LLM_API_KEY to avoid breaking nginx's own variables like $uri
+CMD ["/bin/sh", "-c", "envsubst '${VITE_LLM_URL} ${LLM_API_KEY}' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && exec nginx -g 'daemon off;'"]

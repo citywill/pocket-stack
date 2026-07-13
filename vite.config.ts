@@ -16,13 +16,13 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api/llm': {
-          target: env.VITE_ALI_LLM_URL ? new URL(env.VITE_ALI_LLM_URL).origin + new URL(env.VITE_ALI_LLM_URL).pathname.replace(/\/chat\/completions$/, '') : 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+          target: env.VITE_LLM_URL ? new URL(env.VITE_LLM_URL).origin + new URL(env.VITE_LLM_URL).pathname.replace(/\/chat\/completions$/, '') : 'https://dashscope.aliyuncs.com/compatible-mode/v1',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/llm/, ''),
           configure: (proxy, _options) => {
             proxy.on('proxyReq', (proxyReq, _req, _res) => {
-              if (env.VITE_ALI_LLM_API_KEY) {
-                proxyReq.setHeader('Authorization', `Bearer ${env.VITE_ALI_LLM_API_KEY}`);
+              if (env.LLM_API_KEY) {
+                proxyReq.setHeader('Authorization', `Bearer ${env.LLM_API_KEY}`);
               }
             });
           }

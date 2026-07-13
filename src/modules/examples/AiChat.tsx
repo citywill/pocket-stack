@@ -72,7 +72,7 @@ export function AiChat() {
 
         try {
             const proxyUrl = '/api/llm/chat/completions';
-            const model = import.meta.env.VITE_ALI_LLM_MODEL || 'qwen-turbo';
+            const model = import.meta.env.LLM_MODEL || 'qwen-turbo';
 
             const response = await fetch(proxyUrl, {
                 method: 'POST',
