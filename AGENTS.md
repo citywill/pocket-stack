@@ -60,8 +60,6 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 │   ├── pages/                # 顶层页面（Login、Profile、NotFound…）
 │   ├── App.tsx               # 路由根 + 自动导入 modules/*/routes.tsx
 │   └── main.tsx
-├── .trae/skills/             # AI Skills
-│   └── pocketstack/          # PocketStack 开发技能
 └── components.json           # shadcn 配置
 ```
 
@@ -95,9 +93,7 @@ src/modules/{module}/
 
 ## 5. Skills
 
-| Skill          | 用途                                                                                                            |
-| -------------- | --------------------------------------------------------------------------------------------------------------- |
-| `pocketstack`  | PocketStack 全栈开发框架。创建模块、CRUD 页面、路由/菜单/权限、PocketBase collection、shadcn 组件、编译与浏览器测试 |
+`pocketstack`：PocketStack 全栈开发框架。初始化项目、创建模块、CRUD 页面、路由/菜单/权限、PocketBase collection、shadcn 组件、编译与浏览器测试。
 
 skill 的 references 下有：
 - `initialization.md`（初始化项目开发环境）
