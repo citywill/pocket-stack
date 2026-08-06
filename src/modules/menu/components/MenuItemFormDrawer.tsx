@@ -76,8 +76,7 @@ export function MenuItemFormDrawer({
   const [order, setOrder] = useState(999);
   const [external, setExternal] = useState(false);
   const [show, setShow] = useState(true);
-  const [userOnly, setUserOnly] = useState(false);
-  const [adminOnly, setAdminOnly] = useState(false);
+  const [visibility, setVisibility] = useState<'all' | 'admin' | 'user'>('all');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -89,8 +88,14 @@ export function MenuItemFormDrawer({
       setOrder(menuItem.order ?? 999);
       setExternal(menuItem.external);
       setShow(menuItem.show);
-      setUserOnly(menuItem.userOnly ?? false);
-      setAdminOnly(menuItem.adminOnly ?? false);
+      // 根据现有字段反推可见性
+      if (menuItem.adminOnly) {
+        setVisibility('admin');
+      } else if (menuItem.userOnly) {
+        setVisibility('user');
+      } else {
+        setVisibility('all');
+      }
     } else {
       setTitle('');
       setParent('');
@@ -99,8 +104,7 @@ export function MenuItemFormDrawer({
       setOrder(999);
       setExternal(false);
       setShow(true);
-      setUserOnly(false);
-      setAdminOnly(false);
+      setVisibility('all');
     }
   }, [menuItem, open]);
 
@@ -118,8 +122,8 @@ export function MenuItemFormDrawer({
         order,
         external,
         show,
-        userOnly,
-        adminOnly,
+        userOnly: visibility === 'user',
+        adminOnly: visibility === 'admin',
       };
       if (parent) {
         payload.parent = parent;
@@ -221,13 +225,19 @@ export function MenuItemFormDrawer({
             <Switch checked={show} onCheckedChange={setShow} />
             <Label>显示菜单</Label>
           </div>
-          <div className="flex items-center gap-3">
-            <Switch checked={userOnly} onCheckedChange={setUserOnly} />
-            <Label>仅普通用户可见 (userOnly)</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <Switch checked={adminOnly} onCheckedChange={setAdminOnly} />
-            <Label>仅管理员可见 (adminOnly)</Label>
+          <div className="space-y-2">
+            <Label>系统角色可见性</Label>
+            <EditorSelect value={visibility} onValueChange={(v) => setVisibility(v as 'all' | 'admin' | 'user')}>
+              <EditorSelectTrigger className="rounded-xl">
+                <EditorSelectValue placeholder="请选择可见角色" />
+              </EditorSelectTrigger>
+              <EditorSelectContent>
+                <EditorSelectItem value="all">所有系统角色可见</EditorSelectItem>
+                <EditorSelectItem value="admin">超级管理员可见</EditorSelectItem>
+                <EditorSelectItem value="user">普通用户可见</EditorSelectItem>
+              </EditorSelectContent>
+            </EditorSelect>
+            <p className="text-xs text-gray-500">默认为所有角色可见</p>
           </div>
         </div>
         <SheetFooter className="mt-8 flex gap-3 sm:justify-end">
