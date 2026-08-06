@@ -4,9 +4,11 @@ export interface MenuItem {
   parent: string | null;
   path: string;
   icon: string;
-  sort: number;
+  order: number; // 排序权重，越小越靠前
   external: boolean;
   show: boolean;
+  userOnly: boolean;
+  adminOnly: boolean;
   created: string;
   updated: string;
 }

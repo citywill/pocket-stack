@@ -15,6 +15,7 @@ import { IconPicker } from '@/components/ui/icon-picker';
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
 import type { MenuItem, MenuTreeNode } from '../types';
+import { clearSystemMenuCache } from '../systemMenu';
 
 const COLLECTION_NAME = 'system_menu';
 
@@ -42,9 +43,9 @@ function buildTree(items: MenuItem[]): MenuTreeNode[] {
     }
   });
 
-  roots.sort((a, b) => a.sort - b.sort);
+  roots.sort((a, b) => a.order - b.order);
   map.forEach((node) => {
-    node.children.sort((a, b) => a.sort - b.sort);
+    node.children.sort((a, b) => a.order - b.order);
   });
 
   return roots;
@@ -72,9 +73,11 @@ export function MenuItemFormDrawer({
   const [parent, setParent] = useState<string>('');
   const [path, setPath] = useState('');
   const [icon, setIcon] = useState('');
-  const [sort, setSort] = useState(0);
+  const [order, setOrder] = useState(999);
   const [external, setExternal] = useState(false);
   const [show, setShow] = useState(true);
+  const [userOnly, setUserOnly] = useState(false);
+  const [adminOnly, setAdminOnly] = useState(false);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -83,17 +86,21 @@ export function MenuItemFormDrawer({
       setParent(menuItem.parent || '');
       setPath(menuItem.path || '');
       setIcon(menuItem.icon || '');
-      setSort(menuItem.sort);
+      setOrder(menuItem.order ?? 999);
       setExternal(menuItem.external);
       setShow(menuItem.show);
+      setUserOnly(menuItem.userOnly ?? false);
+      setAdminOnly(menuItem.adminOnly ?? false);
     } else {
       setTitle('');
       setParent('');
       setPath('');
       setIcon('');
-      setSort(0);
+      setOrder(999);
       setExternal(false);
       setShow(true);
+      setUserOnly(false);
+      setAdminOnly(false);
     }
   }, [menuItem, open]);
 
@@ -108,9 +115,11 @@ export function MenuItemFormDrawer({
         title: title.trim(),
         path: path.trim(),
         icon: icon.trim(),
-        sort,
+        order,
         external,
         show,
+        userOnly,
+        adminOnly,
       };
       if (parent) {
         payload.parent = parent;
@@ -120,9 +129,11 @@ export function MenuItemFormDrawer({
 
       if (menuItem) {
         await pb.collection(COLLECTION_NAME).update(menuItem.id, payload);
+        clearSystemMenuCache();
         toast.success('更新成功');
       } else {
         await pb.collection(COLLECTION_NAME).create(payload);
+        clearSystemMenuCache();
         toast.success('创建成功');
       }
       onSuccess();
@@ -192,15 +203,15 @@ export function MenuItemFormDrawer({
             <p className="text-xs text-gray-500">选择或搜索 heroicons 图标</p>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="sort">排序</Label>
+            <Label htmlFor="order">显示权重 (order)</Label>
             <Input
-              id="sort"
+              id="order"
               type="number"
-              value={sort}
-              onChange={(e) => setSort(parseInt(e.target.value) || 0)}
+              value={order}
+              onChange={(e) => setOrder(parseInt(e.target.value) || 999)}
               className="rounded-xl"
             />
-            <p className="text-xs text-gray-500">数字越小越靠前</p>
+            <p className="text-xs text-gray-500">用于侧边栏排序，越小越靠前，默认 999</p>
           </div>
           <div className="flex items-center gap-3">
             <Switch checked={external} onCheckedChange={setExternal} />
@@ -209,6 +220,14 @@ export function MenuItemFormDrawer({
           <div className="flex items-center gap-3">
             <Switch checked={show} onCheckedChange={setShow} />
             <Label>显示菜单</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch checked={userOnly} onCheckedChange={setUserOnly} />
+            <Label>仅普通用户可见 (userOnly)</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch checked={adminOnly} onCheckedChange={setAdminOnly} />
+            <Label>仅管理员可见 (adminOnly)</Label>
           </div>
         </div>
         <SheetFooter className="mt-8 flex gap-3 sm:justify-end">

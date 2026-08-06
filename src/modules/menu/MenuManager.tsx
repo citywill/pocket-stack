@@ -13,6 +13,7 @@ import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
 import type { MenuItem, MenuTreeNode } from './types';
 import { MenuItemFormDrawer } from './components/MenuItemFormDrawer';
+import { clearSystemMenuCache } from './systemMenu';
 import { cn } from '@/lib/utils';
 import {
   AlertDialog,
@@ -43,9 +44,9 @@ function buildTree(items: MenuItem[]): MenuTreeNode[] {
     }
   });
 
-  roots.sort((a, b) => a.sort - b.sort);
+  roots.sort((a, b) => a.order - b.order);
   map.forEach((node) => {
-    node.children.sort((a, b) => a.sort - b.sort);
+    node.children.sort((a, b) => a.order - b.order);
   });
 
   return roots;
@@ -103,6 +104,26 @@ function MenuItemRow({
                 已隐藏
               </span>
             )}
+            {node.adminOnly && (
+              <span className="px-2 py-0.5 rounded text-xs bg-primary/10 text-primary">
+                管理员
+              </span>
+            )}
+            {node.userOnly && (
+              <span className="px-2 py-0.5 rounded text-xs bg-primary/10 text-primary">
+                普通用户
+              </span>
+            )}
+            {node.external && (
+              <span className="px-2 py-0.5 rounded text-xs bg-amber-100 text-amber-700">
+                外链
+              </span>
+            )}
+            {typeof node.order === 'number' && (
+              <span className="px-2 py-0.5 rounded text-xs bg-neutral-100 text-neutral-500 font-mono">
+                #{node.order}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1 mr-4">
             <Button
@@ -142,7 +163,7 @@ export function MenuManager() {
     setLoading(true);
     try {
       const result = await pb.collection(COLLECTION_NAME).getFullList({
-        sort: 'sort',
+        sort: 'order',
         requestKey: null,
       });
       const items = result as unknown as MenuItem[];
@@ -191,6 +212,7 @@ export function MenuManager() {
     if (!deleteTargetId) return;
     try {
       await pb.collection(COLLECTION_NAME).delete(deleteTargetId);
+      clearSystemMenuCache();
       toast.success('删除成功');
       fetchMenuItems();
     } catch (error) {

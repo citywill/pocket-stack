@@ -14,8 +14,12 @@ function buildSystemMenuTree(items: SystemMenuItem[]): MenuItem[] {
         const menuItem: MenuItem = {
             title: item.title,
             path: item.path,
-            icon: (HeroIcons as any)[item.icon] || StopIcon,            external: item.external,
+            icon: (HeroIcons as any)[item.icon] || StopIcon,
+            order: item.order ?? 999,
+            external: item.external,
             show: item.show,
+            userOnly: item.userOnly ?? false,
+            adminOnly: item.adminOnly ?? false,
         };
         map.set(item.id, { menuItem, item });
     });
@@ -32,6 +36,16 @@ function buildSystemMenuTree(items: SystemMenuItem[]): MenuItem[] {
         }
     });
 
+    // 按 order 排序根节点（fallback 到 999）
+    roots.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+
+    // 按 order 排序子节点
+    map.forEach(({ menuItem }) => {
+        if (menuItem.children && menuItem.children.length > 1) {
+            menuItem.children.sort((a: any, b: any) => (a.order ?? 999) - (b.order ?? 999));
+        }
+    });
+
     return roots;
 }
 
@@ -44,7 +58,7 @@ export async function getSystemMenu(): Promise<MenuItem[]> {
 
     try {
         const records = await pb.collection('system_menu').getFullList({
-            sort: 'sort',
+            sort: 'order',
             $autoCancel: false,
         });
         const items = records as unknown as SystemMenuItem[];
@@ -54,4 +68,8 @@ export async function getSystemMenu(): Promise<MenuItem[]> {
         console.error('Failed to fetch system menu:', error);
         return [];
     }
+}
+
+export function clearSystemMenuCache() {
+    systemMenuCache = null;
 }
