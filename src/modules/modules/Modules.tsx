@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import {
   CubeIcon,
   CheckCircleIcon,
@@ -12,6 +13,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { pb } from '@/lib/pocketbase';
 import { toast } from 'sonner';
+import { useModuleMenu } from '@/components/module-menu-provider';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,11 +40,14 @@ interface SystemModuleRecord {
   id: string;
   name: string;
   initialized: boolean;
+  show_menu?: boolean;
 }
 
 interface ModuleInfoWithStatus extends ModuleInfo {
   initialized: boolean;
   hasReadme: boolean;
+  showMenu: boolean;
+  recordId?: string;
 }
 
 const modulePackages = import.meta.glob('/src/modules/*/package.json', { eager: true }) as Record<string, any>;
@@ -56,6 +61,7 @@ function extractModuleName(path: string): string {
 
 export function Modules() {
   const navigate = useNavigate();
+  const { refresh: refreshHiddenModules } = useModuleMenu();
   const [modules, setModules] = useState<ModuleInfoWithStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [initializingModules, setInitializingModules] = useState<Set<string>>(new Set());
@@ -71,9 +77,13 @@ export function Modules() {
         requestKey: null,
       });
 
-      const initializedMap = new Map<string, boolean>();
+      const initializedMap = new Map<string, { initialized: boolean; showMenu: boolean; recordId: string }>();
       systemModules.forEach((m) => {
-        initializedMap.set(m.name, m.initialized);
+        initializedMap.set(m.name, {
+          initialized: m.initialized,
+          showMenu: m.show_menu !== false, // 默认 true
+          recordId: m.id,
+        });
       });
 
       const moduleList: ModuleInfoWithStatus[] = Object.entries(modulePackages)
@@ -91,6 +101,7 @@ export function Modules() {
           }
         });
 
+        const recordInfo = initializedMap.get(pkg.name || moduleName);
         return {
           name: pkg.name || moduleName,
           moduleName,
@@ -100,8 +111,10 @@ export function Modules() {
           path: `/modules/${moduleName}`,
           hasMigrations: moduleMigrationFiles.length > 0,
           migrations: moduleMigrationFiles,
-          initialized: initializedMap.get(pkg.name || moduleName) || false,
+          initialized: recordInfo?.initialized || false,
           hasReadme: readmePath in moduleReadmes,
+          showMenu: recordInfo?.showMenu ?? true,
+          recordId: recordInfo?.recordId,
         };
       });
 
@@ -175,6 +188,43 @@ export function Modules() {
     navigate(`/modules/${module.moduleName}/readme`);
   };
 
+  const handleToggleShowMenu = async (module: ModuleInfoWithStatus, checked: boolean) => {
+    // 乐观更新
+    setModules(prev => prev.map(m =>
+      m.moduleName === module.moduleName ? { ...m, showMenu: checked } : m
+    ));
+    try {
+      if (module.recordId) {
+        await pb.collection('system_modules').update(module.recordId, {
+          show_menu: checked,
+        }, { requestKey: null });
+      } else {
+        // 还没有记录（模块未初始化），也允许创建一条仅控制 show_menu 的记录
+        const record = await pb.collection('system_modules').create({
+          name: module.name,
+          initialized: module.initialized,
+          show_menu: checked,
+        }, { requestKey: null });
+        setModules(prev => prev.map(m =>
+          m.moduleName === module.moduleName ? { ...m, recordId: record.id } : m
+        ));
+      }
+      // 通知侧边栏实时刷新
+      refreshHiddenModules();
+      toast.success(checked ? '已显示菜单' : '已隐藏菜单');
+    } catch (error: any) {
+      if (!error.isAbort) {
+        console.error('Failed to toggle show_menu:', error);
+        toast.error(`更新失败: ${error.message || '未知错误'}`);
+        // 回滚
+        setModules(prev => prev.map(m =>
+          m.moduleName === module.moduleName ? { ...m, showMenu: !checked } : m
+        ));
+        refreshHiddenModules();
+      }
+    }
+  };
+
   const confirmInitialize = async () => {
     if (!selectedModule) return;
 
@@ -200,6 +250,7 @@ export function Modules() {
       await pb.collection('system_modules').create({
         name: selectedModule.name,
         initialized: true,
+        show_menu: true,
       });
 
       toast.success(`模块「${selectedModule.title}」初始化成功`);
@@ -311,6 +362,9 @@ export function Modules() {
                     状态
                   </th>
                   <th className="text-center py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                    显示菜单
+                  </th>
+                  <th className="text-center py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
                     说明
                   </th>
                   <th className="text-right py-3 px-4 text-sm font-medium text-neutral-500 dark:text-neutral-400">
@@ -359,6 +413,12 @@ export function Modules() {
                             未初始化
                           </Badge>
                         )}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        <Switch
+                          checked={module.showMenu}
+                          onCheckedChange={(checked) => handleToggleShowMenu(module, checked)}
+                        />
                       </td>
                       <td className="py-3 px-4 text-center">
                         {module.hasReadme ? (

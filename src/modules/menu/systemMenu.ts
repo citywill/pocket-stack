@@ -26,7 +26,7 @@ function buildSystemMenuTree(items: SystemMenuItem[]): MenuItem[] {
             if (!parent.children) {
                 parent.children = [];
             }
-            parent.children.push(menuItem);
+            parent.children.push(menuItem as any);
         } else {
             roots.push(menuItem);
         }

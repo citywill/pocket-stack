@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { useAuth } from '@/components/auth-provider';
-import { menuItems, type MenuItem } from '../menu';
+import { useModuleMenu } from '@/components/module-menu-provider';
+import { menuItems, filterMenusByHiddenModules, type MenuItem } from '../menu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +24,13 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
+  const { hiddenModules } = useModuleMenu();
+
+  // 应用模块隐藏过滤
+  const visibleMenus = filterMenusByHiddenModules(menuItems, hiddenModules);
 
   // 过滤菜单项
-  const filteredMenuItems = menuItems.filter(item => {
+  const filteredMenuItems = visibleMenus.filter(item => {
     if (isSuperAdmin) {
       // 管理员可以看到adminOnly和不加限定的菜单
       return !item.userOnly;

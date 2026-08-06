@@ -48,6 +48,15 @@
             },
             {
                 "hidden": false,
+                "id": "bool_show_menu",
+                "name": "show_menu",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
                 "id": "autodate_created",
                 "name": "created",
                 "onCreate": true,

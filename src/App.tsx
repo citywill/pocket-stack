@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MainLayout } from '@/components/layout';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/components/auth-provider';
+import { ModuleMenuProvider } from '@/components/module-menu-provider';
 import { SettingsProvider } from '@/lib/use-settings';
 import { Profile } from '@/pages/Profile';
 import { LoginPage } from '@/pages/Login';
@@ -23,22 +24,24 @@ export function App() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <Toaster position="top-center" richColors />
       <AuthProvider>
-        <SettingsProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* 渲染自动注册的模块路由 */}
-              {autoRoutes}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<MainLayout />}>
-                  <Route path="profile" element={<Profile />} />
+        <ModuleMenuProvider>
+          <SettingsProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* 渲染自动注册的模块路由 */}
+                {autoRoutes}
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/" element={<MainLayout />}>
+                    <Route path="profile" element={<Profile />} />
+                  </Route>
                 </Route>
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </SettingsProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </SettingsProvider>
+        </ModuleMenuProvider>
       </AuthProvider>
     </ThemeProvider>
   );
