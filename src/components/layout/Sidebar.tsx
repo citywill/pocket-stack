@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Logo } from '@/components/logo';
 import { useAuth } from '@/components/auth-provider';
 import { useModuleMenu } from '@/components/module-menu-provider';
+import { useSettings } from '@/lib/use-settings';
 import { menuItems, filterMenusByHiddenModules, type MenuItem } from '../menu';
+import { getSystemMenu } from '@/modules/menu/systemMenu';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +27,31 @@ export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
   const { hiddenModules } = useModuleMenu();
+  const { settings } = useSettings();
+  const [customMenus, setCustomMenus] = useState<MenuItem[] | null>(null);
+
+  const enableCustomMenu = settings['enable_custom_menu'] === true || settings['enable_custom_menu'] === 'true';
+
+  // 启用自定义菜单时，加载 system_menu 中的菜单
+  useEffect(() => {
+    let cancelled = false;
+    if (!enableCustomMenu) {
+      setCustomMenus(null);
+      return;
+    }
+    getSystemMenu().then(menus => {
+      if (!cancelled) setCustomMenus(menus);
+    });
+    return () => { cancelled = true; };
+  }, [enableCustomMenu]);
+
+  // 基础菜单：启用自定义菜单时，将用户自定义菜单合并到默认模块菜单后
+  const baseMenus = (enableCustomMenu && customMenus)
+    ? [...menuItems, ...customMenus]
+    : menuItems;
 
   // 应用模块隐藏过滤
-  const visibleMenus = filterMenusByHiddenModules(menuItems, hiddenModules);
+  const visibleMenus = filterMenusByHiddenModules(baseMenus, hiddenModules);
 
   // 过滤菜单项
   const filteredMenuItems = visibleMenus.filter(item => {
