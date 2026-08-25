@@ -238,13 +238,62 @@ export function Modules() {
         .filter(([path]) => path.startsWith(migrationPathPrefix))
         .sort(([a], [b]) => a.localeCompare(b));
 
+      // 收集本次要创建的所有 collection
+      const allCollections: any[] = [];
       for (const [, content] of migrationFiles) {
         const collections = content.default || content;
         if (Array.isArray(collections)) {
-          for (const collection of collections) {
-            await pb.collections.create(collection);
-          }
+          allCollections.push(...collections);
         }
+      }
+
+      // 迁移中定义、本次即将创建的 collection id 集合
+      const batchIds = new Set(allCollections.map((c: any) => c.id).filter(Boolean));
+
+      // 第一轮：创建去掉「引用本批次集合」的关系字段后的 collection
+      // 自引用/批次内互引用的关系字段无法在创建时被 PocketBase 校验通过，需延迟到第二轮补上
+      const createdInfos: { migrationId?: string; id: string; deferredFields: any[] }[] = [];
+      for (const collection of allCollections) {
+        const deferredFields: any[] = [];
+        const fields = (collection.fields || []).filter((field: any) => {
+          if (
+            field?.type === 'relation' &&
+            field.collectionId &&
+            batchIds.has(field.collectionId)
+          ) {
+            deferredFields.push(field);
+            return false;
+          }
+          return true;
+        });
+        const createdCollection = await pb.collections.create({
+          ...collection,
+          fields,
+        });
+        createdInfos.push({
+          migrationId: collection.id,
+          id: createdCollection.id,
+          deferredFields,
+        });
+      }
+
+      // 第二轮：为已创建的 collection 补上被推迟的关系字段（迁移 id -> 实际 id 映射）
+      const idMap = new Map<string, string>();
+      createdInfos.forEach((info) => {
+        if (info.migrationId) idMap.set(info.migrationId, info.id);
+      });
+      for (const info of createdInfos) {
+        if (info.deferredFields.length === 0) continue;
+        const current = await pb.collections.getOne(info.id, { requestKey: null });
+        await pb.collections.update(info.id, {
+          fields: [
+            ...(current.fields || []),
+            ...info.deferredFields.map((field: any) => ({
+              ...field,
+              collectionId: idMap.get(field.collectionId) || field.collectionId,
+            })),
+          ],
+        });
       }
 
       await pb.collection('system_modules').create({
