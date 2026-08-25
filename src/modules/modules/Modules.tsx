@@ -250,9 +250,22 @@ export function Modules() {
       // 迁移中定义、本次即将创建的 collection id 集合
       const batchIds = new Set(allCollections.map((c: any) => c.id).filter(Boolean));
 
-      // 第一轮：创建去掉「引用本批次集合」的关系字段后的 collection
-      // 自引用/批次内互引用的关系字段无法在创建时被 PocketBase 校验通过，需延迟到第二轮补上
-      const createdInfos: { migrationId?: string; id: string; deferredFields: any[] }[] = [];
+      // 提取索引 SQL 中引用的列名
+      const getIndexColumns = (indexSql: string): string[] => {
+        const match = indexSql.match(/\(([^)]+)\)/);
+        if (!match) return [];
+        return match[1].split(',').map((s) => s.trim().replace(/`/g, ''));
+      };
+
+      // 第一轮：创建去掉「引用本批次集合」的关系字段及对应索引后的 collection
+      // 自引用/批次内互引用的关系字段在创建时会被 PocketBase 校验拒绝，需延迟到第二轮补上
+      // 引用被延迟字段的索引同样无法在创建时建立，一并延迟
+      const createdInfos: {
+        migrationId?: string;
+        id: string;
+        deferredFields: any[];
+        deferredIndexes: string[];
+      }[] = [];
       for (const collection of allCollections) {
         const deferredFields: any[] = [];
         const fields = (collection.fields || []).filter((field: any) => {
@@ -266,24 +279,36 @@ export function Modules() {
           }
           return true;
         });
+
+        const deferredFieldNames = new Set(deferredFields.map((f: any) => f.name));
+        const deferredIndexes: string[] = [];
+        const indexes = (collection.indexes || []).filter((indexSql: string) => {
+          const cols = getIndexColumns(indexSql);
+          const hit = cols.some((col) => deferredFieldNames.has(col));
+          if (hit) deferredIndexes.push(indexSql);
+          return !hit;
+        });
+
         const createdCollection = await pb.collections.create({
           ...collection,
           fields,
+          indexes,
         });
         createdInfos.push({
           migrationId: collection.id,
           id: createdCollection.id,
           deferredFields,
+          deferredIndexes,
         });
       }
 
-      // 第二轮：为已创建的 collection 补上被推迟的关系字段（迁移 id -> 实际 id 映射）
+      // 第二轮：为已创建的 collection 补上被推迟的关系字段与索引（迁移 id -> 实际 id 映射）
       const idMap = new Map<string, string>();
       createdInfos.forEach((info) => {
         if (info.migrationId) idMap.set(info.migrationId, info.id);
       });
       for (const info of createdInfos) {
-        if (info.deferredFields.length === 0) continue;
+        if (info.deferredFields.length === 0 && info.deferredIndexes.length === 0) continue;
         const current = await pb.collections.getOne(info.id, { requestKey: null });
         await pb.collections.update(info.id, {
           fields: [
@@ -293,6 +318,7 @@ export function Modules() {
               collectionId: idMap.get(field.collectionId) || field.collectionId,
             })),
           ],
+          indexes: [...(current.indexes || []), ...info.deferredIndexes],
         });
       }
 
