@@ -42,7 +42,6 @@ export default {
         collapsed: false,
         items: [
           { text: '前端特性', link: '/前端特性' },
-          { text: '菜单定义', link: '/菜单定义' },
           { text: '权限控制', link: '/权限控制' },
           { text: '后端技巧', link: '/后端技巧' },
         ]
