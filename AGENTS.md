@@ -52,8 +52,9 @@ AI 友好的全栈模块化开发框架。基于 **React + shadcn/ui + PocketBas
 │   │   └── protected-route.tsx
 │   ├── lib/                  # 工具与 PocketBase 实例
 │   │   └── pocketbase.ts     # 全局 PocketBase 客户端
-│   ├── modules/              # 业务模块（自动注册路由和菜单）
+│   ├── modules/              # 业务模块（自动注册路由、菜单、设置）
 │   │   ├── examples/         # 示例模块（curd、AiChat、BlogDetail…）
+│   │   ├── menu/             # 系统：菜单管理
 │   │   ├── modules/          # 系统：模块管理
 │   │   ├── settings/         # 系统：设置
 │   │   └── user/             # 系统：用户管理
@@ -76,18 +77,20 @@ src/modules/{module}/
 ├── Index.tsx              # 主页面入口
 ├── routes.tsx             # 路由配置（自动注册）
 ├── menu.ts                # 菜单配置（自动注册）
+├── settings.tsx           # 模块设置描述（可选，默认导出 ModuleSettings，自动注册系统设置 Tab）
 ├── package.json           # 模块元数据
 ├── types.ts               # 类型定义
 └── README.md              # 模块说明文档
 ```
 
-**新增模块后路由和菜单会自动注册**，无需手动改主入口。
+**新增模块后路由、菜单和设置 Tab 会自动注册**，无需手动改主入口。
 
 - **目录命名**：kebab-case（`finance`、`notebooklm`）
 - **页面文件**：大驼峰 PascalCase
 - **页面路径**：`/{module}/{page}`，例如 `/finance/records`
 - **后端 collection 命名**：`{module}_subPageName`，例如 `finance_records`
 - **每个模块的 migrations/**：放置 PocketBase collection 的 JSON schema
+- **模块设置**：模块提供 `settings.tsx` 即在系统设置页注册一个 Tab，字段 key 自动加 `{module}_` 前缀存储；声明方式参考 `src/modules/examples/settings.tsx`
 
 ---
 

@@ -30,7 +30,7 @@ export function Sidebar({ isCollapsed, className, onItemClick }: SidebarProps) {
   const { settings } = useSettings();
   const [customMenus, setCustomMenus] = useState<MenuItem[] | null>(null);
 
-  const enableCustomMenu = settings['enable_custom_menu'] === true || settings['enable_custom_menu'] === 'true';
+  const enableCustomMenu = settings['menu_enable_custom_menu'] === true || settings['menu_enable_custom_menu'] === 'true';
 
   // 启用自定义菜单时，加载 system_menu 中的菜单
   useEffect(() => {

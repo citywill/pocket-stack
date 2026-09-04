@@ -12,6 +12,7 @@ import {
   CalendarIcon,
   ArrowDownTrayIcon,
   EllipsisHorizontalIcon,
+  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import {
   XAxis,
@@ -27,6 +28,7 @@ import {
 } from 'recharts';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/theme-provider';
+import { useSettings } from '@/lib/use-settings';
 
 const REVENUE_DATA = [
   { name: 'Jan', value: 4500 },
@@ -109,6 +111,11 @@ function getComputedColorVar(variable: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(variable).trim() || '#3b82f6';
 }
 
+/** 兼容布尔 / 字符串 / 数字形式的设置值 */
+function toBooleanValue(value: unknown): boolean {
+  return value === true || value === 'true' || value === 1 || value === '1';
+}
+
 function getComputedChartColors() {
   return {
     primary: getComputedColorVar('--primary'),
@@ -125,7 +132,12 @@ function getComputedChartColors() {
 
 export function ExampleDashboard() {
   const { colorTheme } = useTheme();
+  const { get } = useSettings();
   const [chartColors, setChartColors] = useState(getComputedChartColors);
+
+  // 示例模块设置：是否显示欢迎横幅、横幅文案（key 带 examples_ 前缀）
+  const showGreetingBanner = toBooleanValue(get('examples_greeting_banner', false));
+  const greetingMessage = String(get('examples_welcome_message', '') ?? '').trim();
 
   const updateChartColors = useCallback(() => {
     requestAnimationFrame(() => {
@@ -159,6 +171,24 @@ export function ExampleDashboard() {
           </Button>
         </div>
       </div>
+
+      {/* 欢迎横幅（示例模块设置 examples_greeting_banner 控制） */}
+      {showGreetingBanner && (
+        <div className="flex items-start gap-4 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 dark:from-primary/15 dark:via-primary/5 dark:to-transparent">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+            <SparklesIcon className="h-6 w-6" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold tracking-wide text-primary">欢迎横幅</p>
+            <p className="mt-1 text-base font-medium text-card-foreground">
+              {greetingMessage || '欢迎回来，这里有一条来自「示例模块」的欢迎文案。'}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              前往「系统设置 → 示例模块」可开关横幅或修改文案。
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <MetricCard

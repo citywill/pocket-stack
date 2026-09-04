@@ -44,7 +44,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   // 当 siteName 改变时，更新 document.title
   useEffect(() => {
-    const siteName = settings['site_name'] || 'Pocket Stack';
+    const siteName = settings['system_site_name'] || 'Pocket Stack';
     document.title = siteName;
   }, [settings]);
 
@@ -54,9 +54,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
 
   const value = {
     settings,
-    siteName: settings['site_name'] || '',
-    contactEmail: settings['contact_email'] || '',
-    footerText: settings['footer_text'] || '',
+    siteName: settings['system_site_name'] || '',
+    contactEmail: settings['system_contact_email'] || '',
+    footerText: settings['system_footer_text'] || '',
     loading,
     refresh: fetchSettings,
     get

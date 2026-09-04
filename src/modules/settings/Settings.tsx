@@ -1,135 +1,104 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { pb } from '@/lib/pocketbase';
 import { useSettings } from '@/lib/use-settings';
 import { toast } from 'sonner';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  collectModuleSettings,
+  defaultFieldValue,
+  settingKey,
+  type ModuleSettingsTab,
+} from '@/lib/module-settings';
+import { ModuleSettingsForm, type SettingEntry } from './components/ModuleSettingsForm';
+import { SYSTEM_GLOBAL_SETTINGS } from './systemSettings';
 
-interface SystemSetting {
-  id: string;
-  key: string;
-  value: any;
-  description: string;
-}
-
-const formModules = import.meta.glob('./components/SettingForms/*.tsx', { eager: true });
-
-interface SettingFormModule {
-  metadata: {
-    id: string;
-    title: string;
-    icon: any;
-    presetSettings: { key: string; label: string; description: string }[];
-  };
-  [key: string]: any;
-}
-
-const FORMS = Object.entries(formModules).map(([path, module]) => {
-  const m = module as SettingFormModule;
-  const fileName = path.split('/').pop()?.replace('.tsx', '');
-  const Component = m[fileName || ''] || Object.values(m).find(v => typeof v === 'function');
-
-  return {
-    ...m.metadata,
-    Component
-  };
-})
-  .filter(f => f.Component && f.id)
-  .sort((a, b) => {
-    if (a.id === 'general') return -1;
-    if (b.id === 'general') return 1;
-    return 0;
-  });
-
-const ALL_PRESET_SETTINGS = FORMS.flatMap(f => f.presetSettings);
+/** 系统内置 + 各模块自动注册的设置 Tab */
+const MODULE_SETTINGS_TABS: ModuleSettingsTab[] = [
+  SYSTEM_GLOBAL_SETTINGS,
+  ...collectModuleSettings(),
+].sort((a, b) => a.order - b.order || a.moduleName.localeCompare(b.moduleName));
 
 export function Settings() {
   const { refresh } = useSettings();
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
-  const [settings, setSettings] = useState<Record<string, SystemSetting>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [entries, setEntries] = useState<Record<string, SettingEntry>>({});
 
-  const fetchSettings = async () => {
+  const loadSettings = async () => {
     try {
-      setFetching(true);
-      const records = await pb.collection('system_settings').getFullList<SystemSetting>({
-        requestKey: null
+      const records = await pb.collection('system_settings').getFullList<any>({
+        requestKey: null,
       });
 
-      const settingsMap: Record<string, SystemSetting> = {};
-
-      ALL_PRESET_SETTINGS.forEach(preset => {
-        settingsMap[preset.key] = {
-          id: '',
-          key: preset.key,
-          value: '',
-          description: preset.description
-        };
+      const recordMap: Record<string, any> = {};
+      records.forEach((record) => {
+        recordMap[record.key] = record;
       });
 
-      records.forEach(record => {
-        settingsMap[record.key] = record;
+      const next: Record<string, SettingEntry> = {};
+      MODULE_SETTINGS_TABS.forEach((tab) => {
+        tab.fields.forEach((field) => {
+          const key = settingKey(tab.moduleName, field.key);
+          const record = recordMap[key];
+          next[key] = {
+            id: record?.id ?? '',
+            value: record ? record.value : defaultFieldValue(field),
+          };
+        });
       });
 
-      setSettings(settingsMap);
+      setEntries(next);
     } catch (error: any) {
       if (!error.isAbort) {
         console.error('Fetch settings error:', error);
         toast.error('获取系统设置失败');
       }
-    } finally {
-      setFetching(false);
     }
   };
 
   useEffect(() => {
-    fetchSettings();
+    loadSettings().finally(() => setLoading(false));
   }, []);
 
-  const handleUpdateSetting = (key: string, value: any) => {
-    setSettings(prev => ({
+  const handleUpdate = (key: string, value: any) => {
+    setEntries((prev) => ({
       ...prev,
-      [key]: { ...prev[key], value }
+      [key]: { ...(prev[key] ?? { id: '' }), value },
     }));
   };
 
-  const saveSettings = async () => {
+  const saveTab = async (tab: ModuleSettingsTab) => {
     try {
-      setLoading(true);
-      const settingsToSave = Object.values(settings);
-
-      if (settingsToSave.length === 0) {
-        toast.info('没有需要保存的配置');
-        return;
-      }
-
-      const promises = settingsToSave.map(async (setting) => {
+      setSaving(true);
+      const promises = tab.fields.map(async (field) => {
+        const key = settingKey(tab.moduleName, field.key);
+        const entry = entries[key];
         const data = {
-          key: setting.key,
-          value: setting.value || "",
-          description: setting.description || ''
+          key,
+          value: entry?.value ?? defaultFieldValue(field),
+          description: field.description ?? '',
         };
 
-        if (setting.id) {
-          return pb.collection('system_settings').update(setting.id, data, { requestKey: null });
-        } else {
-          return pb.collection('system_settings').create(data, { requestKey: null });
+        if (entry?.id) {
+          return pb.collection('system_settings').update(entry.id, data, { requestKey: null });
         }
+        return pb.collection('system_settings').create(data, { requestKey: null });
       });
 
       await Promise.all(promises);
       await refresh();
-      await fetchSettings();
-      toast.success('系统设置已保存');
+      await loadSettings();
+      toast.success(`${tab.title}已保存`);
     } catch (error: any) {
       console.error('Save settings error:', error);
-      toast.error(`保存设置失败: ${error.message || '未知错误'}`);
+      toast.error(`保存设置失败: ${error?.message || '未知错误'}`);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  if (fetching) {
+  if (loading) {
     return (
       <div className="flex h-[400px] items-center justify-center">
         <div className="text-neutral-500">加载配置中...</div>
@@ -141,33 +110,34 @@ export function Settings() {
     <div className="space-y-6 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-50 flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold text-neutral-900 dark:text-neutral-50">
             <Cog6ToothIcon className="h-8 w-8 text-primary" />
             系统设置
           </h1>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">
-            管理系统的全局基本配置、AI 接口参数等。
+            模块可在其目录下提供 settings.tsx 自动注册为本页 Tab，字段 key 自动带模块名前缀。
           </p>
         </div>
       </div>
 
-      <Tabs defaultValue={FORMS[0]?.id || 'general'} className="w-full">
+      <Tabs defaultValue={MODULE_SETTINGS_TABS[0]?.moduleName} className="w-full">
         <TabsList className="mb-6">
-          {FORMS.map(form => (
-            <TabsTrigger key={form.id} value={form.id}>
-              <form.icon className="w-4 h-4 mr-2" />
-              {form.title}
+          {MODULE_SETTINGS_TABS.map((tab) => (
+            <TabsTrigger key={tab.moduleName} value={tab.moduleName}>
+              <tab.icon className="mr-2 h-4 w-4" />
+              {tab.title}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {FORMS.map(form => (
-          <TabsContent key={form.id} value={form.id} className="mt-0 outline-none">
-            <form.Component
-              settings={settings}
-              loading={loading}
-              onUpdate={handleUpdateSetting}
-              onSave={saveSettings}
+        {MODULE_SETTINGS_TABS.map((tab) => (
+          <TabsContent key={tab.moduleName} value={tab.moduleName} className="mt-0 outline-none">
+            <ModuleSettingsForm
+              tab={tab}
+              entries={entries}
+              saving={saving}
+              onUpdate={handleUpdate}
+              onSave={() => saveTab(tab)}
             />
           </TabsContent>
         ))}
